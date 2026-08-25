@@ -24,12 +24,7 @@ export default function ApplyPage() {
   async function addFile(event: ChangeEvent<HTMLInputElement>, setFile: (file: UploadedFile) => void) {
     const file = event.target.files?.[0];
     if (!file) return;
-    const dataUrl = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+    const dataUrl = await optimisedDataUrl(file);
     setFile({ name: file.name, size: `${Math.max(1, Math.round(file.size / 1024))} KB`, dataUrl });
   }
 
@@ -59,13 +54,40 @@ function UploadCard({ title, file, onChange }: { title: string; file: UploadedFi
   return <div className="rounded-2xl border border-dashed border-[#abc9b0] bg-[#fbfefb] p-5"><p className="font-semibold">{title}</p>{file ? <div className="mt-4 rounded-xl bg-[#e9f6eb] p-3"><p className="truncate text-sm font-semibold text-[#1c6836]">✓ {file.name}</p><p className="mt-1 text-xs text-[#59775e]">{file.size} · ready to check</p><label htmlFor={id} className="mt-3 inline-block cursor-pointer text-sm font-semibold text-[#287a43]">Replace file</label></div> : <><p className="mt-2 text-sm leading-5 text-[#6a7a6d]">Choose a synthetic image or PDF.</p><label htmlFor={id} className="mt-4 inline-block cursor-pointer rounded-lg border border-[#b9d5bd] bg-white px-3 py-2 text-sm font-semibold text-[#2a713e]">Choose file</label></>}<input id={id} className="sr-only" accept="image/png,image/jpeg,application/pdf" type="file" onChange={onChange} /></div>;
 }
 
+async function optimisedDataUrl(file: File) {
+  const original = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+  if (!file.type.startsWith("image/")) return original;
+
+  const image = new Image();
+  image.src = original;
+  await new Promise<void>((resolve, reject) => { image.onload = () => resolve(); image.onerror = () => reject(new Error("Could not read this image.")); });
+  const scale = Math.min(1, 1280 / Math.max(image.width, image.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(image.width * scale);
+  canvas.height = Math.round(image.height * scale);
+  canvas.getContext("2d")?.drawImage(image, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/jpeg", 0.78);
+}
+
 function Results({ assessment, source, onReset }: { assessment: Assessment; source: "openai" | "synthetic_demo" | null; onReset: () => void }) {
   const [showNote, setShowNote] = useState(false);
   const [noteSigned, setNoteSigned] = useState(false);
   const [packetReady, setPacketReady] = useState(false);
   const clear = assessment.overallStatus === "clear";
+  const mismatchCount = assessment.mismatches.length;
+  const hasMajorMismatch = assessment.mismatches.some((item) => item.severity === "major");
+  const resultHeading = clear
+    ? "Your documents look consistent."
+    : mismatchCount === 1
+      ? hasMajorMismatch ? "One difference needs correction." : "One small difference needs attention."
+      : `${mismatchCount} differences need attention.`;
   if (packetReady) return <SubmissionReady onReset={onReset} />;
-  return <section className="mt-8"><p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">Pre-scrutiny result</p><div className={`mt-4 rounded-3xl border p-7 sm:p-9 ${clear ? "border-[#b9dfc0] bg-[#f3fbf4]" : "border-[#f0d49f] bg-[#fff9ed]"}`}><span className="grid h-12 w-12 place-items-center rounded-full bg-white text-2xl">{clear ? "✓" : "⚠"}</span><h1 className="mt-5 text-3xl font-semibold tracking-[-0.04em]">{clear ? "Your documents look consistent." : "One small difference needs attention."}</h1><p className="mt-3 max-w-xl leading-7 text-[#536457]">{assessment.summary}</p><div className="mt-6 flex flex-wrap gap-3 text-sm"><span className="rounded-full bg-white px-3 py-1.5 font-semibold text-[#2e6540]">{Math.round(assessment.confidence * 100)}% confidence</span><span className="rounded-full bg-white px-3 py-1.5 font-semibold text-[#526958]">{source === "openai" ? "Analysed with OpenAI Vision" : "Synthetic demo assessment"}</span></div></div>{assessment.mismatches.map((item) => <article key={item.field} className="mt-6 rounded-2xl border border-[#e4e6dd] bg-white p-6"><div className="flex items-start justify-between gap-4"><div><p className="font-semibold">{item.field}</p><p className="mt-2 text-sm leading-6 text-[#5e7061]">{item.explanation}</p></div><span className="rounded-full bg-[#fff0cf] px-3 py-1 text-xs font-bold text-[#87550d]">{item.severity}</span></div><dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2"><div className="rounded-xl bg-[#f7f8f4] p-3"><dt className="text-xs font-semibold uppercase tracking-wide text-[#718073]">Form says</dt><dd className="mt-1 leading-5">{item.formValue}</dd></div><div className="rounded-xl bg-[#f7f8f4] p-3"><dt className="text-xs font-semibold uppercase tracking-wide text-[#718073]">Proof says</dt><dd className="mt-1 leading-5">{item.documentValue}</dd></div></dl></article>)}{!clear && <button onClick={() => setShowNote(true)} className="mt-6 w-full rounded-xl bg-[#166534] px-5 py-4 font-semibold text-white shadow-lg shadow-[#166534]/20 hover:bg-[#10572b]">Generate clarification note →</button>}{showNote && <ClarificationNote mismatch={assessment.mismatches[0]} onSigned={() => setNoteSigned(true)} />}{(clear || noteSigned) && <button onClick={() => setPacketReady(true)} className="mt-6 w-full rounded-xl bg-[#166534] px-5 py-4 font-semibold text-white shadow-lg shadow-[#166534]/20 hover:bg-[#10572b]">Prepare submission-ready packet →</button>}<button onClick={onReset} className="mt-6 rounded-xl border border-[#bfd1c1] bg-white px-5 py-3 font-semibold text-[#285536]">Check another application</button></section>;
+  return <section className="mt-8"><p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">Pre-scrutiny result</p><div className={`mt-4 rounded-3xl border p-7 sm:p-9 ${clear ? "border-[#b9dfc0] bg-[#f3fbf4]" : "border-[#f0d49f] bg-[#fff9ed]"}`}><span className="grid h-12 w-12 place-items-center rounded-full bg-white text-2xl">{clear ? "✓" : "⚠"}</span><h1 className="mt-5 text-3xl font-semibold tracking-[-0.04em]">{resultHeading}</h1><p className="mt-3 max-w-xl leading-7 text-[#536457]">{assessment.summary}</p><div className="mt-6 flex flex-wrap gap-3 text-sm"><span className="rounded-full bg-white px-3 py-1.5 font-semibold text-[#2e6540]" title="How confidently the AI read and compared the visible document text—not an approval prediction.">{Math.round(assessment.confidence * 100)}% text-read confidence</span><span className="rounded-full bg-white px-3 py-1.5 font-semibold text-[#526958]">{source === "openai" ? "Analysed with OpenAI Vision" : "Synthetic demo assessment"}</span></div><p className="mt-3 text-xs leading-5 text-[#66776a]">Text-read confidence reflects document-reading certainty, not the likelihood of RTO approval.</p></div>{assessment.mismatches.map((item) => <article key={item.field} className="mt-6 rounded-2xl border border-[#e4e6dd] bg-white p-6"><div className="flex items-start justify-between gap-4"><div><p className="font-semibold">{item.field}</p><p className="mt-2 text-sm leading-6 text-[#5e7061]">{item.explanation}</p></div><span className="rounded-full bg-[#fff0cf] px-3 py-1 text-xs font-bold text-[#87550d]">{item.severity}</span></div><dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2"><div className="rounded-xl bg-[#f7f8f4] p-3"><dt className="text-xs font-semibold uppercase tracking-wide text-[#718073]">Form says</dt><dd className="mt-1 leading-5">{item.formValue}</dd></div><div className="rounded-xl bg-[#f7f8f4] p-3"><dt className="text-xs font-semibold uppercase tracking-wide text-[#718073]">Proof says</dt><dd className="mt-1 leading-5">{item.documentValue}</dd></div></dl></article>)}{!clear && <button onClick={() => setShowNote(true)} className="mt-6 w-full rounded-xl bg-[#166534] px-5 py-4 font-semibold text-white shadow-lg shadow-[#166534]/20 hover:bg-[#10572b]">Generate clarification note →</button>}{showNote && <ClarificationNote mismatch={assessment.mismatches[0]} onSigned={() => setNoteSigned(true)} />}{(clear || noteSigned) && <button onClick={() => setPacketReady(true)} className="mt-6 w-full rounded-xl bg-[#166534] px-5 py-4 font-semibold text-white shadow-lg shadow-[#166534]/20 hover:bg-[#10572b]">Prepare submission-ready packet →</button>}<button onClick={onReset} className="mt-6 rounded-xl border border-[#bfd1c1] bg-white px-5 py-3 font-semibold text-[#285536]">Check another application</button></section>;
 }
 
 function ClarificationNote({ mismatch, onSigned }: { mismatch: Assessment["mismatches"][number]; onSigned: () => void }) {
