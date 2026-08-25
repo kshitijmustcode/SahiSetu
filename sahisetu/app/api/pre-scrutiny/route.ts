@@ -9,82 +9,77 @@ const schema = {
   properties: {
     overallStatus: { type: "string", enum: ["clear", "needs_clarification", "needs_correction"] },
     confidence: { type: "number" },
-    documentAddress: { type: "string" },
     summary: { type: "string" },
+    extraction: {
+      type: "object", additionalProperties: false,
+      properties: { address: { type: "string" }, applicantName: { type: "string" }, complete: { type: "boolean" } },
+      required: ["address", "applicantName", "complete"],
+    },
+    quality: {
+      type: "object", additionalProperties: false,
+      properties: { status: { type: "string", enum: ["clear", "needs_reupload"] }, issues: { type: "array", items: { type: "string" } }, guidance: { type: "string" } },
+      required: ["status", "issues", "guidance"],
+    },
+    identity: {
+      type: "object", additionalProperties: false,
+      properties: { status: { type: "string", enum: ["match", "needs_review", "uncertain"] }, summary: { type: "string" } },
+      required: ["status", "summary"],
+    },
     mismatches: {
       type: "array",
       items: {
-        type: "object",
-        additionalProperties: false,
+        type: "object", additionalProperties: false,
         properties: {
-          field: { type: "string" },
-          formValue: { type: "string" },
-          documentValue: { type: "string" },
-          severity: { type: "string", enum: ["minor", "major"] },
-          explanation: { type: "string" },
+          field: { type: "string" }, formValue: { type: "string" }, documentValue: { type: "string" },
+          severity: { type: "string", enum: ["minor", "major"] }, explanation: { type: "string" },
           recommendedAction: { type: "string", enum: ["clarification_note", "correct_form"] },
         },
         required: ["field", "formValue", "documentValue", "severity", "explanation", "recommendedAction"],
       },
     },
   },
-  required: ["overallStatus", "confidence", "documentAddress", "summary", "mismatches"],
+  required: ["overallStatus", "confidence", "summary", "extraction", "quality", "identity", "mismatches"],
 } as const;
 
-const documentAddress = "12 M.G. Road, Indiranagar, Bengaluru, Karnataka 560038";
-
-const demoAssessment = (address: string) => {
-  const value = address.toLowerCase();
-  const mismatches = [] as {
-    field: string; formValue: string; documentValue: string; severity: "minor"; explanation: string; recommendedAction: "clarification_note";
-  }[];
-
-  if (value.includes("indira nagar")) mismatches.push({
-    field: "Locality spelling", formValue: "Indira Nagar", documentValue: "Indiranagar", severity: "minor",
-    explanation: "“Indira Nagar” and “Indiranagar” commonly refer to the same Bengaluru locality, but a reviewer may flag the spelling variation.", recommendedAction: "clarification_note",
-  });
-  if (value.includes("bangalore")) mismatches.push({
-    field: "City naming", formValue: "Bangalore", documentValue: "Bengaluru", severity: "minor",
-    explanation: "“Bangalore” and “Bengaluru” commonly refer to the same city, but matching the address proof avoids an avoidable review query.", recommendedAction: "clarification_note",
-  });
-
-  return {
-    overallStatus: mismatches.length ? "needs_clarification" as const : "clear" as const,
-    confidence: 0.94,
-    documentAddress,
-    summary: mismatches.length ? "Your address proof appears to match the application, but a small naming or formatting difference should be clarified before submission." : "Your application address appears consistent with the synthetic address proof.",
-    mismatches,
-  };
-};
+const demoAssessment = () => ({
+  overallStatus: "clear" as const,
+  confidence: 0.94,
+  summary: "We extracted a complete new address from the synthetic address proof. The current licence is used to identify the record to update.",
+  extraction: { address: "12 M.G. Road, Indiranagar, Bengaluru, Karnataka 560038", applicantName: "Kshitij Kumar", complete: true },
+  quality: { status: "clear" as const, issues: [], guidance: "Both synthetic documents are clear enough for this demo." },
+  identity: { status: "match" as const, summary: "The visible applicant details appear consistent across the synthetic documents." },
+  mismatches: [],
+});
 
 export async function POST(request: Request) {
-  const body = await request.json() as { address?: string; documents?: DocumentInput[] };
-  const address = body.address?.trim();
-  if (!address) return NextResponse.json({ error: "An application address is required." }, { status: 400 });
+  const body = await request.json() as { documents?: DocumentInput[] };
+  const documents = body.documents ?? [];
+  const licence = documents.find((document) => /licen[cs]e|dl/i.test(document.name)) ?? documents[0];
+  const addressProof = documents.find((document) => /aadhaar|aadhar|address|proof/i.test(document.name)) ?? documents[1];
 
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json({ assessment: demoAssessment(address), source: "synthetic_demo" });
+  if (!licence?.dataUrl || !addressProof?.dataUrl) {
+    return NextResponse.json({ error: "Please add both the current driving licence and new-address proof." }, { status: 400 });
   }
 
+  if (!process.env.OPENAI_API_KEY) return NextResponse.json({ assessment: demoAssessment(), source: "synthetic_demo" });
+
   try {
-    // The address proof is the only document needed for this specific address check.
-    // Keeping the licence in the packet but out of the vision request cuts upload and model time.
-    const addressProof = (body.documents ?? []).find((document) => /address|proof/i.test(document.name)) ?? body.documents?.[1];
-    const documentContent = addressProof?.dataUrl
-      ? [{ type: "input_image" as const, image_url: addressProof.dataUrl, detail: "low" as const }]
-      : [];
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const response = await client.responses.create({
       model: "gpt-5.6-luna",
       store: false,
       reasoning: { effort: "none" },
-      max_output_tokens: 600,
-      instructions: "Compare the application address to the visible address proof. Do not make legal or identity decisions. Report only visible material text differences. Ignore deliberate synthetic-demo, demo-only, and not-valid watermarks because they are safety labels on this prototype's test documents, not application discrepancies. The confidence field means confidence that the visible document text was read and compared correctly; it is not the likelihood that an application will be approved. Use clarification_note only for minor wording, spacing, abbreviation, or known same-place naming variations; use correct_form for any substantive difference. Return the required JSON only.",
-      input: [{ role: "user", content: [{ type: "input_text", text: `Application address: ${address}\nAddress-proof file: ${addressProof?.name ?? "not supplied"}.` }, ...documentContent] }],
-      text: { format: { type: "json_schema", name: "pre_scrutiny_assessment", strict: true, schema } },
+      max_output_tokens: 800,
+      instructions: "You are SahiSetu's conservative document pre-scrutiny assistant. The first image is the CURRENT driving licence; its old address is expected and must never be treated as a mismatch. The second image is a NEW-ADDRESS proof. Extract a single clean, Parivahan-ready address only from the new-address proof. Assess whether both images are readable, complete, upright, and free from glare/cropping. Compare only applicant identity details that are visibly available in both documents. Do not make legal, identity, or approval decisions. Ignore synthetic-demo, demo-only, and not-valid watermarks: they are deliberate prototype safety labels. Use needs_reupload when text cannot be read reliably, key fields are cropped, or image quality is inadequate. Use clarification_note only for harmless text variations; substantive name, DOB, document, or address conflicts require correct_form. Confidence is text-reading certainty, never approval likelihood. Return the required JSON only.",
+      input: [{ role: "user", content: [
+        { type: "input_text", text: `Current driving-licence file: ${licence.name}\nNew-address-proof file: ${addressProof.name}` },
+        { type: "input_image", image_url: licence.dataUrl, detail: "low" },
+        { type: "input_image", image_url: addressProof.dataUrl, detail: "low" },
+      ] }],
+      text: { format: { type: "json_schema", name: "sahisetu_document_assessment", strict: true, schema } },
     }, { signal: AbortSignal.timeout(20_000) });
     return NextResponse.json({ assessment: JSON.parse(response.output_text), source: "openai" });
   } catch {
-    return NextResponse.json({ assessment: demoAssessment(address), source: "synthetic_demo", fallback: true });
+    return NextResponse.json({ assessment: demoAssessment(), source: "synthetic_demo", fallback: true });
   }
 }
