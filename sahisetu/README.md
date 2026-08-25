@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SahiSetu
 
-## Getting Started
+**Pre-scrutiny for clearer, more accountable licence-service applications.**
 
-First, run the development server:
+SahiSetu is a hackathon prototype for citizens applying for an address change or renewal through licence-service portals. It checks a form address against uploaded **synthetic** supporting documents before payment, then explains small mismatches in plain language and prepares a mock clarification packet.
+
+## The problem
+
+Small text differences—such as `Rd.` versus `Road`, `Indira Nagar` versus `Indiranagar`, or `Bangalore` versus `Bengaluru`—can lead to avoidable manual scrutiny. Applicants often have little visibility into what needs fixing.
+
+## What the prototype does
+
+- Uses OpenAI Vision to compare the application address with a synthetic address proof.
+- Detects and classifies minor versus substantive differences.
+- Gives exact, field-level fixes before the applicant pays.
+- Generates one mock clarification note covering every eligible minor variation.
+- Blocks the mock submission packet when a major correction remains.
+- Creates a timestamped **SahiSetu Scrutiny Passport** with readiness score, evidence excerpt, checklist, and report ID.
+
+## Important boundaries
+
+- SahiSetu is **not affiliated with, integrated with, or endorsed by Parivahan, Sarathi, an RTO, or any government body**.
+- The Scrutiny Passport is an unofficial applicant-held companion report, not a government status or approval prediction.
+- The demo intentionally uses synthetic documents only. Never upload real government IDs, Aadhaar numbers, or sensitive personal data.
+- The e-signature and submission packet are mock interactions and have no legal effect.
+
+## Run locally
+
+Prerequisites: Node.js 20+ and npm.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd sahisetu
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+OPENAI_API_KEY=your_api_key_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Start development mode:
 
-## Learn More
+```bash
+npm run dev -- --port 3001
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open [http://127.0.0.1:3001](http://127.0.0.1:3001).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Without an API key, SahiSetu uses a clearly labelled synthetic demo assessment. With a key, the API route uses `gpt-5.6-luna` through the OpenAI Responses API. It sends the compressed address proof only, uses low-detail vision, and falls back after 20 seconds so users are not left waiting indefinitely.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Verification
 
-## Deploy on Vercel
+```bash
+npm run lint
+npx next build --webpack
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+GitHub Actions runs these checks on pushes and pull requests.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Stack
+
+Next.js, TypeScript, Tailwind CSS, and the OpenAI Node SDK.
