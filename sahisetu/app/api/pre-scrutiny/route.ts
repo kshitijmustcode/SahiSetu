@@ -178,9 +178,15 @@ export async function POST(request: Request) {
   if (cached) return NextResponse.json({ ...cached, cached: true });
 
   const bundledDemoPair = /^demolicen[cs]e\.png$/i.test(licence.name) && /^demoaddress\.png$/i.test(addressProof.name);
+  // The in-app pair is known synthetic test data. Do not let a model mistake its
+  // intentionally prominent DEMO ONLY / NOT VALID labels for a document defect.
+  if (bundledDemoPair) {
+    const result = { assessment: demoAssessment(body.candidateAddress, licence.name, addressProof.name), source: "synthetic_demo" as const };
+    assessmentCache.set(cacheKey, result);
+    return NextResponse.json(result);
+  }
   if (!process.env.OPENAI_API_KEY) {
-    if (!bundledDemoPair) return NextResponse.json({ error: "AI checking is unavailable. Add an OpenAI API key to assess uploaded documents; only the built-in demo pair can run offline." }, { status: 503 });
-    const result = { assessment: demoAssessment(body.candidateAddress, licence.name, addressProof.name), source: "synthetic_demo" as const }; assessmentCache.set(cacheKey, result); return NextResponse.json(result);
+    return NextResponse.json({ error: "AI checking is unavailable. Add an OpenAI API key to assess uploaded documents; only the built-in demo pair can run offline." }, { status: 503 });
   }
 
   try {
