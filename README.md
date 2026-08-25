@@ -17,12 +17,12 @@ Applicants often retype an address while applying, creating small differences—
 - Gives exact, field-level fixes before the applicant pays, including an optional rescue comparison for an address already filled on Parivahan.
 - Generates one mock clarification note covering every eligible minor variation.
 - Blocks the mock submission packet when a major correction remains.
-- Creates a timestamped **SahiSetu Scrutiny Passport** with readiness score, evidence excerpt, checklist, and report ID.
+- Creates a timestamped **SahiSetu Pre-Submission Report** with a ready score, evidence excerpt, checklist, and report ID.
 
 ## Important boundaries
 
 - SahiSetu is **not affiliated with, integrated with, or endorsed by Parivahan, Sarathi, an RTO, or any government body**.
-- The Scrutiny Passport is an unofficial applicant-held companion report, not a government status or approval prediction.
+- The Pre-Submission Report is a personal check report, not a government status or approval prediction.
 - The demo intentionally uses synthetic documents only. Never upload real government IDs, Aadhaar numbers, or sensitive personal data.
 - The e-signature and submission packet are mock interactions and have no legal effect.
 

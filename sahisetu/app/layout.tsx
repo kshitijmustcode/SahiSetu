@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SahiSetu | Clear your documents before scrutiny begins",
-  description: "An independent prototype for clearer RTO address-change applications.",
+  title: "SahiSetu | Prepare your new address before applying",
+  description: "Upload a current licence and proof of new address to create a reviewable address for your Parivahan application.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
