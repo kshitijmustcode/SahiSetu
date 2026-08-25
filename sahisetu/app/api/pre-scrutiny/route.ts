@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       store: false,
       reasoning: { effort: "none" },
       max_output_tokens: 600,
-      instructions: "Compare the application address to the visible address proof. Do not make legal or identity decisions. Report only visible material text differences. The confidence field means confidence that the visible document text was read and compared correctly; it is not the likelihood that an application will be approved. Return the required JSON only.",
+      instructions: "Compare the application address to the visible address proof. Do not make legal or identity decisions. Report only visible material text differences. Ignore deliberate synthetic-demo, demo-only, and not-valid watermarks because they are safety labels on this prototype's test documents, not application discrepancies. The confidence field means confidence that the visible document text was read and compared correctly; it is not the likelihood that an application will be approved. Use clarification_note only for minor wording, spacing, abbreviation, or known same-place naming variations; use correct_form for any substantive difference. Return the required JSON only.",
       input: [{ role: "user", content: [{ type: "input_text", text: `Application address: ${address}\nAddress-proof file: ${addressProof?.name ?? "not supplied"}.` }, ...documentContent] }],
       text: { format: { type: "json_schema", name: "pre_scrutiny_assessment", strict: true, schema } },
     }, { signal: AbortSignal.timeout(20_000) });
