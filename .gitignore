@@ -1,0 +1,7 @@
+.DS_Store
+outputs/
+work/
+sahisetu/node_modules/
+sahisetu/.next/
+sahisetu/.env
+sahisetu/.env.local
