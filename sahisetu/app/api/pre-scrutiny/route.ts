@@ -89,7 +89,7 @@ const demoAssessment = (candidateAddress?: string) => {
   overallStatus: mismatches.some((item) => item.severity === "major") ? "needs_correction" as const : mismatches.length ? "needs_clarification" as const : "clear" as const,
   confidence: 0.94,
   summary: "We extracted a complete new address from the synthetic address proof. The current licence is used to identify the record to update.",
-  extraction: { address: documentAddress, applicantName: "Kshitij Kumar", complete: true },
+  extraction: { address: documentAddress, applicantName: "Aarohi Sharma", complete: true },
   quality: { status: "clear" as const, issues: [], guidance: "Both synthetic documents are clear enough for this demo." },
   identity: { status: "match" as const, summary: "The visible applicant details appear consistent across the synthetic documents." },
   mismatches,
