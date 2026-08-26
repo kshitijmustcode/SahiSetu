@@ -6,3 +6,16 @@ html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:not(:disabled), [role="button"]:not([aria-disabled="true"]) { cursor: pointer; }
+
+@media print {
+  @page { margin: 12mm; }
+
+  main > div { max-width: none !important; padding: 0 !important; }
+  main > div > section.mt-8 > div:first-of-type,
+  main > div > section.mt-8 > button { display: none !important; }
+  main > div > section.mt-8 > section { margin-top: 0 !important; padding: 1rem !important; }
+  main > div > section.mt-8 figure > div:first-child {
+    height: 7rem !important;
+    aspect-ratio: auto !important;
+  }
+}
