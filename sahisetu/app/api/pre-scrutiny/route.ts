@@ -79,6 +79,8 @@ const documentAddress = "12 M.G. Road, Indiranagar, Bengaluru, Karnataka 560038"
 const assessmentCache = new Map<string, { assessment: unknown; source: "openai" | "synthetic_demo" }>();
 const normaliseAddress = (value: string) => value.toLowerCase().replaceAll(".", "").replace(/\brd\b/g, "road").replace(/indira\s+nagar/g, "indiranagar").replace(/bangalore/g, "bengaluru").replace(/[^a-z0-9]/g, "");
 const presentationText = (value: string) => value.toLowerCase().replace(/[.]/g, "").replace(/\s+/g, " ").trim();
+const isAarohiDemoLicence = (name: string) => /aarohi/i.test(name) && /driving|licen[cs]e/i.test(name);
+const isAarohiDemoProof = (name: string) => /aarohi/i.test(name) && /aadh?ar|address|proof/i.test(name);
 
 function candidateDifferences(candidateAddress: string | undefined, proofAddress: string) {
   if (!candidateAddress) return [];
@@ -178,9 +180,12 @@ export async function POST(request: Request) {
   if (cached) return NextResponse.json({ ...cached, cached: true });
 
   const bundledDemoPair = /^demolicen[cs]e\.png$/i.test(licence.name) && /^demoaddress\.png$/i.test(addressProof.name);
-  // The in-app pair is known synthetic test data. Do not let a model mistake its
+  const generatedAarohiDemoPair = isAarohiDemoLicence(licence.name) && isAarohiDemoProof(addressProof.name);
+  // These are known SahiSetu synthetic test pairs. Do not let a model mistake their
   // intentionally prominent DEMO ONLY / NOT VALID labels for a document defect.
-  if (bundledDemoPair) {
+  // The generated files can be uploaded manually during a live demo, so their
+  // descriptive Aarohi filenames are recognised in addition to the in-app pair.
+  if (bundledDemoPair || generatedAarohiDemoPair) {
     const result = { assessment: demoAssessment(body.candidateAddress, licence.name, addressProof.name), source: "synthetic_demo" as const };
     assessmentCache.set(cacheKey, result);
     return NextResponse.json(result);
