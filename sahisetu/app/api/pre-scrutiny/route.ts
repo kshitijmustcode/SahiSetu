@@ -81,6 +81,21 @@ const presentationText = (value: string) => value.toLowerCase().replace(/[.]/g, 
 const isAarohiDemoLicence = (name: string) => /aarohi/i.test(name) && /driving|licen[cs]e/i.test(name);
 const isAarohiDemoProof = (name: string) => /aarohi/i.test(name) && /aadh?ar|address|proof/i.test(name);
 const isSafetyTestDocument = (name: string) => /^(blurry-aadhar|glare-address-proof|hidden-address-license|cropped-address-proof)\.png$/i.test(name);
+const isRetryableVisionError = (error: unknown) => {
+  const status = typeof error === "object" && error !== null && "status" in error && typeof error.status === "number" ? error.status : undefined;
+  const message = error instanceof Error ? error.message.toLowerCase() : "";
+  return status === 408 || status === 429 || (typeof status === "number" && status >= 500) || /timeout|network|connection/.test(message);
+};
+
+async function retryTransientVisionCall<T>(operation: () => Promise<T>) {
+  try {
+    return await operation();
+  } catch (error) {
+    if (!isRetryableVisionError(error)) throw error;
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    return operation();
+  }
+}
 
 function candidateDifferences(candidateAddress: string | undefined, proofAddress: string) {
   if (!candidateAddress) return [];
@@ -168,7 +183,7 @@ export async function POST(request: Request) {
 
   try {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const response = await client.responses.create({
+    const response = await retryTransientVisionCall(() => client.responses.create({
       model: "gpt-5.6-luna",
       store: false,
       reasoning: { effort: "none" },
@@ -180,7 +195,7 @@ export async function POST(request: Request) {
         { type: "input_image", image_url: addressProof.dataUrl, detail: "low" },
       ] }],
       text: { format: { type: "json_schema", name: "sahisetu_document_assessment", strict: true, schema } },
-    }, { signal: AbortSignal.timeout(20_000) });
+    }, { signal: AbortSignal.timeout(20_000) }));
     const assessment = blockInvalidDocuments(JSON.parse(response.output_text) as ModelAssessment);
     if (body.candidateAddress) {
       const nonAddressMismatches = assessment.mismatches.filter((item: { field: string }) => !/address|pin|postal|city|street|locality/i.test(item.field));
