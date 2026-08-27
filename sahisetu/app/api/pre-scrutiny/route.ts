@@ -75,8 +75,7 @@ const schema = {
   required: ["overallStatus", "confidence", "summary", "extraction", "quality", "identity", "documentTypes", "documentValidation", "mismatches"],
 } as const;
 
-const documentAddress = "12 M.G. Road, Indiranagar, Bengaluru, Karnataka 560038";
-const assessmentCache = new Map<string, { assessment: unknown; source: "openai" | "synthetic_demo" }>();
+const assessmentCache = new Map<string, { assessment: unknown; source: "openai" }>();
 const normaliseAddress = (value: string) => value.toLowerCase().replaceAll(".", "").replace(/\brd\b/g, "road").replace(/indira\s+nagar/g, "indiranagar").replace(/bangalore/g, "bengaluru").replace(/[^a-z0-9]/g, "");
 const presentationText = (value: string) => value.toLowerCase().replace(/[.]/g, "").replace(/\s+/g, " ").trim();
 const isAarohiDemoLicence = (name: string) => /aarohi/i.test(name) && /driving|licen[cs]e/i.test(name);
@@ -120,26 +119,6 @@ function candidateDifferences(candidateAddress: string | undefined, proofAddress
   return [{ field: "New address", formValue: candidateAddress, documentValue: proofAddress, severity: "major" as const, explanation: "The edited address does not match the new-address proof.", recommendedAction: "correct_form" as const }];
 }
 
-const demoAssessment = (candidateAddress?: string, licenceName = "", proofName = "") => {
-  const mismatches = candidateDifferences(candidateAddress, documentAddress);
-  const licenceSlot = /aadhaar|aadhar|address|proof/i.test(licenceName) ? "address_proof" as const : "driving_licence" as const;
-  const proofSlot = /licen[cs]e|dl/i.test(proofName) ? "driving_licence" as const : "address_proof" as const;
-  return {
-  overallStatus: mismatches.some((item) => item.severity === "major") ? "needs_correction" as const : mismatches.length ? "needs_clarification" as const : "clear" as const,
-  confidence: 0.94,
-  summary: "We extracted a complete new address from the synthetic address proof. The current licence is used to identify the record to update.",
-  extraction: { address: documentAddress, applicantName: "Aarohi Sharma", complete: true },
-  quality: { status: "clear" as const, issues: [], guidance: "Both synthetic documents are clear enough for this demo." },
-  identity: { status: "match" as const, summary: "The visible applicant details appear consistent across the synthetic documents." },
-  documentTypes: { licenceSlot, proofSlot },
-  documentValidation: {
-    licence: { status: "clear" as const, missingFields: [], guidance: "The synthetic driving licence shows the details needed for this demo." },
-    proof: { status: "clear" as const, countryScope: "india" as const, missingFields: [], guidance: "The synthetic address proof contains an Indian address and six-digit PIN code." },
-  },
-  mismatches,
-};
-};
-
 function blockInvalidDocuments(assessment: ModelAssessment) {
   const validation = assessment.documentValidation;
   if (!validation) return assessment;
@@ -181,17 +160,9 @@ export async function POST(request: Request) {
 
   const bundledDemoPair = /^demolicen[cs]e\.png$/i.test(licence.name) && /^demoaddress\.png$/i.test(addressProof.name);
   const generatedAarohiDemoPair = isAarohiDemoLicence(licence.name) && isAarohiDemoProof(addressProof.name);
-  // These are known SahiSetu synthetic test pairs. Do not let a model mistake their
-  // intentionally prominent DEMO ONLY / NOT VALID labels for a document defect.
-  // The generated files can be uploaded manually during a live demo, so their
-  // descriptive Aarohi filenames are recognised in addition to the in-app pair.
-  if (bundledDemoPair || generatedAarohiDemoPair) {
-    const result = { assessment: demoAssessment(body.candidateAddress, licence.name, addressProof.name), source: "synthetic_demo" as const };
-    assessmentCache.set(cacheKey, result);
-    return NextResponse.json(result);
-  }
+  const knownSahiSetuDemoPair = bundledDemoPair || generatedAarohiDemoPair;
   if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json({ error: "AI checking is unavailable. Add an OpenAI API key to assess uploaded documents; only the built-in demo pair can run offline." }, { status: 503 });
+    return NextResponse.json({ error: "AI checking is unavailable. Add an OpenAI API key to assess uploaded documents." }, { status: 503 });
   }
 
   try {
@@ -201,9 +172,9 @@ export async function POST(request: Request) {
       store: false,
       reasoning: { effort: "none" },
       max_output_tokens: 800,
-      instructions: "You are SahiSetu's conservative document pre-scrutiny assistant. Fail closed: if a required detail is obscured, missing, cropped, redacted, blurred, affected by glare, or not confidently readable, require a re-upload; never guess. First classify each image independently as driving_licence, address_proof, or unclear in documentTypes. A handwritten note, unrelated photo, screenshot, blank page, or arbitrary card is unclear. The first slot must be a CURRENT driving licence. In documentValidation.licence, require a legible applicant name, licence number, complete address including PIN, and a complete readable image. The licence's old address is expected and is never an address mismatch. The second slot must be a NEW-ADDRESS proof. In documentValidation.proof, require a legible applicant name and complete address with a six-digit PIN. countryScope is india only when the proof visibly supports an Indian address (Indian state/UT and six-digit PIN); non_india for a foreign address; unclear if insufficient evidence. If slots are swapped or any document is unclear/unrelated, do not extract an address or make identity/approval decisions. Extract a single clean Parivahan-ready address only when the second image is a valid Indian address proof. If the user supplies an edited address, compare it to that proof. Compare only visible applicant identity details; different visible names require needs_review. Ignore synthetic-demo, demo-only, and not-valid watermarks: they are deliberate prototype labels. Use needs_reupload for every document-validation failure. Use clarification_note only for harmless text variations; substantive conflicts require correct_form. Confidence is text-reading certainty, never approval likelihood. Return required JSON only.",
+      instructions: "You are SahiSetu's conservative document pre-scrutiny assistant. Some requests explicitly identify a known SahiSetu synthetic demo pair. For those requests, DEMO ONLY, SYNTHETIC, and NOT VALID FOR IDENTIFICATION are required prototype labels: ignore those labels entirely when validating the document and assess the visible licence/proof content normally. Fail closed: if a required detail is obscured, missing, cropped, redacted, blurred, affected by glare, or not confidently readable, require a re-upload; never guess. First classify each image independently as driving_licence, address_proof, or unclear in documentTypes. A handwritten note, unrelated photo, screenshot, blank page, or arbitrary card is unclear. The first slot must be a CURRENT driving licence. In documentValidation.licence, require a legible applicant name, licence number, complete address including PIN, and a complete readable image. The licence's old address is expected and is never an address mismatch. The second slot must be a NEW-ADDRESS proof. In documentValidation.proof, require a legible applicant name and complete address with a six-digit PIN. countryScope is india only when the proof visibly supports an Indian address (Indian state/UT and six-digit PIN); non_india for a foreign address; unclear if insufficient evidence. If slots are swapped or any document is unclear/unrelated, do not extract an address or make identity/approval decisions. Extract a single clean Parivahan-ready address only when the second image is a valid Indian address proof. If the user supplies an edited address, compare it to that proof. Compare only visible applicant identity details; different visible names require needs_review. Use needs_reupload for every document-validation failure. Use clarification_note only for harmless text variations; substantive conflicts require correct_form. Confidence is text-reading certainty, never approval likelihood. Return required JSON only.",
       input: [{ role: "user", content: [
-        { type: "input_text", text: `Current driving-licence file: ${licence.name}\nNew-address-proof file: ${addressProof.name}${body.candidateAddress ? `\nEdited address to verify: ${body.candidateAddress}` : ""}` },
+        { type: "input_text", text: `${knownSahiSetuDemoPair ? "These are the known SahiSetu synthetic demo documents. Their DEMO ONLY / SYNTHETIC / NOT VALID labels are intentional and must not be treated as an error.\n" : ""}Current driving-licence file: ${licence.name}\nNew-address-proof file: ${addressProof.name}${body.candidateAddress ? `\nEdited address to verify: ${body.candidateAddress}` : ""}` },
         { type: "input_image", image_url: licence.dataUrl, detail: "low" },
         { type: "input_image", image_url: addressProof.dataUrl, detail: "low" },
       ] }],
