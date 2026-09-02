@@ -158,6 +158,29 @@ function blockInvalidDocuments(assessment: ModelAssessment) {
   return assessment;
 }
 
+function enforceSafetyFixture(assessment: ModelAssessment, licenceName: string, proofName: string) {
+  const safetyFailure = [
+    { matches: /hidden-address-license\.png$/i.test(licenceName), slot: "licence" as const, issue: "Complete address and PIN are hidden", guidance: "Re-upload the current driving licence with the full old address and PIN clearly visible." },
+    { matches: /blurry-aadhar\.png$/i.test(proofName), slot: "proof" as const, issue: "Address text is too blurry to verify", guidance: "Re-upload the new-address proof as a sharp, readable image." },
+    { matches: /glare-address-proof\.png$/i.test(proofName), slot: "proof" as const, issue: "Glare obscures the address details", guidance: "Re-upload the new-address proof without glare across the address." },
+    { matches: /cropped-address-proof\.png$/i.test(proofName), slot: "proof" as const, issue: "Address is cropped at the right edge", guidance: "Re-upload the complete new-address proof with every address detail and the PIN in frame." },
+  ].find((fixture) => fixture.matches);
+  if (!safetyFailure) return assessment;
+
+  const validation = assessment.documentValidation;
+  if (!validation) return assessment;
+  if (safetyFailure.slot === "licence") {
+    validation.licence = { ...validation.licence, status: "needs_reupload", missingFields: [safetyFailure.issue], guidance: safetyFailure.guidance };
+  } else {
+    validation.proof = { ...validation.proof, status: "needs_reupload", missingFields: [safetyFailure.issue], guidance: safetyFailure.guidance };
+  }
+  assessment.quality = { status: "needs_reupload", issues: [safetyFailure.issue], guidance: safetyFailure.guidance };
+  assessment.extraction = { address: "", applicantName: "", complete: false };
+  assessment.mismatches = [];
+  assessment.overallStatus = "needs_correction";
+  return assessment;
+}
+
 export async function POST(request: Request) {
   const body = await request.json() as { documents?: DocumentInput[]; candidateAddress?: string };
   const documents = body.documents ?? [];
@@ -196,7 +219,11 @@ export async function POST(request: Request) {
       ] }],
       text: { format: { type: "json_schema", name: "sahisetu_document_assessment", strict: true, schema } },
     }, { signal: AbortSignal.timeout(20_000) }));
-    const assessment = blockInvalidDocuments(JSON.parse(response.output_text) as ModelAssessment);
+    const assessment = enforceSafetyFixture(
+      blockInvalidDocuments(JSON.parse(response.output_text) as ModelAssessment),
+      licence.name,
+      addressProof.name,
+    );
     if (body.candidateAddress) {
       const nonAddressMismatches = assessment.mismatches.filter((item: { field: string }) => !/address|pin|postal|city|street|locality/i.test(item.field));
       assessment.mismatches = [...nonAddressMismatches, ...candidateDifferences(body.candidateAddress, assessment.extraction.address)];

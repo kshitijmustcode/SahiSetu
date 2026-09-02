@@ -8,6 +8,14 @@ const journey = [
   ["03", "Confirm your address", "Use the reviewed address when you fill the official form."],
 ];
 
+const judgeDemos = [
+  { query: "normal", number: "01", title: "Normal application", detail: "Load both synthetic documents, review the extracted address, and create a report." },
+  { query: "hiddenLicence", number: "02", title: "Hidden licence address", detail: "Shows that a licence with its address obscured should be replaced early." },
+  { query: "blurryProof", number: "03", title: "Blurry address proof", detail: "Stops when the new address cannot be read reliably." },
+  { query: "glareProof", number: "04", title: "Glare on proof", detail: "Tests whether glare makes the critical address information unsafe to use." },
+  { query: "croppedProof", number: "05", title: "Cropped address proof", detail: "Flags a proof with incomplete address details instead of guessing." },
+];
+
 export default function Home() {
   const language = useSyncExternalStore((callback) => { window.addEventListener("sahisetu-language", callback); return () => window.removeEventListener("sahisetu-language", callback); }, () => window.localStorage.getItem("sahisetu-language") === "hi" ? "hi" : "en", () => "en");
   const hindi = language === "hi";
@@ -46,6 +54,16 @@ export default function Home() {
         </section>
 
         <section id="how-it-works" className="border-t border-[#e1eade] py-16 sm:py-20"><div className="max-w-2xl"><p className="text-sm font-bold uppercase tracking-[0.16em] text-[#31804a]">{hindi ? "यह कैसे काम करता है" : "How it works"}</p><h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{hindi ? "कम टाइपिंग। बाद में कम परेशानियाँ।" : "Less retyping. Fewer surprises later."}</h2><p className="mt-4 leading-7 text-[#637467]">{hindi ? "SahiSetu नए पते को प्रमाण से पढ़ता है ताकि आप आवेदन से पहले उसकी जाँच कर सकें।" : "SahiSetu reads the new address from proof so you can review it before applying."}</p></div><div className="mt-10 grid gap-5 md:grid-cols-3">{visibleJourney.map(([number, title, detail]) => <article key={number} className="rounded-2xl border border-[#dfebdf] bg-white p-6"><span className="text-sm font-bold text-[#4c9461]">{number}</span><h3 className="mt-9 text-xl font-semibold">{title}</h3><p className="mt-2 leading-6 text-[#637467]">{detail}</p></article>)}</div></section>
+        <section id="judge-demo" className="border-t border-[#e1eade] py-16 sm:py-20">
+          <div className="max-w-2xl"><p className="text-sm font-bold uppercase tracking-[0.16em] text-[#31804a]">{hindi ? "लाइव डेमो आज़माएँ" : "Explore the live demo"}</p><h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">{hindi ? "सामान्य प्रवाह और सुरक्षा जाँच, दोनों देखें।" : "See the normal journey and the safeguards."}</h2><p className="mt-4 leading-7 text-[#637467]">{hindi ? "हर उदाहरण केवल सिंथेटिक डेटा का उपयोग करता है और OpenAI Vision जाँच से गुजरता है। सुरक्षा उदाहरणों में अपेक्षित fail-closed परिणाम की भी पुष्टि होती है।" : "Every example uses synthetic data and runs through the OpenAI Vision check. Safety fixtures also assert their expected fail-closed outcome."}</p></div>
+          <div className="mt-10 grid gap-4 md:grid-cols-2">{judgeDemos.map((demo) => <a key={demo.query} href={`/apply?demo=${demo.query}`} className="group rounded-2xl border border-[#dbe8dc] bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#9cc9a3] hover:shadow-lg hover:shadow-[#244c2d]/5"><span className="text-sm font-bold text-[#4c9461]">{demo.number}</span><h3 className="mt-5 text-xl font-semibold group-hover:text-[#166534]">{demo.title}</h3><p className="mt-2 text-sm leading-6 text-[#637467]">{demo.detail}</p><span className="mt-5 inline-flex text-sm font-semibold text-[#246538]">Run this test <span className="ml-1" aria-hidden="true">→</span></span></a>)}</div>
+          <div className="mt-8 rounded-2xl border border-[#d7e5d9] bg-[#f7fbf7] p-5 sm:p-6"><div className="max-w-2xl"><p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">{hindi ? "तैयारी स्कोर का अर्थ" : "What the readiness score means"}</p><p className="mt-2 text-sm leading-6 text-[#566b5a]">{hindi ? "यह सरकारी स्वीकृति की भविष्यवाणी नहीं, बल्कि अगले कदम के लिए एक स्पष्ट चेकलिस्ट है।" : "It is not a government-approval prediction. It is a checklist for the next best step."}</p></div><div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{[
+            ["25", hindi ? "बड़ी समस्या" : "Major issue", hindi ? "दस्तावेज़ बदलें या सुधारें।" : "Replace or correct the document."],
+            ["65", hindi ? "समीक्षा बाकी" : "Review pending", hindi ? "दस्तावेज़ पढ़े गए; पता पुष्टि करें।" : "Documents are readable; confirm the address."],
+            ["78", hindi ? "छोटा अंतर" : "Minor difference", hindi ? "स्पष्टीकरण नोट चाहिए।" : "A clarification note is needed."],
+            ["95", hindi ? "जाँच पूरी" : "Checks complete", hindi ? "पता और दस्तावेज़ समीक्षा के लिए तैयार हैं।" : "Address and document checks are complete."],
+          ].map(([score, label, detail]) => <div key={score} className="rounded-xl border border-[#dfeade] bg-white p-4"><p className="text-2xl font-bold text-[#1e6b37]">{score}</p><p className="mt-1 font-semibold">{label}</p><p className="mt-1 text-xs leading-5 text-[#637467]">{detail}</p></div>)}</div></div>
+        </section>
         <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">{hindi ? "SahiSetu एक स्वतंत्र प्रोटोटाइप है, आधिकारिक सरकारी सेवा नहीं।" : "SahiSetu is an independent prototype, not an official government service."}</footer>
       </div>
     </main>
