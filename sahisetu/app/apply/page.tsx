@@ -17,6 +17,7 @@ type Assessment = {
   mismatches: Mismatch[];
 };
 type Language = "en" | "hi";
+type DemoCase = "normal" | "hiddenLicence" | "blurryProof" | "glareProof" | "croppedProof";
 const subscribeLanguage = (callback: () => void) => { window.addEventListener("sahisetu-language", callback); return () => window.removeEventListener("sahisetu-language", callback); };
 const getLanguageSnapshot = (): Language => window.localStorage.getItem("sahisetu-language") === "hi" ? "hi" : "en";
 const getServerLanguageSnapshot = (): Language => "en";
@@ -76,7 +77,7 @@ export default function ApplyPage() {
     );
   }
 
-  function loadSafetyCase(kind: "hiddenLicence" | "blurryProof" | "glareProof" | "croppedProof") {
+  function loadSafetyCase(kind: Exclude<DemoCase, "normal">) {
     const validLicence = { path: "/demo-documents/synthetic-driving-licence.png?v=aarohi-v4", name: "DemoLicense.png" };
     const validProof = { path: "/demo-documents/synthetic-address-proof.png?v=aarohi-v4", name: "DemoAddress.png" };
     const cases = {
@@ -88,6 +89,24 @@ export default function ApplyPage() {
     const [licenceAsset, proofAsset] = cases[kind];
     return loadDocumentPair(licenceAsset, proofAsset);
   }
+
+  useEffect(() => {
+    const queryDemo = new URLSearchParams(window.location.search).get("demo") as DemoCase | null;
+    const demo = queryDemo ?? (window.sessionStorage.getItem("sahisetu-demo") as DemoCase | null);
+    if (!demo || !["normal", "hiddenLicence", "blurryProof", "glareProof", "croppedProof"].includes(demo)) return;
+    if (queryDemo) {
+      window.sessionStorage.setItem("sahisetu-demo", demo);
+      window.history.replaceState({}, "", "/apply");
+    }
+    const timer = window.setTimeout(() => {
+      window.sessionStorage.removeItem("sahisetu-demo");
+      if (demo === "normal") void loadDemoDocuments();
+      else void loadSafetyCase(demo);
+    }, 0);
+    return () => window.clearTimeout(timer);
+    // Demo links are intentionally consumed once, when this page mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function startCheck(event: FormEvent) {
     event.preventDefault();
