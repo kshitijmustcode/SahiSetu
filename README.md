@@ -68,3 +68,21 @@ The in-app demo uses fictional documents for **Aarohi Sharma**. Additional blurr
 ## Hackathon pitch
 
 > SahiSetu turns document uploads into a reviewable, pre-submission address check—so citizens can catch avoidable scrutiny issues before they pay, submit, or visit an RTO.
+
+## Phase 2 scope
+
+Phase 2 expands the working address-change journey into a **proactive driving-licence readiness and recovery assistant**. SahiSetu remains an independent, synthetic-data-only prototype: it prepares and explains; it does not replace Parivahan, an RTO, or an official decision.
+
+1. **Address Change Readiness** — retain the working address-change journey as the proof of the document-readiness engine: validate uploads, extract the address, highlight mismatches, and produce a reviewable report before the citizen proceeds to the official service.
+2. **DL Guardian and Renewal Readiness** — read a fictional demo licence expiry date, surface urgency, validate a renewal document pack, and explain the next action before a citizen begins the official renewal process.
+3. **Communication Readiness and Simulated Reminders** — prompt a citizen to confirm that their official-service mobile number is current, explain why current contact details matter, and offer opt-in simulated WhatsApp, SMS, email, or calendar reminders at 60, 30, and 7 days. Real delivery requires consent, verified contact details, secure scheduling, and approved providers.
+4. **Application Rescue Centre** — guide synthetic cases such as `Under Scrutiny`, `Document Upload Pending`, and `Payment Deducted but Pending` to a clear next action, with a checklist of evidence to retain and an RTO/help-desk escalation summary. It never retries payments, issues refunds, or updates official applications.
+5. **Explainable Audit Trail** — record the extracted value, citizen-reviewed value, exact mismatch, readiness classification, reason, and recommended next action. Results are Green (ready for human review), Amber (clarification needed), or Red (re-upload/correction required)—never an approval prediction.
+6. **Prototype RTO Triage View** — show the same synthetic cases in a reviewer-oriented Green/Amber/Red queue, demonstrating shared explanations for citizens and reviewers without offering approve/reject controls.
+
+### Supporting prototype capabilities
+
+- **Illustrative policy packs** configure requirements by service and state. They are visibly labelled prototype guidance until verified against official policy.
+- **Production guardrails** would require explicit consent, encryption, short-lived document storage, deletion and retention controls, official state-service integration, and human escalation for uncertain cases.
+
+The product direction is proactive: SahiSetu helps citizens identify expiry, document, communication, and application-status issues before they become costly delays or repeat RTO visits.
