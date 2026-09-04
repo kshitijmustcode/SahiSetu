@@ -18,6 +18,8 @@ Small differences between an application and its supporting documents can lead t
 6. Lets the applicant review/edit the extracted text and compares the final wording against the proof.
 7. Produces a timestamped pre-submission report; minor wording differences may receive a mock explanation note, while substantive differences must be corrected.
 
+The Rohan Mehta demo makes the distinction explicit: his licence contains an expected **old** Koramangala address because he has moved; his new-address proof reads **Lakeview Road** in Indiranagar. The extracted field begins as `Lakeview Road`. A reviewer must deliberately edit it to `Lake View Road` to demonstrate the small application-entry difference and its clarification path.
+
 The prototype supports the **Indian address-change flow** only. A foreign address, an unrecognised document, or conflicting visible identity details blocks the flow rather than making a decision.
 
 ## Safety and boundaries
@@ -86,3 +88,14 @@ Phase 2 expands the working address-change journey into a **proactive driving-li
 - **Production guardrails** would require explicit consent, encryption, short-lived document storage, deletion and retention controls, official state-service integration, and human escalation for uncertain cases.
 
 The product direction is proactive: SahiSetu helps citizens identify expiry, document, communication, and application-status issues before they become costly delays or repeat RTO visits.
+
+## Current demo journeys
+
+- **Aarohi Sharma:** renewal readiness based on a visible, fictional licence expiry date, with reversible contact-readiness confirmation and simulated reminders.
+- **Rohan Mehta:** moved-address document check, explainable extraction, citizen review, and a minor wording-difference clarification path.
+- **Neha Verma:** payment-pending Application Rescue checklist that advises retaining evidence rather than paying again blindly.
+- **Prototype RTO Triage View:** a read-only staff-facing screen that mirrors the three synthetic cases and their evidence summaries. It has no approve/reject, payment, official-status, or live-RTO controls.
+
+Each journey uses the same **Explainable Audit Timeline**: source record → extracted fields → citizen confirmation → readiness result → safe next action. It shows a transparent preparation/recovery path, never an approval decision.
+
+See [`sahisetu/PROJECT_CONTEXT.md`](sahisetu/PROJECT_CONTEXT.md) for a concise continuation handoff.
