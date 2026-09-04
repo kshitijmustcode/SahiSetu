@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "SahiSetu | Stay ready before transport paperwork becomes urgent",
   description:
-    "A synthetic prototype for driving-licence readiness, document checks, and explainable application recovery guidance.",
+    "A demo prototype for driving-licence readiness, document checks, and clear application recovery guidance.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

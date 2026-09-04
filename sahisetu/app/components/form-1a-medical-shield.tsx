@@ -205,7 +205,7 @@ export function Form1AMedicalShield({
 
       <div className="medical-note mt-6 rounded-2xl border border-dashed border-[#9fc8dc] bg-white p-5 text-sm leading-6 text-[#29485b]">
         <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#27709a]">
-          {t("Doctor confirmation note · demo only", "डॉक्टर पुष्टि नोट · केवल डेमो")}
+          {t("Doctor confirmation note", "डॉक्टर पुष्टि नोट")}
         </p>
         <h3 className="mt-2 text-lg font-semibold">
           {t("Please confirm these visible Form 1A details", "कृपया इन दिखाई देने वाले Form 1A विवरणों की पुष्टि करें")}
@@ -217,8 +217,8 @@ export function Form1AMedicalShield({
         </ul>
         <p className="mt-3 text-xs text-[#5b7280]">
           {t(
-            "Prepared by SahiSetu for a demo journey. It is not a prescription, medical opinion, government form, or evidence of acceptance.",
-            "SahiSetu द्वारा डेमो यात्रा के लिए तैयार। यह प्रिस्क्रिप्शन, मेडिकल राय, सरकारी फॉर्म या स्वीकृति का प्रमाण नहीं है।",
+            "Prepared by SahiSetu for this journey. It is not a prescription, medical opinion, government form, or evidence of acceptance.",
+            "SahiSetu द्वारा इस यात्रा के लिए तैयार। यह प्रिस्क्रिप्शन, मेडिकल राय, सरकारी फॉर्म या स्वीकृति का प्रमाण नहीं है।",
           )}
         </p>
       </div>

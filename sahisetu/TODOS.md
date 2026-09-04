@@ -17,8 +17,10 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 - [x] Phase 2 homepage story and safe-prototype boundaries.
 - [x] Simplified entry model: `/demo` contains only the three citizen cases; `/dashboard` is Aarohi's DL Guardian only; Guided Help Centre and the RTO demo are separate entry points.
 - [x] Removed repeated explanatory panels where the audit trail, evidence checklist, or safe-next-action panel already carries the same information.
+- [x] Shared site chrome for navigation and footers, while preserving the document check’s focused progress toolbar.
 - [x] Persistent English / Hindi switch across the homepage, demo selector, dashboard, document check, and Application Rescue.
 - [x] Reduced repetitive “synthetic” wording in the user interface. Strong demo/not-official boundaries remain at document upload, triage access, printable handoff notes, and page footers.
+- [x] Consolidated Rescue and Handoff copy so each screen has one clear purpose, one relevant safety boundary, and one safe next action.
 - [x] Prettier, ESLint, and production-build checks.
 
 ## P0 — Complete the core journeys
@@ -52,7 +54,7 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 - [ ] Test safety fixtures: hidden licence address, blurred proof, glare, and cropped proof.
 - [ ] Test desktop and mobile layouts at **100% browser zoom** for the homepage, profile selector, dashboard, document check, Application Rescue, Form 1A Shield, and printable notes.
 - [ ] Test Form 1A's complete, missing-registration, missing-seal, and missing-declaration variants; confirm the complete variant updates handoff and triage, and the doctor-note print stylesheet isolates only the note.
-- [ ] Ensure every synthetic document and screen has a visible `demo only` / `not an official service` boundary.
+- [ ] Ensure every risky screen—document upload, triage access, status record, printout, and footer—retains a visible demo/not-official boundary without repeating it in ordinary product copy.
 - [ ] Deploy the final build to Vercel and run a clean-incognito demo rehearsal.
 
 ## Remaining focus — do this before new features
