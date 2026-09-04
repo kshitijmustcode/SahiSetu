@@ -310,8 +310,8 @@ export default function ApplyPage() {
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-[#586b5d]">
                 {hindi
-                  ? "अपना मौजूदा ड्राइविंग लाइसेंस और नए पते का सिंथेटिक प्रमाण अपलोड करें। SahiSetu पता पढ़ता है, दस्तावेज़ की स्पष्टता जाँचता है और मॉक सबमिशन से पहले आपसे पुष्टि करवाता है।"
-                  : "Upload your current driving licence and a demo proof of your new address. SahiSetu extracts a clean address, checks document clarity, and asks you to confirm it before a mock submission."}
+                  ? "अपना मौजूदा ड्राइविंग लाइसेंस और नए पते का डेमो प्रमाण अपलोड करें। SahiSetu पता पढ़ता है, दस्तावेज़ की स्पष्टता जाँचता है और स्थानीय समीक्षा रिकॉर्ड सहेजने से पहले आपसे पुष्टि करवाता है।"
+                  : "Upload your current driving licence and a demo proof of your new address. SahiSetu extracts a clean address, checks document clarity, and asks you to confirm it before saving a local review record."}
               </p>
             </section>
             <section className="rounded-3xl border border-[#dbe8dc] bg-white p-6 sm:p-8">
@@ -633,8 +633,9 @@ function Results({
       : hindi
         ? "नए पते का प्रमाण"
         : "new-address proof";
-  const majorMismatch =
-    assessment.mismatches.some((item) => item.severity === "major") || assessment.identity.status === "needs_review";
+  const addressMajorMismatch = assessment.mismatches.some((item) => item.severity === "major");
+  const identityNeedsReview = assessment.identity.status === "needs_review";
+  const majorMismatch = addressMajorMismatch || identityNeedsReview;
   const minorMismatches = assessment.mismatches.filter(
     (item) => item.severity === "minor" && item.recommendedAction === "clarification_note",
   );
@@ -812,21 +813,25 @@ function Results({
               <p
                 className={`mt-5 rounded-xl px-4 py-3 text-sm font-semibold ${majorMismatch ? "bg-[#fff0e7] text-[#8b4f1c]" : "bg-[#e9f7ea] text-[#236b39]"}`}
               >
-                {majorMismatch
+                {addressMajorMismatch
                   ? hindi
                     ? "! पते का टेक्स्ट प्रमाण से अलग है। नीचे तुलना देखें।"
                     : "! The address text differs from the proof. See the comparison below."
-                  : minorMismatches.length > 0
+                  : identityNeedsReview
                     ? hindi
-                      ? "! शब्दावली में छोटा अंतर मिला। नीचे स्पष्टीकरण नोट तैयार करें।"
-                      : "! A minor wording difference was found. Prepare the clarification note below."
-                    : addressWasEdited
+                      ? "! नाम की जानकारी को मैन्युअल समीक्षा चाहिए। नीचे नाम जाँच देखें।"
+                      : "! The name details need manual review. See the name check below."
+                    : minorMismatches.length > 0
                       ? hindi
-                        ? "✓ आपका बदला हुआ पता प्रमाण से मेल खाता है।"
-                        : "✓ Your edited address matches the proof."
-                      : hindi
-                        ? "✓ आपने प्रमाण से पढ़े गए पते की पुष्टि की है।"
-                        : "✓ You confirmed the address read from your proof."}
+                        ? "! शब्दावली में छोटा अंतर मिला। नीचे स्पष्टीकरण नोट तैयार करें।"
+                        : "! A minor wording difference was found. Prepare the clarification note below."
+                      : addressWasEdited
+                        ? hindi
+                          ? "✓ आपका बदला हुआ पता प्रमाण से मेल खाता है।"
+                          : "✓ Your edited address matches the proof."
+                        : hindi
+                          ? "✓ आपने प्रमाण से पढ़े गए पते की पुष्टि की है।"
+                          : "✓ You confirmed the address read from your proof."}
               </p>
             )}
             {confirmationError && <p className="mt-3 text-sm text-[#9d301e]">{confirmationError}</p>}
@@ -837,6 +842,11 @@ function Results({
             mismatches={assessment.mismatches}
             confirmed={accepted}
             hindi={hindi}
+            onUseProofWording={() => {
+              setAddressDraft(assessment.extraction.address);
+              setAccepted(false);
+              setSigned(false);
+            }}
           />
           <p className="rounded-xl bg-[#f3f9f2] px-4 py-3 text-sm leading-6 text-[#45684d]">
             <strong>{hindi ? "कृपया पते की स्वयं जाँच करें।" : "Please review the address yourself."}</strong>{" "}
@@ -856,7 +866,7 @@ function Results({
             proof={proof}
             language={language}
           />
-          {majorMismatch && (
+          {addressMajorMismatch && (
             <section className="rounded-2xl bg-[#fff0e6] p-5 text-sm leading-6 text-[#864d18]">
               <strong>{hindi ? "पते के टेक्स्ट में सुधार चाहिए:" : "Address text needs fixing:"}</strong>{" "}
               {hindi
@@ -864,19 +874,14 @@ function Results({
                 : "Use the wording shown on your proof, then compare again."}
             </section>
           )}
-          {assessment.mismatches.map((item) => (
-            <MismatchCard
-              key={item.field}
-              item={item}
-              proof={proof}
-              language={language}
-              onUseProofWording={() => {
-                setAddressDraft(assessment.extraction.address);
-                setAccepted(false);
-                setSigned(false);
-              }}
-            />
-          ))}
+          {identityNeedsReview && (
+            <section className="rounded-2xl bg-[#fff8e8] p-5 text-sm leading-6 text-[#76551f]">
+              <strong>{hindi ? "नाम जाँच के लिए समीक्षा चाहिए:" : "Name check needs review:"}</strong>{" "}
+              {hindi
+                ? "पते की तुलना सही है, लेकिन उपलब्ध नाम टेक्स्ट पूरी तरह स्पष्ट नहीं है। आगे बढ़ने से पहले प्रमाण में नाम की स्पष्टता मैन्युअल रूप से जाँचें।"
+                : "The address comparison is correct, but the available name text is not fully clear. Manually check the name on the proof before proceeding."}
+            </section>
+          )}
           {minorMismatches.length > 0 &&
             !majorMismatch &&
             (clarificationOpen ? (
@@ -896,8 +901,8 @@ function Results({
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-[#516753]">
                   {hindi
-                    ? "यह केवल छोटे शब्दों या स्वरूप के अंतर को समझाने के लिए एक मॉक नोट बनाता है। यह किसी बड़े अंतर को नहीं बदल सकता।"
-                    : "This creates a mock note for harmless wording or formatting differences only. It cannot override a major mismatch."}
+                    ? "यह केवल छोटे शब्दों या स्वरूप के अंतर को समझाने के लिए एक नोट बनाता है। यह किसी बड़े अंतर को नहीं बदल सकता।"
+                    : "This note is only for harmless wording or formatting differences. It cannot override a major mismatch."}
                 </p>
                 <button
                   onClick={() => setClarificationOpen(true)}
@@ -936,17 +941,21 @@ function Results({
                   ? hindi
                     ? "सुझाया गया पता जाँचें या बदलें, फिर पैकेट बनाने से पहले प्रमाण से मिलाएँ।"
                     : "Review or edit the suggested address, then check it against the proof before preparing the packet."
-                  : majorMismatch
+                  : addressMajorMismatch
                     ? hindi
                       ? "बड़े अंतर को सुधारें और पैकेट बनाने से पहले फिर जाँचें।"
                       : "Correct the major difference and check again before preparing the packet."
-                    : minorMismatches.length && !signed
+                    : identityNeedsReview
                       ? hindi
-                        ? "पैकेट बनाने से पहले छोटा स्पष्टीकरण नोट साइन करें।"
-                        : "Sign the short explanation note before preparing the packet."
-                      : hindi
-                        ? "पैकेट बनाने से पहले बाकी दस्तावेज़ जाँच पूरी करें।"
-                        : "Complete the remaining document checks before preparing the packet."}
+                        ? "पैकेट बनाने से पहले प्रमाण पर नाम की मैन्युअल समीक्षा करें।"
+                        : "Manually review the name on the proof before preparing the packet."
+                      : minorMismatches.length && !signed
+                        ? hindi
+                          ? "पैकेट बनाने से पहले छोटा स्पष्टीकरण नोट साइन करें।"
+                          : "Sign the short explanation note before preparing the packet."
+                        : hindi
+                          ? "पैकेट बनाने से पहले बाकी दस्तावेज़ जाँच पूरी करें।"
+                          : "Complete the remaining document checks before preparing the packet."}
               </p>
             )}
           </div>
@@ -1050,12 +1059,14 @@ function AuditTrail({
   mismatches,
   confirmed,
   hindi,
+  onUseProofWording,
 }: {
   extractedAddress: string;
   finalAddress: string;
   mismatches: Mismatch[];
   confirmed: boolean;
   hindi: boolean;
+  onUseProofWording: () => void;
 }) {
   const addressMismatches = mismatches.filter((item) =>
     /address|street|locality|city|state|pin|postal/i.test(item.field),
@@ -1195,6 +1206,13 @@ function AuditTrail({
                     ? " यह उसी स्थान की सुरक्षित शब्दावली/फॉर्मेटिंग भिन्नता लगती है, इसलिए स्पष्टीकरण नोट पर्याप्त हो सकता है।"
                     : " It appears to be a safe wording or formatting variation for the same place, so a clarification note may be enough."}
               </p>
+              <button
+                type="button"
+                onClick={onUseProofWording}
+                className="mt-4 rounded-lg border border-[#b9d5bd] bg-[#f4faf3] px-4 py-2 text-sm font-semibold text-[#246538] hover:bg-[#e8f5ea]"
+              >
+                {hindi ? "प्रमाण के शब्द अपनाएँ" : "Use proof wording"}
+              </button>
             </article>
           ))}
         </div>
@@ -1207,100 +1225,6 @@ function AuditTrail({
         </div>
       )}
     </section>
-  );
-}
-
-function MismatchCard({
-  item,
-  proof,
-  language,
-  onUseProofWording,
-}: {
-  item: Mismatch;
-  proof: UploadedFile;
-  language: Language;
-  onUseProofWording: () => void;
-}) {
-  const hindi = language === "hi";
-  const mustCorrect = item.recommendedAction === "correct_form";
-  return (
-    <article className="rounded-2xl border border-[#e4e6dd] bg-white p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="font-semibold">{hindi ? "पते का टेक्स्ट" : item.field}</p>
-          <p className="mt-2 text-sm leading-6 text-[#5e7061]">
-            {hindi ? "आपके टेक्स्ट और नए पते के प्रमाण में अंतर है।" : item.explanation}
-          </p>
-        </div>
-        <span className="rounded-full bg-[#fff0cf] px-3 py-1 text-xs font-bold text-[#87550d]">
-          {hindi ? (item.severity === "major" ? "बड़ा" : "छोटा") : item.severity}
-        </span>
-      </div>
-      <div className="mt-5 grid gap-4 sm:grid-cols-[1fr_180px]">
-        <div>
-          <div className="grid gap-3 text-sm sm:grid-cols-2">
-            <AddressText
-              label={hindi ? "आपने लिखा" : "You entered"}
-              value={item.formValue}
-              otherValue={item.documentValue}
-            />
-            <AddressText
-              label={hindi ? "प्रमाण में" : "Proof shows"}
-              value={item.documentValue}
-              otherValue={item.formValue}
-            />
-          </div>
-          <p className="mt-3 rounded-xl bg-[#edf7ee] p-3 text-sm text-[#245e35]">
-            <strong>{hindi ? (mustCorrect ? "सुधार:" : "सुझाव:") : mustCorrect ? "Fix:" : "Suggestion:"}</strong>{" "}
-            {hindi
-              ? "प्रमाण में लिखे शब्दों का उपयोग करें, फिर तुलना करें।"
-              : "Use the wording exactly as shown on the proof, then compare again."}
-          </p>
-          <button
-            onClick={onUseProofWording}
-            className="mt-3 rounded-lg border border-[#b9d5bd] bg-white px-4 py-2 text-sm font-semibold text-[#246538]"
-          >
-            {hindi ? "प्रमाण के शब्द अपनाएँ" : "Use proof wording"}
-          </button>
-        </div>
-        {proof?.dataUrl && (
-          <div className="overflow-hidden rounded-xl border border-[#d9e4da]">
-            <p className="p-2 text-xs font-bold uppercase text-[#637766]">
-              {hindi ? "प्रमाण पूर्वावलोकन" : "Proof preview"}
-            </p>
-            <div className="h-28 overflow-hidden bg-white">
-              <Image
-                src={proof.dataUrl}
-                alt="Address proof preview"
-                width={360}
-                height={224}
-                unoptimized
-                className="h-full w-full object-cover"
-                style={{ objectPosition: "50% 56%" }}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    </article>
-  );
-}
-
-function AddressText({ label, value, otherValue }: { label: string; value: string; otherValue: string }) {
-  const otherTokens = new Set(otherValue.toLowerCase().match(/[a-z0-9]+/g) ?? []);
-  return (
-    <p className="rounded-xl bg-[#f7f8f4] p-3 leading-6">
-      <span className="mb-1 block text-xs font-bold uppercase text-[#718073]">{label}</span>
-      {value.split(/(\s+|[,.-])/).map((part, index) => {
-        const token = part.toLowerCase().replace(/[^a-z0-9]/g, "");
-        const changed = Boolean(token && !otherTokens.has(token));
-        return (
-          <span key={`${part}-${index}`} className={changed ? "rounded bg-[#ffe0db] px-0.5 text-[#8f2f1d]" : ""}>
-            {part}
-          </span>
-        );
-      })}
-    </p>
   );
 }
 
