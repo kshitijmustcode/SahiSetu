@@ -51,7 +51,7 @@ The target story is a move from a narrow P2/P3 address checker to P0 readiness a
 - Address Vision route: `app/api/pre-scrutiny/route.ts`. It must fail closed for unclear, wrong, duplicate, swapped, or unsafe documents.
 - Address result and audit trail: `app/apply/page.tsx`.
 - Shared explainable timeline: `app/components/explainable-audit-timeline.tsx`. It is used by the dashboard, address-result audit, and Application Rescue. Its fixed order is source record → extracted fields → citizen confirmation → readiness result → safe next action.
-- Shared synthetic journey state: `app/lib/demo-journey-state.ts`. It stores only browser-local demo flags—Aarohi contact readiness and readiness packet, Rohan readiness packet, and Neha support summary—so `/triage` reflects completed citizen steps. It must never be described as a real citizen/RTO record.
+- Shared synthetic journey state: `app/lib/demo-journey-state.ts`. It stores only browser-local demo flags—Aarohi contact readiness and readiness packet, Rohan readiness packet, and Neha support summary—plus the synthetic address-review snapshot (proof wording, final citizen text, minor-difference flag, mock clarification signature). This lets `/triage` and `/handoff` reflect completed citizen steps. It must never be described as a real citizen/RTO record.
 - `resetDemoJourneyState()` clears only that synthetic progress. It is exposed as **Reset demo progress** on `/demo` and `/triage` for clean rehearsals.
 - Prototype staff handoff: `/triage`, implemented in `app/triage/page.tsx`. A visible synthetic judge-credential gate precedes it (`rto.demo@sahisetu.example` / `SahiSetuRTO2026`); this is a session-only demo affordance, not actual authentication or access control. Once opened it shows Aarohi, Rohan, and Neha with the same evidence/timeline citizens see. It is explicitly view/triage only and must never receive approve/reject, payment, official-status, or live-RTO controls.
 - Rohan’s two correct fixtures:
@@ -61,9 +61,33 @@ The target story is a move from a narrow P2/P3 address checker to P0 readiness a
 
 ## Next priorities
 
-1. Add an explicit, non-fake `Continue through official service` handoff card to each completed journey.
-2. Standardise Green / Amber / Red meaning across pages.
-3. Add timestamped synthetic reports for Aarohi and Neha; the address journey already has an audit/report.
-4. Thoroughly rehearse desktop/mobile, safety fixtures, and the two-minute video.
+There are about **1.5 days** remaining. Do not add broad transport services. The goal is a polished, reviewable proof of readiness and recovery.
 
-Keep a RAG chatbot as a stretch only after these core proof points. If built, it must use a small, cited official-source knowledge pack, declare uncertainty, avoid legal/official claims, and never action real services.
+1. **Handoff pack completed.** `/handoff?case=aarohi|rohan|neha` is a dedicated, printable synthetic pack. It gates unfinished browser-local demo journeys and includes timestamp, evidence, finding, remaining boundary, and safe official next action. Address packs include proof wording, final citizen text, and mock clarification-signature state. It never says SahiSetu submitted or approved anything.
+2. Recommended next AI slice: an **AI evidence explainer** that turns only structured, visible evidence and citizen confirmation into a short “what changed / why it matters” briefing. It must cite the supplied evidence labels, state uncertainty, and refuse to invent policy, eligibility, or official status. This is more useful and defensible than a broad chatbot.
+3. Standardise Green / Amber / Blue semantics and add the same **What changed / why it matters** panel across results.
+4. Complete quality proof: Vision safety cases, desktop/mobile, clean-incognito rehearsal, production deployment, and the two-minute video.
+5. Optional only after the above: a one-time, consented **synthetic email reminder** for Aarohi sent to a judge's own address. It needs a server-only provider key, validation, rate limiting, zero recipient retention, and unambiguous demo/not-official content.
+6. Stretch only after the above: a scenario-aware **bounded RAG assistant**. It must use a small curated, cited official-source knowledge pack; declare uncertainty; never make a decision, claim status, submit an application, or recommend repeat payment.
+
+## Security and privacy boundary
+
+- The visible `/triage` password is a session-only UX gate, **not authentication**. Do not describe it as secure access control.
+- Before deployment, add tested baseline security headers: Content-Security-Policy, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, restrictive `Permissions-Policy`, and `frame-ancestors` protection.
+- Keep provider/API keys server-only and out of source control, screenshots, browser code, and synthetic documents.
+- Browser-local demo state is only a rehearsal aid. Keep **Reset demo progress** available and do not treat it as a citizen/RTO record.
+- If real data is ever introduced after the hackathon, require actual server-side authentication, role-based access control, audit logs, encryption, retention/deletion controls, and human escalation.
+
+## Current commit baseline
+
+The completed Phase 2 work was separated into seven commits:
+
+1. `6320dd2` — Prettier formatting checks
+2. `1a67b85` — Phase 2 landing experience
+3. `ed0fae3` — citizen demo profiles and renewal readiness
+4. `04f46aa` — address-change document readiness
+5. `22ba90b` — Application Rescue
+6. `19716e5` — prototype RTO triage demo
+7. `19724aa` — Phase 2 documentation and roadmap
+
+`TODOS.md` currently has an uncommitted roadmap-only update covering the handoff pack, email, and security work.

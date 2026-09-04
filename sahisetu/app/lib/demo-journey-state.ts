@@ -2,10 +2,19 @@
 
 import { useSyncExternalStore } from "react";
 
+export type SyntheticAddressReview = {
+  proofAddress: string;
+  finalAddress: string;
+  hasMinorDifference: boolean;
+  clarificationSigned: boolean;
+};
+
 export type DemoJourneyState = {
   aarohiContactReady: boolean;
   aarohiPacketReady: boolean;
+  aarohiAddressReview: SyntheticAddressReview | null;
   rohanPacketReady: boolean;
+  rohanAddressReview: SyntheticAddressReview | null;
   nehaSummaryReady: boolean;
 };
 
@@ -14,7 +23,9 @@ const eventName = "sahisetu-demo-journey-state-change";
 const defaultState: DemoJourneyState = {
   aarohiContactReady: false,
   aarohiPacketReady: false,
+  aarohiAddressReview: null,
   rohanPacketReady: false,
+  rohanAddressReview: null,
   nehaSummaryReady: false,
 };
 let cachedValue: string | null = null;

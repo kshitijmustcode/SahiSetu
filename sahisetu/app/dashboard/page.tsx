@@ -434,6 +434,32 @@ export default function DashboardPage() {
 
             <ExplainableAuditTimeline language={hindi ? "hi" : "en"} steps={auditSteps} />
 
+            {profile === "aarohi" && demoJourney.aarohiPacketReady && (
+              <section className="rounded-3xl border border-[#b9dfc0] bg-[#f1fbf3] p-6 sm:p-8">
+                <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
+                  {t("Synthetic handoff pack", "सिंथेटिक हैंडऑफ पैक")}
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold">
+                  {t(
+                    "Your readiness packet is ready to take forward.",
+                    "आपका तैयारी पैकेट आगे ले जाने के लिए तैयार है।",
+                  )}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-[#4b6551]">
+                  {t(
+                    "Save a reviewable summary of the expiry evidence, confirmation, remaining boundary, and safe official next action. Nothing is submitted from SahiSetu.",
+                    "समाप्ति प्रमाण, पुष्टि, बची सीमा और सुरक्षित आधिकारिक अगली कार्रवाई का समीक्षा योग्य सार सहेजें। SahiSetu से कुछ भी सबमिट नहीं होता।",
+                  )}
+                </p>
+                <Link
+                  href="/handoff?case=aarohi"
+                  className="mt-5 inline-flex rounded-xl bg-[#166534] px-5 py-3 font-semibold text-white hover:bg-[#10572b]"
+                >
+                  {t("Open handoff pack →", "हैंडऑफ पैक खोलें →")}
+                </Link>
+              </section>
+            )}
+
             <section className="rounded-3xl border border-[#dce7dd] bg-white p-6 sm:p-8">
               <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
                 {t("What happens next", "आगे क्या होगा")}

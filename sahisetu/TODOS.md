@@ -24,12 +24,16 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 - [x] **Derive Aarohi's renewal status from the visible expiry field on her synthetic licence.** The dashboard calculates `safe`, `renew soon`, `urgent`, or `expired` against the current India date.
 - [x] **Make the renewal checklist responsive to that result.** The detected expiry date and renewal action update the synthetic checklist and readiness count.
 - [x] **Reuse an explainable audit timeline across Aarohi, Rohan, and Neha.** It shows the source record, extracted fields, citizen confirmation, readiness result, and safe next action for each synthetic case.
-- [ ] Give every completed journey an explicit, non-fake `Continue through official service` handoff card.
+- [x] Give every completed journey an explicit, non-fake `Continue through official service` handoff card.
+- [x] **Create a printable synthetic handoff pack for every completed journey.** `/handoff` gives Aarohi, Rohan, and Neha a timestamped, PDF-ready summary of evidence reviewed, citizen confirmation, unresolved risks, and the relevant official next action. It never implies that SahiSetu submitted or approved anything.
 
 ## P1 — Make explanations reviewable
 
-- [ ] Create timestamped synthetic reports for Aarohi and Neha, matching the existing address-change report quality.
+- [x] Create timestamped synthetic reports for Aarohi and Neha, matching the existing address-change report quality. The shared handoff pack now covers Aarohi, Rohan, and Neha; it also retains the reviewed proof wording, final citizen edit, and mock clarification signature for the address journeys.
 - [ ] Standardise Green / Amber / Red wording, meaning, and visual treatment across every page.
+- [ ] Add a concise **What changed / why it matters** panel to each result. It should distinguish extracted facts, citizen edits, unresolved risks, and safe next action.
+- [ ] Add an assisted-service preparation card for unresolved cases: evidence to carry, what to ask, and the relevant official support route. It must not claim an RTO appointment or decision.
+- [ ] **AI evidence explainer (recommended next AI feature).** Use only the structured extraction, visible evidence summary, and citizen-confirmed final text to produce a short, cited “what changed / why it matters” briefing. It must identify its evidence, say when information is insufficient, and never invent policy, official status, eligibility, or a decision.
 - [x] **Prototype RTO triage view.** One read-only screen reuses the citizen-facing evidence trail for Aarohi, Rohan, and Neha; it deliberately has no approve, reject, payment, or official-status controls.
 - [x] **Reflect synthetic journey completion in triage.** Aarohi contact confirmation and readiness packet, Rohan’s readiness packet, and Neha’s support summary update the shared browser-only triage state and its safe next action.
 - [x] **Reset demo progress.** The demo selector and triage view can return all browser-local synthetic journey states to their defaults for a clean rehearsal.
@@ -43,6 +47,15 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 - [ ] Ensure every synthetic document and screen has a visible `demo only` / `not an official service` boundary.
 - [ ] Deploy the final build to Vercel and run a clean-incognito demo rehearsal.
 
+## Consent, privacy, and security
+
+- [ ] **Optional consented demo email reminder for Aarohi.** Let a judge enter their own address and actively consent to a one-time synthetic reminder. The email must state that it is a SahiSetu demo, not a Parivahan/RTO communication, and the address must not be stored.
+- [ ] Keep any mail-provider key server-only in deployment environment variables; never expose it in browser code, the repository, screenshots, or demo documents.
+- [ ] Validate and rate-limit the reminder endpoint to reduce abuse. Return generic errors and never reveal whether an address has previously received a reminder.
+- [ ] Add baseline security headers before deployment: Content-Security-Policy, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, and restrictive `Permissions-Policy` / `frame-ancestors` settings, then verify the Vision flow and deployed pages still work.
+- [ ] Keep `Reset demo progress` prominent and document that browser-local synthetic state is not a citizen or RTO record. Add a one-click clear-data action if any additional local storage is introduced.
+- [ ] If real data is ever introduced after the hackathon: replace the prototype RTO gate with server-side authentication, role-based access control, audit logs, short retention, encryption, and explicit deletion controls.
+
 ## Two-minute submission video
 
 - [ ] Record the opening problem statement and source-checked statistics from `../VIDEO_README.md`.
@@ -53,10 +66,10 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 
 ## Explicitly out of scope for Phase 2
 
-- [ ] Real login, Aadhaar, Parivahan, RTO, bank, SMS, WhatsApp, email, or calendar integration.
+- [ ] Real login, Aadhaar, Parivahan, RTO, bank, SMS, WhatsApp, calendar, or ongoing email integration. A single opt-in, judge-addressed synthetic email is the only scoped exception above.
 - [ ] Real payment verification, repeat payment, refunds, submissions, approvals, or status updates.
 - [ ] Real identity documents or personal data.
-- [ ] Broad extra services such as RC transfer, NOC, ownership transfer, learner licence, or a RAG chatbot.
+- [ ] Broad extra services such as RC transfer, NOC, ownership transfer, learner licence, or an unconstrained generic chatbot. A bounded, cited RAG assistant is a stretch only after the AI evidence explainer and core testing are complete.
 
 ## Useful commands
 

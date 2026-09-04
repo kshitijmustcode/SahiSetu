@@ -664,6 +664,7 @@ function Results({
         score={score}
         finalAddress={addressDraft}
         minorNoteSigned={signed}
+        handoffCase={isAarohiRenewalDemo ? "aarohi" : isRohanAddressChangeDemo ? "rohan" : undefined}
         onBack={() => {
           setPacketReady(false);
           onBackToReview();
@@ -913,8 +914,16 @@ function Results({
               disabled={!ready}
               onClick={() => {
                 if (ready) {
-                  if (isRohanAddressChangeDemo) setDemoJourneyState({ rohanPacketReady: true });
-                  if (isAarohiRenewalDemo) setDemoJourneyState({ aarohiPacketReady: true });
+                  const addressReview = {
+                    proofAddress: assessment.extraction.address,
+                    finalAddress: addressDraft.trim(),
+                    hasMinorDifference: minorMismatches.length > 0,
+                    clarificationSigned: signed,
+                  };
+                  if (isRohanAddressChangeDemo)
+                    setDemoJourneyState({ rohanPacketReady: true, rohanAddressReview: addressReview });
+                  if (isAarohiRenewalDemo)
+                    setDemoJourneyState({ aarohiPacketReady: true, aarohiAddressReview: addressReview });
                   setPacketReady(true);
                   onPacketReady();
                 }
@@ -1454,6 +1463,7 @@ function Packet({
   score,
   finalAddress,
   minorNoteSigned,
+  handoffCase,
   onBack,
   onReset,
 }: {
@@ -1466,6 +1476,7 @@ function Packet({
   score: number;
   finalAddress: string;
   minorNoteSigned: boolean;
+  handoffCase?: "aarohi" | "rohan";
   onBack: () => void;
   onReset: () => void;
 }) {
@@ -1584,6 +1595,14 @@ function Packet({
           )}
         </div>
         <div className="mt-6 border-t border-[#e5eee6] pt-6 print:hidden">
+          {handoffCase ? (
+            <Link
+              href={`/handoff?case=${handoffCase}`}
+              className="mr-3 inline-flex rounded-xl bg-[#166534] px-5 py-3 font-semibold text-white hover:bg-[#10572b]"
+            >
+              {hindi ? "हैंडऑफ पैक खोलें" : "Open handoff pack"}
+            </Link>
+          ) : null}
           <button
             onClick={() => window.print()}
             className="rounded-xl border border-[#bfd1c1] px-5 py-3 font-semibold text-[#285536]"

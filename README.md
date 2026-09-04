@@ -36,6 +36,12 @@ The prototype supports the **Indian address-change flow** only. A foreign addres
 - OpenAI Responses API with image input and structured JSON output
 - In-memory exact-input cache for repeated checks during a server session
 
+## How AI is used safely
+
+AI is a core part of the document-readiness engine, not a decorative chatbot. OpenAI Vision classifies the synthetic documents, checks whether the required fields are visibly readable, and extracts the new-address text only after the proof passes fail-closed validation. The citizen can then review or edit the text; SahiSetu records that final human-confirmed wording separately from the extracted wording.
+
+The next planned AI slice is an **evidence-grounded case explainer**: it will turn the structured extraction, visible evidence labels, and citizen-confirmed text into a brief explanation of what changed, why it matters, and the safe next action. It must cite the evidence it uses, declare uncertainty, and never invent policy, official status, eligibility, approval, or a decision.
+
 ## Run locally
 
 ```bash
@@ -95,6 +101,7 @@ The product direction is proactive: SahiSetu helps citizens identify expiry, doc
 - **Rohan Mehta:** moved-address document check, explainable extraction, citizen review, and a minor wording-difference clarification path.
 - **Neha Verma:** payment-pending Application Rescue checklist that advises retaining evidence rather than paying again blindly.
 - **Prototype RTO Triage View:** a read-only staff-facing screen that mirrors the three synthetic cases and their evidence summaries. It has no approve/reject, payment, official-status, or live-RTO controls.
+- **Synthetic Handoff Packs:** printable, timestamped summaries for all three completed journeys. They carry evidence, citizen confirmation, remaining boundary, and the safe next action; the address packs also show the proof wording, final citizen edit, and mock clarification-signature state.
 
 Each journey uses the same **Explainable Audit Timeline**: source record → extracted fields → citizen confirmation → readiness result → safe next action. It shows a transparent preparation/recovery path, never an approval decision.
 

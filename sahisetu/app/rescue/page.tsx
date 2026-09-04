@@ -347,11 +347,21 @@ export default function RescuePage() {
                 {hindi ? "सिमुलेटेड सहायता-सार बनाएँ" : "Create simulated support summary"}
               </button>
               {summaryCreated && (
-                <div className="mt-4 rounded-2xl border border-[#bfe0c5] bg-[#eef9f0] p-4 text-sm leading-6 text-[#246238]">
-                  <strong>✓ {hindi ? "सहायता-सार तैयार है।" : "Support summary prepared."}</strong>
-                  <br />
-                  {activeCase.supportSummary}
-                </div>
+                <>
+                  <div className="mt-4 rounded-2xl border border-[#bfe0c5] bg-[#eef9f0] p-4 text-sm leading-6 text-[#246238]">
+                    <strong>✓ {hindi ? "सहायता-सार तैयार है।" : "Support summary prepared."}</strong>
+                    <br />
+                    {activeCase.supportSummary}
+                  </div>
+                  {selectedCase === "payment-pending" && (
+                    <Link
+                      href="/handoff?case=neha"
+                      className="mt-4 block rounded-xl bg-[#166534] px-4 py-3 text-center font-semibold text-white hover:bg-[#10572b]"
+                    >
+                      {hindi ? "हैंडऑफ पैक खोलें →" : "Open handoff pack →"}
+                    </Link>
+                  )}
+                </>
               )}
               {activeCase.documentReview && (
                 <Link
