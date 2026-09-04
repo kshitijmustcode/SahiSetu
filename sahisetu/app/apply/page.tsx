@@ -104,7 +104,7 @@ export default function ApplyPage() {
       setLicence(demoLicence);
       setProof(demoProof);
     } catch {
-      setError("We could not load the demo documents. Please choose the synthetic files manually.");
+      setError("We could not load the demo documents. Please choose the demo files manually.");
     } finally {
       setLoadingDemo(false);
     }
@@ -311,7 +311,7 @@ export default function ApplyPage() {
               <p className="mt-4 max-w-2xl text-lg leading-8 text-[#586b5d]">
                 {hindi
                   ? "अपना मौजूदा ड्राइविंग लाइसेंस और नए पते का सिंथेटिक प्रमाण अपलोड करें। SahiSetu पता पढ़ता है, दस्तावेज़ की स्पष्टता जाँचता है और मॉक सबमिशन से पहले आपसे पुष्टि करवाता है।"
-                  : "Upload your current driving licence and a synthetic proof of your new address. SahiSetu extracts a clean address, checks document clarity, and asks you to confirm it before a mock submission."}
+                  : "Upload your current driving licence and a demo proof of your new address. SahiSetu extracts a clean address, checks document clarity, and asks you to confirm it before a mock submission."}
               </p>
             </section>
             <section className="rounded-3xl border border-[#dbe8dc] bg-white p-6 sm:p-8">
@@ -324,7 +324,7 @@ export default function ApplyPage() {
                   <p className="mt-1 text-sm leading-6 text-[#647466]">
                     {hindi
                       ? "इस प्रोटोटाइप में केवल सिंथेटिक PNG या JPEG छवियों का उपयोग करें। लाइसेंस में पुराना पता होना अपेक्षित है।"
-                      : "Use synthetic PNG or JPEG images only for this prototype. The current licence may show the old address—that is expected."}
+                      : "Use the provided demo PNG or JPEG images only. The current licence may show the old address—that is expected."}
                   </p>
                 </div>
               </div>
@@ -365,7 +365,7 @@ export default function ApplyPage() {
                 <p className="mt-1 text-xs leading-5 text-[#617466]">
                   {hindi
                     ? "एक सिंथेटिक टेस्ट जोड़ी लोड करें, फिर उसी OpenAI जाँच को चलाएँ।"
-                    : "Load a synthetic test pair, then run the same OpenAI check."}
+                    : "Load a demo test pair, then run the same OpenAI check."}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
@@ -407,14 +407,14 @@ export default function ApplyPage() {
                   <p className="text-sm font-semibold">
                     {hindi
                       ? "इनमें केवल Aarohi Sharma का काल्पनिक डेमो डेटा है।"
-                      : "These contain fictional demo data for Aarohi Sharma only."}
+                      : "These contain demo data for Aarohi Sharma only."}
                   </p>
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
                     <figure>
                       <div className="overflow-hidden rounded-xl border border-[#d8e5d9] bg-white">
                         <Image
                           src="/demo-documents/aarohi-sharma-synthetic-driving-licence-with-expiry.png"
-                          alt="Synthetic demo driving licence"
+                          alt="Demo driving licence"
                           width={540}
                           height={740}
                           className="h-48 w-full object-cover object-top"
@@ -428,7 +428,7 @@ export default function ApplyPage() {
                       <div className="overflow-hidden rounded-xl border border-[#d8e5d9] bg-white">
                         <Image
                           src="/demo-documents/synthetic-address-proof.png?v=aarohi-v4"
-                          alt="Synthetic demo address proof"
+                          alt="Demo address proof"
                           width={540}
                           height={740}
                           className="h-48 w-full object-cover object-top"
@@ -454,9 +454,7 @@ export default function ApplyPage() {
                 />
                 <UploadCard
                   title={hindi ? "नए पते का प्रमाण" : "New-address proof"}
-                  hint={
-                    hindi ? "नए पते का सिंथेटिक आधार-जैसा प्रमाण।" : "Synthetic Aadhaar-style proof of the new address."
-                  }
+                  hint={hindi ? "नए पते का डेमो आधार-जैसा प्रमाण।" : "Demo Aadhaar-style proof of the new address."}
                   file={proof}
                   onChange={(event) => addFile(event, setProof, licence)}
                 />
@@ -481,7 +479,7 @@ export default function ApplyPage() {
               <strong>{hindi ? "गोपनीयता और सुरक्षा:" : "Privacy and safety:"}</strong>{" "}
               {hindi
                 ? "यह एक डेमो है। केवल सिंथेटिक भारतीय दस्तावेज़ों का उपयोग करें। वास्तविक सरकारी आईडी या आधार नंबर अपलोड न करें। छवि बहुत छोटी या अस्पष्ट होने पर SahiSetu अनुमान लगाने के बजाय रुक जाता है।"
-                : "This is a demo; use synthetic Indian documents only. Do not upload real government IDs or Aadhaar numbers. SahiSetu stops if an image is too small or unclear rather than guessing."}
+                : "Demo files only—do not upload real government IDs or Aadhaar numbers. SahiSetu stops if an image is too small or unclear rather than guessing."}
             </section>
             <button
               disabled={loading || duplicateDocuments}
@@ -754,7 +752,7 @@ function Results({
                     : "Checked with OpenAI"
                   : hindi
                     ? "सिंथेटिक डेमो जाँच"
-                    : "Synthetic demo check"}
+                    : "Demo document check"}
               </span>
             </div>
             <p className="mt-3 text-xs text-[#66776a]">
@@ -1133,7 +1131,7 @@ function AuditTrail({
                     : "Prepare a clarification note or correct the address."
                   : hindi
                     ? "सिंथेटिक तैयारी पैकेट देखें।"
-                    : "Review the synthetic readiness packet.",
+                    : "Review the readiness packet.",
               state: safeNextState,
             },
           ]}

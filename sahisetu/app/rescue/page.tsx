@@ -27,25 +27,25 @@ const cases: Record<
     shortTitle: "Payment pending",
     title: "Payment pending should lead to a plan—not another payment.",
     description:
-      "Neha’s fictional renewal payment is marked as deducted but pending. SahiSetu helps retain the right evidence and identify a safe next step; it cannot verify, retry, refund, or update any official transaction.",
+      "Neha’s demo payment is marked as deducted but pending. SahiSetu helps retain the right evidence and identify a safe next step; it cannot verify, retry, refund, or update any official transaction.",
     status: "Amount deducted · status pending",
     warning: "Do not pay again blindly.",
     evidence: [
       "Payment reference: DEMO-TXN-7742",
       "Application reference: DEMO-APP-NV-9081",
       "Transaction date and amount: 03 September 2026 · ₹450",
-      "Synthetic status record showing payment pending",
+      "Demo status record showing payment pending",
     ],
     nextAction:
       "Keep the existing transaction details together, then use the relevant official status-verification or support route before considering any further payment.",
     supportSummary:
-      "Case: payment deducted but pending · Applicant: Neha Verma (synthetic) · Evidence: DEMO-APP-NV-9081 and DEMO-TXN-7742 · Next action: verify the transaction through the relevant official route before considering any further payment.",
+      "Case: payment deducted but pending · Applicant: Neha Verma · Evidence: DEMO-APP-NV-9081 and DEMO-TXN-7742 · Next action: verify the transaction through the relevant official route before considering any further payment.",
   },
   "under-scrutiny": {
     shortTitle: "Under Scrutiny",
     title: "An unclear status should lead to evidence—not guesswork.",
     description:
-      "This synthetic case represents an application marked `Under Scrutiny` without a clear citizen-facing explanation. SahiSetu organises what was submitted and helps the citizen review any known document difference before seeking the official next step.",
+      "This demo case represents an application marked `Under Scrutiny` without a clear citizen-facing explanation. SahiSetu organises what was submitted and helps the citizen review any known document difference before seeking the official next step.",
     status: "Application status · Under Scrutiny",
     warning: "Do not assume an approval or rejection.",
     evidence: [
@@ -57,26 +57,26 @@ const cases: Record<
     nextAction:
       "Retain the application evidence first. Review a document only when an actual mismatch is identified; otherwise use the relevant official status or support route with the evidence summary.",
     supportSummary:
-      "Case: Under Scrutiny · Applicant: Rohan Mehta (synthetic) · Evidence: DEMO-APP-RM-6114 and uploaded-document record · Next action: retain evidence, review any known mismatch, then use the relevant official route for status clarification.",
+      "Case: Under Scrutiny · Applicant: Rohan Mehta · Evidence: DEMO-APP-RM-6114 and uploaded-document record · Next action: retain evidence, review any known mismatch, then use the relevant official route for status clarification.",
     documentReview: { href: "/apply?demo=rohan", label: "Review Rohan’s document difference" },
   },
   "upload-pending": {
     shortTitle: "Upload pending",
     title: "A repeated upload is not always the safe next step.",
     description:
-      "This synthetic case represents a citizen who uploaded documents but still sees `Document Upload Pending`. SahiSetu separates evidence retention from re-upload, so the citizen does not replace a valid record without first checking the visible status and official guidance.",
+      "This demo case represents a citizen who uploaded documents but still sees `Document Upload Pending`. SahiSetu separates evidence retention from re-upload, so the citizen does not replace a valid record without first checking the visible status and official guidance.",
     status: "Document upload · pending",
     warning: "Do not discard the original upload evidence.",
     evidence: [
       "Application reference: DEMO-APP-AS-5026",
       "Screenshot showing Document Upload Pending",
       "Upload acknowledgement or timestamp",
-      "Copies of the exact synthetic files originally attached",
+      "Copies of the exact demo files originally attached",
     ],
     nextAction:
       "Keep the original upload evidence. Re-upload only when the official status or support route directs a replacement, or when SahiSetu identifies a clear readability or completeness problem.",
     supportSummary:
-      "Case: Document Upload Pending · Applicant: Aarohi Sharma (synthetic) · Evidence: DEMO-APP-AS-5026 and original upload record · Next action: retain the initial upload evidence and use the official route to determine whether re-upload is required.",
+      "Case: Document Upload Pending · Applicant: Aarohi Sharma · Evidence: DEMO-APP-AS-5026 and original upload record · Next action: retain the initial upload evidence and use the official route to determine whether re-upload is required.",
     documentReview: { href: "/apply?demo=blurryProof", label: "See a re-upload-required example" },
   },
 };
@@ -242,7 +242,7 @@ export default function RescuePage() {
         </nav>
         <header className="border-b border-[#e1eade] py-10 sm:py-14">
           <p className="inline-flex rounded-full bg-[#fff1d7] px-3 py-1.5 text-sm font-semibold text-[#8a5410]">
-            {hindi ? "आवेदन सहायता · सिंथेटिक डेमो" : "Application Rescue · synthetic demo"}
+            {hindi ? "आवेदन सहायता" : "Application Rescue"}
           </p>
           <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">{activeCase.title}</h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-[#526558]">{activeCase.description}</p>
@@ -267,16 +267,16 @@ export default function RescuePage() {
           </div>
         </section>
         <section className="grid gap-7 pb-10 lg:grid-cols-[.92fr_1.08fr]">
-          <div className="rounded-3xl border border-[#dce7dd] bg-white p-5 sm:p-7">
+          <div className="self-start rounded-3xl border border-[#dce7dd] bg-white p-5 sm:p-7">
             {selectedCase === "payment-pending" ? (
               <>
                 <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-                  {hindi ? "सिंथेटिक स्थिति रिकॉर्ड" : "Synthetic status record"}
+                  {hindi ? "डेमो स्थिति रिकॉर्ड" : "Demo status record"}
                 </p>
                 <div className="mt-4 overflow-hidden rounded-2xl border border-[#d8e4ed] bg-white">
                   <Image
                     src="/demo-documents/neha-verma-synthetic-payment-pending.png"
-                    alt="Synthetic payment pending record for Neha Verma"
+                    alt="Demo payment-pending record for Neha Verma"
                     width={1024}
                     height={1536}
                     className="h-auto w-full"
@@ -290,7 +290,7 @@ export default function RescuePage() {
             <p className="mt-3 text-xs leading-5 text-[#66796a]">
               {hindi
                 ? "केवल काल्पनिक रिकॉर्ड। यह किसी वास्तविक भुगतान, सरकारी सेवा या आवेदक को नहीं दर्शाता।"
-                : "Fictional record only. It represents no real payment, government service, or applicant."}
+                : "Demo record only. It represents no real payment, government service, or applicant."}
             </p>
           </div>
           <div className="space-y-6">
@@ -372,22 +372,12 @@ export default function RescuePage() {
                 </Link>
               )}
             </section>
-            <section className="rounded-3xl border border-[#d7e5d9] bg-[#f7fbf7] p-6">
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-                {hindi ? "यह सबमिशन से अलग क्यों है" : "Why this is separate from submission"}
-              </p>
-              <p className="mt-3 text-sm leading-6 text-[#536b59]">
-                {hindi
-                  ? "आवेदन सहायता दिखाई दे रही विफल स्थिति से शुरू होती है, प्रमाण सुरक्षित रखती है और सबसे सुरक्षित अगला कदम बताती है। यह नागरिक को दस्तावेज़ समीक्षा तक तभी भेजती है जब दस्तावेज़ समस्या वास्तव में संबंधित हो।"
-                  : "Application Rescue starts from the visible failed state, preserves evidence, and explains the safest next action. It sends a citizen to document review only when a document issue is actually relevant."}
-              </p>
-            </section>
           </div>
         </section>
         <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
           {hindi
             ? "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है—आधिकारिक सरकारी सेवा नहीं।"
-            : "SahiSetu is an independent, synthetic-data-only prototype—not an official government service."}
+            : "Independent demo · not an official government service."}
         </footer>
       </div>
     </main>
@@ -414,7 +404,7 @@ function StatusRecord({ caseKey }: { caseKey: Exclude<RescueCase, "payment-pendi
         };
   return (
     <div>
-      <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">Synthetic status record</p>
+      <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">Demo status record</p>
       <div className="mt-4 rounded-2xl border border-[#d8e4ed] bg-[#fbfefb] p-6">
         <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#607666]">{record.title}</p>
         <p className={`mt-3 text-2xl font-semibold ${record.accent}`}>{record.status}</p>
@@ -427,7 +417,7 @@ function StatusRecord({ caseKey }: { caseKey: Exclude<RescueCase, "payment-pendi
           </p>
         </div>
         <p className="mt-5 text-xs font-bold uppercase tracking-[0.12em] text-[#9a4b31]">
-          Synthetic demo · not an official status record
+          Demo record · not an official status record
         </p>
       </div>
     </div>

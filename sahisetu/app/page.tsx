@@ -9,7 +9,7 @@ const services = [
     icon: "⌛",
     title: "DL Guardian",
     titleHi: "DL गार्जियन",
-    detail: "Surface a fictional expiry risk, check renewal readiness, and set opt-in simulated reminders.",
+    detail: "Surface an expiry risk, check renewal readiness, and set opt-in simulated reminders.",
     detailHi: "काल्पनिक समाप्ति-जोखिम देखें, नवीनीकरण की तैयारी जाँचें और वैकल्पिक डेमो रिमाइंडर सेट करें।",
     tone: "border-[#f0c4b4] bg-[#fff4ee] text-[#7b3924]",
   },
@@ -17,7 +17,7 @@ const services = [
     icon: "⌂",
     title: "Document readiness",
     titleHi: "दस्तावेज़ तैयारी",
-    detail: "Read synthetic documents, stop on unclear uploads, and show the exact field that needs correction.",
+    detail: "Read demo documents, stop on unclear uploads, and show the exact field that needs correction.",
     detailHi: "सिंथेटिक दस्तावेज़ पढ़ें, अस्पष्ट अपलोड पर रुकें और ठीक किया जाने वाला सटीक फ़ील्ड देखें।",
     tone: "border-[#d5e4d6] bg-[#f3faf4] text-[#285d38]",
   },
@@ -36,7 +36,7 @@ const demoChecks = [
     "01",
     "Normal address check",
     "सामान्य पता जाँच",
-    "Run the full synthetic document journey and create a reviewable report.",
+    "Run the full document journey and create a reviewable report.",
     "पूरी सिंथेटिक दस्तावेज़ यात्रा चलाएँ और समीक्षा योग्य रिपोर्ट बनाएँ।",
     "/apply?demo=normal",
   ],
@@ -115,18 +115,18 @@ export default function Home() {
               >
                 {hindi ? "निर्देशित सहायता पाएँ →" : "Get guided help →"}
               </Link>
-              <Link
-                href="/apply?demo=normal"
-                className="rounded-xl border border-[#cfe0d1] bg-white px-6 py-3.5 text-center text-base font-semibold text-[#285536] transition hover:bg-[#f4faf3]"
-              >
-                {hindi ? "पते का दस्तावेज़ जाँचें →" : "Check an address document →"}
-              </Link>
             </div>
             <p className="mt-4 text-sm leading-6 text-[#728176]">
               {hindi
                 ? "केवल सिंथेटिक डेटा। SahiSetu नागरिकों को प्रमाणित नहीं करता, आवेदन जमा नहीं करता, भुगतान संसाधित नहीं करता या सरकारी निर्णय नहीं लेता।"
-                : "Synthetic data only. SahiSetu does not authenticate citizens, submit applications, process payments, or make government decisions."}
+                : "Demo data only. SahiSetu does not authenticate citizens, submit applications, process payments, or make government decisions."}
             </p>
+            <Link
+              href="/triage"
+              className="mt-3 inline-flex text-sm font-semibold text-[#46675b] underline underline-offset-4 hover:text-[#166534]"
+            >
+              {hindi ? "जज / RTO डेमो देखें →" : "For judges: view the RTO demo →"}
+            </Link>
           </div>
           <div className="relative mx-auto w-full max-w-md">
             <div className="absolute -inset-10 -z-0 rounded-full bg-[#dff3df] blur-3xl" />
@@ -147,13 +147,13 @@ export default function Home() {
               <p className="mt-3 text-sm leading-6 text-[#556b59]">
                 {hindi
                   ? "एक काल्पनिक लाइसेंस की समाप्ति निकट है। आधिकारिक नवीनीकरण यात्रा शुरू करने से पहले SahiSetu जरूरी ध्यान-बिंदु दिखाता है।"
-                  : "A fictional licence is nearing expiry. SahiSetu shows what needs attention before the citizen starts the official renewal journey."}
+                  : "A licence in the demo is nearing expiry. SahiSetu shows what needs attention before the citizen starts the official renewal journey."}
               </p>
               <div className="mt-6 space-y-3">
                 <Status
                   icon="✓"
                   color="green"
-                  text={hindi ? "सिंथेटिक प्रोफ़ाइल में लाइसेंस मिला" : "Licence detected in synthetic profile"}
+                  text={hindi ? "डेमो प्रोफ़ाइल में लाइसेंस मिला" : "Licence detected in demo profile"}
                 />
                 <Status
                   icon="!"
@@ -217,7 +217,7 @@ export default function Home() {
               <p className="mt-4 leading-7 text-[#637467]">
                 {hindi
                   ? "मौजूदा पता-परिवर्तन प्रवाह सिंथेटिक दस्तावेज़ों को जाँचने के लिए OpenAI Vision का उपयोग करता है। यह अनुमान लगाने के बजाय अस्पष्ट, कटी हुई, बदली हुई या अधूरी अपलोड अस्वीकार करता है और सटीक अंतर को समीक्षा योग्य बनाता है।"
-                  : "The existing address-change flow uses OpenAI Vision to assess synthetic documents. It rejects unclear, cropped, swapped, or incomplete uploads instead of guessing—and makes the exact difference reviewable."}
+                  : "The existing address-change flow uses OpenAI Vision to assess demo documents. It rejects unclear, cropped, swapped, or incomplete uploads instead of guessing—and makes the exact difference reviewable."}
               </p>
               <Link
                 href="/apply?demo=normal"
@@ -259,7 +259,7 @@ export default function Home() {
               <p className="mt-4 leading-7 text-[#536b59]">
                 {hindi
                   ? "हर परिणाम सहायक दस्तावेज़ फ़ील्ड और अनुशंसित अगली कार्रवाई के साथ हरा, एम्बर या लाल तैयारी-स्पष्टीकरण है। यह प्रोटोटाइप केवल काल्पनिक डेटा उपयोग करता है।"
-                  : "Every result is a Green, Amber, or Red readiness explanation with the supporting document field and recommended next action. The prototype uses only fictional data."}
+                  : "Every result is a Green, Amber, or Red readiness explanation with the supporting document field and recommended next action."}
               </p>
             </div>
             <ul className="space-y-3 text-sm leading-6 text-[#405a47]">
@@ -288,7 +288,7 @@ export default function Home() {
         <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
           {hindi
             ? "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है—आधिकारिक सरकारी सेवा नहीं।"
-            : "SahiSetu is an independent, synthetic-data-only prototype—not an official government service."}
+            : "Independent demo · not an official government service."}
         </footer>
       </div>
     </main>
