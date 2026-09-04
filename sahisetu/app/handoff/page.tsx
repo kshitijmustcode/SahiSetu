@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { LanguageToggle, useLanguage } from "../components/language-toggle";
 import { useDemoJourneyState } from "../lib/demo-journey-state";
 import { aarohiSyntheticLicence, getRenewalReadiness } from "../lib/dl-readiness";
@@ -17,6 +17,12 @@ type HandoffContent = {
   nextAction: string;
   returnHref: string;
   returnLabel: string;
+  rtoDayPack: {
+    title: string;
+    titleHi: string;
+    items: string[];
+    itemsHi: string[];
+  };
 };
 
 function subscribeToLocation(callback: () => void) {
@@ -34,6 +40,7 @@ export default function HandoffPage() {
   const caseKey = useSyncExternalStore<HandoffCase>(subscribeToLocation, handoffCaseFromLocation, () => "aarohi");
   const journey = useDemoJourneyState();
   const renewal = getRenewalReadiness();
+  const [printMode, setPrintMode] = useState<"all" | "rto-cover">("all");
   const hydrated = useSyncExternalStore(
     () => () => undefined,
     () => true,
@@ -55,14 +62,22 @@ export default function HandoffPage() {
       label: t("DL renewal readiness", "DL नवीनीकरण तैयारी"),
       evidence: [
         t(
-          `Synthetic licence expiry: ${aarohiSyntheticLicence.visibleExpiryText}`,
+          `Licence expiry: ${aarohiSyntheticLicence.visibleExpiryText}`,
           `सिंथेटिक लाइसेंस समाप्ति: ${aarohiSyntheticLicence.visibleExpiryText}`,
         ),
-        t("Synthetic document-readiness check", "सिंथेटिक दस्तावेज़-तैयारी जाँच"),
+        t("Document-readiness check", "दस्तावेज़-तैयारी जाँच"),
         t("Citizen contact-readiness confirmation", "नागरिक संपर्क-तैयारी पुष्टि"),
+        ...(journey.aarohiMedicalReady
+          ? [
+              t(
+                "Form 1A visible-field pre-check ready for human review",
+                "Form 1A दिखाई देने वाले फ़ील्ड की प्री-चेक मानवीय समीक्षा के लिए तैयार",
+              ),
+            ]
+          : []),
       ],
       finding: t(
-        `A readiness packet was prepared with ${renewal.daysRemaining} days remaining in this synthetic scenario.`,
+        `A readiness packet was prepared with ${renewal.daysRemaining} days remaining in this demo scenario.`,
         `इस सिंथेटिक स्थिति में ${renewal.daysRemaining} दिन शेष रहते एक तैयारी पैकेट तैयार हुआ।`,
       ),
       boundary: t(
@@ -70,17 +85,41 @@ export default function HandoffPage() {
         "दिखाई गई समाप्ति पर अभी भी ध्यान देना जरूरी है। यह पैकेट तैयारी प्रमाण है, नवीनीकरण निर्णय या आवेदन सबमिशन नहीं।",
       ),
       nextAction: t(
-        "Use the relevant official renewal service when ready, with the reviewed synthetic documents beside you.",
+        "Use the relevant official renewal service when ready, with the reviewed documents beside you.",
         "तैयार होने पर समीक्षा किए गए सिंथेटिक दस्तावेज़ों के साथ संबंधित आधिकारिक नवीनीकरण सेवा उपयोग करें।",
       ),
       returnHref: "/dashboard?profile=aarohi",
       returnLabel: t("Back to Aarohi’s dashboard", "आराही के डैशबोर्ड पर वापस"),
+      rtoDayPack: {
+        title: "Renewal visit folder",
+        titleHi: "नवीनीकरण विज़िट फोल्डर",
+        items: [
+          "Original driving licence",
+          "Official renewal application or acknowledgement, if the official service generated one",
+          "Medical/self-declaration document only if the relevant official service says it applies",
+          ...(journey.aarohiMedicalReady
+            ? ["Form 1A doctor-confirmation note from this demo"]
+            : ["Form 1A doctor-confirmation note, if the official service says it applies"]),
+          "Printed fee receipt or transaction reference, if a payment was completed through the official service",
+          "This readiness handoff cover sheet",
+        ],
+        itemsHi: [
+          "मूल ड्राइविंग लाइसेंस",
+          "आधिकारिक नवीनीकरण आवेदन या पावती, यदि आधिकारिक सेवा ने बनाई हो",
+          "चिकित्सीय/स्व-घोषणा दस्तावेज़ केवल तभी जब संबंधित आधिकारिक सेवा इसे लागू बताए",
+          ...(journey.aarohiMedicalReady
+            ? ["इस डेमो से Form 1A डॉक्टर पुष्टि नोट"]
+            : ["Form 1A डॉक्टर पुष्टि नोट, यदि आधिकारिक सेवा इसे लागू बताए"]),
+          "प्रिंट की गई शुल्क रसीद या ट्रांज़ैक्शन संदर्भ, यदि आधिकारिक सेवा से भुगतान हुआ हो",
+          "यह सिंथेटिक तैयारी हैंडऑफ कवर शीट",
+        ],
+      },
     },
     rohan: {
       name: "Rohan Mehta",
       label: t("Address-change readiness", "पता-परिवर्तन तैयारी"),
       evidence: [
-        t("Old Koramangala address on the synthetic licence", "सिंथेटिक लाइसेंस पर पुराना कोरमंगला पता"),
+        t("Old Koramangala address on the licence", "लाइसेंस पर पुराना कोरमंगला पता"),
         t("New-address proof: 44 Lakeview Road, Indiranagar", "नए पते का प्रमाण: 44 Lakeview Road, इंदिरानगर"),
         t("Citizen-reviewed final application wording", "नागरिक द्वारा समीक्षा की गई अंतिम आवेदन शब्दावली"),
       ],
@@ -98,6 +137,24 @@ export default function HandoffPage() {
       ),
       returnHref: "/apply?demo=rohan",
       returnLabel: t("Back to Rohan’s document review", "रोहन की दस्तावेज़ समीक्षा पर वापस"),
+      rtoDayPack: {
+        title: "Address-change visit folder",
+        titleHi: "पता-परिवर्तन विज़िट फोल्डर",
+        items: [
+          "Original driving licence showing the old address",
+          "Original new-address proof matching the final application wording",
+          "Official DL address-change application or acknowledgement, if the official service generated one",
+          "A printed clarification note only if a real minor wording difference remains",
+          "Printed fee receipt or transaction reference, if a payment was completed through the official service",
+        ],
+        itemsHi: [
+          "पुराना पता दिखाने वाला मूल ड्राइविंग लाइसेंस",
+          "अंतिम आवेदन शब्दावली से मेल खाता मूल नए पते का प्रमाण",
+          "आधिकारिक DL पता-परिवर्तन आवेदन या पावती, यदि आधिकारिक सेवा ने बनाई हो",
+          "प्रिंट किया गया स्पष्टीकरण नोट केवल तब जब वास्तविक छोटा शब्दावली अंतर हो",
+          "प्रिंट की गई शुल्क रसीद या ट्रांज़ैक्शन संदर्भ, यदि आधिकारिक सेवा से भुगतान हुआ हो",
+        ],
+      },
     },
     neha: {
       name: "Neha Verma",
@@ -105,10 +162,10 @@ export default function HandoffPage() {
       evidence: [
         "DEMO-APP-NV-9081",
         "DEMO-TXN-7742",
-        t("Synthetic payment-pending record and transaction amount", "सिंथेटिक भुगतान-लंबित रिकॉर्ड और लेन-देन राशि"),
+        t("Payment-pending record and transaction amount", "भुगतान-लंबित रिकॉर्ड और लेन-देन राशि"),
       ],
       finding: t(
-        "A synthetic support summary was prepared so the payment evidence stays together.",
+        "A support summary was prepared so the payment evidence stays together.",
         "एक सिंथेटिक सहायता-सार तैयार हुआ ताकि भुगतान प्रमाण साथ रहे।",
       ),
       boundary: t(
@@ -121,6 +178,24 @@ export default function HandoffPage() {
       ),
       returnHref: "/rescue?case=payment-pending",
       returnLabel: t("Back to Neha’s Application Rescue", "नेहा की आवेदन सहायता पर वापस"),
+      rtoDayPack: {
+        title: "Payment-support visit folder",
+        titleHi: "भुगतान-सहायता विज़िट फोल्डर",
+        items: [
+          "Official application reference and status screenshot, if available",
+          "Original payment receipt or bank transaction record",
+          "Transaction reference, amount, and date written together",
+          "Any official support-ticket or escalation acknowledgement, if already issued",
+          "This support handoff cover sheet",
+        ],
+        itemsHi: [
+          "आधिकारिक आवेदन संदर्भ और स्थिति स्क्रीनशॉट, यदि उपलब्ध हो",
+          "मूल भुगतान रसीद या बैंक लेन-देन रिकॉर्ड",
+          "ट्रांज़ैक्शन संदर्भ, राशि और तारीख साथ लिखी हुई",
+          "कोई आधिकारिक सहायता-टिकट या एस्केलेशन पावती, यदि पहले से जारी हो",
+          "यह सिंथेटिक सहायता हैंडऑफ कवर शीट",
+        ],
+      },
     },
   };
   const prepared =
@@ -133,8 +208,16 @@ export default function HandoffPage() {
   const addressReview =
     caseKey === "aarohi" ? journey.aarohiAddressReview : caseKey === "rohan" ? journey.rohanAddressReview : null;
 
+  function printRtoDayCover() {
+    setPrintMode("rto-cover");
+    window.requestAnimationFrame(() => {
+      window.print();
+      window.setTimeout(() => setPrintMode("all"), 0);
+    });
+  }
+
   return (
-    <main className="min-h-screen bg-[#fffdf8] text-[#17281f]">
+    <main className={`min-h-screen bg-[#fffdf8] text-[#17281f] ${printMode === "rto-cover" ? "rto-cover-print" : ""}`}>
       <div className="mx-auto max-w-4xl px-5 py-5 sm:px-8">
         <nav className="flex items-center justify-between print:hidden" aria-label="Main navigation">
           <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
@@ -148,10 +231,10 @@ export default function HandoffPage() {
 
         <section className="py-10 sm:py-14">
           <div
-            className={`rounded-3xl border p-7 sm:p-10 ${prepared ? "border-[#b9dfc0] bg-[#f1fbf3]" : "border-[#efd9a2] bg-[#fff8e8]"}`}
+            className={`handoff-hero rounded-3xl border p-7 sm:p-10 ${prepared ? "border-[#b9dfc0] bg-[#f1fbf3]" : "border-[#efd9a2] bg-[#fff8e8]"}`}
           >
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-              {t("Synthetic handoff pack · demo only", "सिंथेटिक हैंडऑफ पैक · केवल डेमो")}
+              {t("Handoff pack · demo only", "हैंडऑफ पैक · केवल डेमो")}
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
               {prepared
@@ -161,7 +244,7 @@ export default function HandoffPage() {
             <p className="mt-4 max-w-2xl text-lg leading-8 text-[#4b6551]">
               {prepared
                 ? t(
-                    "A reviewable summary of synthetic evidence, citizen confirmation, unresolved boundaries, and the safe next action.",
+                    "A reviewable summary of evidence, citizen confirmation, unresolved boundaries, and the safe next action.",
                     "सिंथेटिक प्रमाण, नागरिक पुष्टि, अनसुलझी सीमाओं और सुरक्षित अगली कार्रवाई का समीक्षा योग्य सार।",
                   )
                 : t(
@@ -171,7 +254,7 @@ export default function HandoffPage() {
             </p>
           </div>
 
-          <section className="mt-6 rounded-3xl border border-[#dce7dd] bg-white p-6 sm:p-8">
+          <section className="handoff-summary mt-6 rounded-3xl border border-[#dce7dd] bg-white p-6 sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e5eee6] pb-6">
               <div>
                 <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">{active.label}</p>
@@ -235,15 +318,15 @@ export default function HandoffPage() {
                       {addressReview.hasMinorDifference
                         ? addressReview.clarificationSigned
                           ? t(
-                              "Minor wording difference detected: the citizen changed the wording and signed the synthetic clarification note. This is a mock review record, not an official declaration.",
+                              "Minor wording difference detected: the citizen changed the wording and signed the demo clarification note. This is a mock review record, not an official declaration.",
                               "छोटा शब्दावली अंतर मिला: नागरिक ने शब्दावली बदली और सिंथेटिक स्पष्टीकरण नोट पर हस्ताक्षर किए। यह मॉक समीक्षा रिकॉर्ड है, आधिकारिक घोषणा नहीं।",
                             )
                           : t(
-                              "Minor wording difference detected: the citizen changed the wording, but no synthetic clarification note was signed.",
+                              "Minor wording difference detected: the citizen changed the wording, but no demo clarification note was signed.",
                               "छोटा शब्दावली अंतर मिला: नागरिक ने शब्दावली बदली, लेकिन किसी सिंथेटिक स्पष्टीकरण नोट पर हस्ताक्षर नहीं हुए।",
                             )
                         : t(
-                            "The citizen confirmed the wording extracted from the synthetic proof without changing it.",
+                            "The citizen confirmed the wording extracted from the proof without changing it.",
                             "नागरिक ने सिंथेटिक प्रमाण से निकाली गई शब्दावली को बिना बदले पुष्टि की।",
                           )}
                     </p>
@@ -253,21 +336,67 @@ export default function HandoffPage() {
                   <h3 className="font-semibold">{t("Safe next action", "सुरक्षित अगली कार्रवाई")}</h3>
                   <p className="mt-2">{active.nextAction}</p>
                 </section>
+                <section className="rto-day-pack mt-6 rounded-2xl border border-[#b9d8ed] bg-[#f4faff] p-5 text-[#234c65]">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#1e638f]">
+                        {t("RTO day pack · preparation only", "RTO डे पैक · केवल तैयारी")}
+                      </p>
+                      <h3 className="mt-2 text-xl font-semibold">
+                        {hindi ? active.rtoDayPack.titleHi : active.rtoDayPack.title}
+                      </h3>
+                    </div>
+                    <span className="rounded-full border border-[#b9d8ed] bg-white px-3 py-1 text-xs font-bold text-[#1e638f]">
+                      {t("Verify before visit", "विज़िट से पहले सत्यापित करें")}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-[#496779]">
+                    {t(
+                      "Use this physical-folder checklist only after checking the requirements shown by the relevant official service or RTO. It is not an appointment, eligibility decision, or official document list.",
+                      "संबंधित आधिकारिक सेवा या RTO द्वारा दिखाई गई आवश्यकताएँ जाँचने के बाद ही इस भौतिक फोल्डर सूची का उपयोग करें। यह अपॉइंटमेंट, पात्रता निर्णय या आधिकारिक दस्तावेज़ सूची नहीं है।",
+                    )}
+                  </p>
+                  <ul className="mt-4 space-y-2 text-sm leading-6">
+                    {(hindi ? active.rtoDayPack.itemsHi : active.rtoDayPack.items).map((item) => (
+                      <li key={item} className="flex gap-3 rounded-xl border border-[#cce0ea] bg-white px-3 py-2.5">
+                        <span
+                          aria-hidden="true"
+                          className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center border border-[#7ba7bd]"
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="rto-cover-details mt-5 grid gap-2 border-t border-[#cce0ea] pt-4 text-xs leading-5 text-[#496779] sm:grid-cols-2">
+                    <p>
+                      <strong>{t("Demo case", "डेमो मामला")}:</strong> {active.name}
+                    </p>
+                    <p>
+                      <strong>{t("Preparation purpose", "तैयारी उद्देश्य")}:</strong> {active.label}
+                    </p>
+                    <p className="sm:col-span-2">
+                      {t(
+                        "Bring only documents the relevant official service or RTO asks for. SahiSetu cannot confirm a visit, document acceptance, payment status, or outcome.",
+                        "केवल वही दस्तावेज़ ले जाएँ जो संबंधित आधिकारिक सेवा या RTO मांगे। SahiSetu विज़िट, दस्तावेज़ स्वीकृति, भुगतान स्थिति या परिणाम की पुष्टि नहीं कर सकता।",
+                      )}
+                    </p>
+                  </div>
+                </section>
               </>
             ) : (
               <section className="mt-6 rounded-2xl bg-[#fff8e8] p-5 text-sm leading-6 text-[#76551f]">
                 <h3 className="font-semibold">{t("What to complete first", "पहले क्या पूरा करें")}</h3>
                 <p className="mt-2">
                   {t(
-                    "Return to the citizen journey, complete its evidence and confirmation steps, then open this page again. The completed pack will include only the synthetic evidence relevant to this case.",
+                    "Return to the citizen journey, complete its evidence and confirmation steps, then open this page again. The completed pack will include only the evidence relevant to this case.",
                     "नागरिक यात्रा पर लौटें, उसके प्रमाण और पुष्टि चरण पूरे करें, फिर यह पेज दोबारा खोलें। पूर्ण पैकेट में केवल इस मामले से संबंधित सिंथेटिक प्रमाण शामिल होंगे।",
                   )}
                 </p>
               </section>
             )}
-            <p className="mt-6 text-xs leading-5 text-[#647466]">
+            <p className="handoff-footer mt-6 text-xs leading-5 text-[#647466]">
               {t(
-                "Fictional, synthetic demo only. SahiSetu has not submitted, paid, approved, updated, or accessed an official application.",
+                "Demo only. SahiSetu has not submitted, paid, approved, updated, or accessed an official application.",
                 "केवल काल्पनिक, सिंथेटिक डेमो। SahiSetu ने कोई आधिकारिक आवेदन जमा, भुगतान, मंजूर, अपडेट या एक्सेस नहीं किया है।",
               )}
             </p>
@@ -275,12 +404,20 @@ export default function HandoffPage() {
 
           <div className="mt-6 flex flex-wrap gap-3 print:hidden">
             {prepared ? (
-              <button
-                onClick={() => window.print()}
-                className="rounded-xl bg-[#166534] px-5 py-3 font-semibold text-white hover:bg-[#10572b]"
-              >
-                {t("Save this handoff pack as PDF", "इस हैंडऑफ पैक को PDF के रूप में सहेजें")}
-              </button>
+              <>
+                <button
+                  onClick={() => window.print()}
+                  className="rounded-xl bg-[#166534] px-5 py-3 font-semibold text-white hover:bg-[#10572b]"
+                >
+                  {t("Save full handoff pack as PDF", "पूरा हैंडऑफ पैक PDF के रूप में सहेजें")}
+                </button>
+                <button
+                  onClick={printRtoDayCover}
+                  className="rounded-xl border border-[#1e638f] bg-[#f4faff] px-5 py-3 font-semibold text-[#1e638f] hover:bg-[#e6f4fb]"
+                >
+                  {t("Print RTO physical file cover sheet", "RTO भौतिक फाइल कवर शीट प्रिंट करें")}
+                </button>
+              </>
             ) : null}
             <Link
               href={active.returnHref}

@@ -46,4 +46,34 @@ button:not(:disabled),
     height: 7rem !important;
     aspect-ratio: auto !important;
   }
+
+  main.rto-cover-print .handoff-hero,
+  main.rto-cover-print .handoff-summary > :not(.rto-day-pack),
+  main.rto-cover-print .handoff-footer {
+    display: none !important;
+  }
+  main.rto-cover-print .handoff-summary {
+    margin-top: 0 !important;
+    border: 0 !important;
+    padding: 0 !important;
+  }
+  main.rto-cover-print .rto-day-pack {
+    margin-top: 0 !important;
+    border-color: #7ba7bd !important;
+    background: white !important;
+  }
+
+  body[data-print-medical-note="true"] main * {
+    visibility: hidden !important;
+  }
+  body[data-print-medical-note="true"] .medical-note,
+  body[data-print-medical-note="true"] .medical-note * {
+    visibility: visible !important;
+  }
+  body[data-print-medical-note="true"] .medical-note {
+    position: fixed;
+    inset: 12mm;
+    margin: 0 !important;
+    border-style: solid;
+  }
 }
