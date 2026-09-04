@@ -11,6 +11,7 @@ export type SyntheticAddressReview = {
 
 export type DemoJourneyState = {
   aarohiContactReady: boolean;
+  aarohiMedicalReady: boolean;
   aarohiPacketReady: boolean;
   aarohiAddressReview: SyntheticAddressReview | null;
   rohanPacketReady: boolean;
@@ -22,6 +23,7 @@ const storageKey = "sahisetu-demo-journey-state";
 const eventName = "sahisetu-demo-journey-state-change";
 const defaultState: DemoJourneyState = {
   aarohiContactReady: false,
+  aarohiMedicalReady: false,
   aarohiPacketReady: false,
   aarohiAddressReview: null,
   rohanPacketReady: false,

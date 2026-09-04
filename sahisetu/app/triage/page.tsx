@@ -44,7 +44,7 @@ export default function TriagePage() {
     if (!validEmail || !validPasscode) {
       setAccessError(
         t(
-          "Use the synthetic judge demo credentials shown on this screen.",
+          "Use the judge demo credentials shown on this screen.",
           "स्क्रीन पर दिखाए गए सिंथेटिक जज डेमो क्रेडेंशियल का उपयोग करें।",
         ),
       );
@@ -79,14 +79,14 @@ export default function TriagePage() {
 
           <section className="py-14 sm:py-20">
             <p className="inline-flex rounded-full bg-[#f0f8fc] px-3 py-1.5 text-sm font-semibold text-[#235779]">
-              {t("Prototype staff access · synthetic only", "प्रोटोटाइप स्टाफ एक्सेस · केवल सिंथेटिक")}
+              {t("Prototype staff access", "प्रोटोटाइप स्टाफ एक्सेस")}
             </p>
             <h1 className="mt-5 max-w-3xl text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
               {t("RTO triage is limited to the staff-demo perspective.", "RTO ट्रायेज स्टाफ-डेमो दृश्य तक सीमित है।")}
             </h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-[#526558]">
               {t(
-                "Enter the visible demo credentials to open the synthetic, view-only handoff screen. This is a hackathon demonstration gate, not real authentication or access to an RTO system.",
+                "Enter the visible demo credentials to open the view-only handoff screen. This is a hackathon demonstration gate, not real authentication or access to an RTO system.",
                 "सिंथेटिक, केवल-दृश्य हैंडऑफ स्क्रीन खोलने के लिए दिखाए गए डेमो क्रेडेंशियल दर्ज करें। यह हैकाथॉन डेमो गेट है, वास्तविक प्रमाणीकरण या RTO सिस्टम तक पहुँच नहीं।",
               )}
             </p>
@@ -114,7 +114,7 @@ export default function TriagePage() {
                 </dl>
                 <p className="mt-6 text-sm leading-6 text-[#3d6382]">
                   {t(
-                    "These visible credentials are only for judges to explore fictional cases. They do not belong to a real staff account.",
+                    "These visible credentials are only for judges to explore demo cases. They do not belong to a real staff account.",
                     "ये दिखाए गए क्रेडेंशियल केवल जजों के लिए काल्पनिक मामलों का अनुभव लेने हेतु हैं। ये किसी वास्तविक स्टाफ खाते के नहीं हैं।",
                   )}
                 </p>
@@ -165,7 +165,7 @@ export default function TriagePage() {
           </section>
           <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
             {t(
-              "SahiSetu is an independent, synthetic-data-only prototype—not an official government service.",
+              "Independent demo · not an official government service.",
               "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है—आधिकारिक सरकारी सेवा नहीं।",
             )}
           </footer>
@@ -194,9 +194,12 @@ export default function TriagePage() {
         `सिंथेटिक लाइसेंस पर ${aarohiSyntheticLicence.visibleExpiryText} की समाप्ति दिखाई देती है; डेमो संदर्भ तिथि में ${renewal.daysRemaining} दिन शेष हैं।`,
       ),
       evidence: [
-        t("Synthetic licence expiry field", "सिंथेटिक लाइसेंस की समाप्ति फ़ील्ड"),
+        t("Licence expiry field", "लाइसेंस की समाप्ति फ़ील्ड"),
         t("Readiness checklist", "तैयारी सूची"),
         t("Simulated contact-readiness state", "सिमुलेटेड संपर्क-तैयारी स्थिति"),
+        ...(demoJourney.aarohiMedicalReady
+          ? [t("Form 1A pre-check ready for human review", "Form 1A प्री-चेक मानवीय समीक्षा के लिए तैयार")]
+          : []),
       ],
       focus: t(
         "Explain the preparation gap; do not make a renewal or eligibility decision.",
@@ -217,7 +220,7 @@ export default function TriagePage() {
       timeline: [
         {
           label: t("Licence captured", "लाइसेंस लिया गया"),
-          detail: t("Synthetic record available.", "सिंथेटिक रिकॉर्ड उपलब्ध है।"),
+          detail: t("Demo record available.", "डेमो रिकॉर्ड उपलब्ध है।"),
           state: "complete",
         },
         {
@@ -239,7 +242,12 @@ export default function TriagePage() {
                 `Readiness packet prepared; ${renewal.daysRemaining} days remain.`,
                 `तैयारी पैकेट तैयार; ${renewal.daysRemaining} दिन शेष।`,
               )
-            : t("Renewal needs attention.", "नवीनीकरण पर ध्यान चाहिए।"),
+            : demoJourney.aarohiMedicalReady
+              ? t(
+                  "Form 1A visible fields are ready for human review; renewal still needs attention.",
+                  "Form 1A दिखाई देने वाले फ़ील्ड मानवीय समीक्षा के लिए तैयार हैं; नवीनीकरण पर अभी भी ध्यान चाहिए।",
+                )
+              : t("Renewal needs attention.", "नवीनीकरण पर ध्यान चाहिए।"),
           state: demoJourney.aarohiPacketReady ? "complete" : "attention",
         },
         {
@@ -422,7 +430,7 @@ export default function TriagePage() {
 
         <header className="border-b border-[#e1eade] py-10 sm:py-14">
           <p className="inline-flex rounded-full bg-[#f0f8fc] px-3 py-1.5 text-sm font-semibold text-[#235779]">
-            {t("Prototype RTO triage view · synthetic only", "प्रोटोटाइप RTO ट्रायेज दृश्य · केवल सिंथेटिक")}
+            {t("Prototype RTO triage view", "प्रोटोटाइप RTO ट्रायेज दृश्य")}
           </p>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
             {t(
@@ -438,7 +446,7 @@ export default function TriagePage() {
           </p>
         </header>
 
-        <section className="py-8" aria-label={t("Synthetic case summaries", "सिंथेटिक मामलों का सार")}>
+        <section className="py-8" aria-label={t("Demo case summaries", "डेमो मामलों का सार")}>
           <div className="mb-6 flex flex-wrap gap-3 text-sm">
             <span className="rounded-full bg-[#edf8ef] px-3 py-1.5 font-semibold text-[#246238]">
               {t("Green: ready for citizen review", "हरा: नागरिक समीक्षा के लिए तैयार")}
@@ -505,7 +513,7 @@ export default function TriagePage() {
         </section>
         <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
           {t(
-            "SahiSetu is an independent, synthetic-data-only prototype. This view cannot approve, reject, update, or access an official application.",
+            "Independent demo. This view cannot approve, reject, update, or access an official application.",
             "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है। यह दृश्य किसी आधिकारिक आवेदन को मंजूर, अस्वीकार, अपडेट या एक्सेस नहीं कर सकता।",
           )}
         </footer>

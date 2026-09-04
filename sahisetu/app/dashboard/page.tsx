@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import { ExplainableAuditTimeline, type AuditTimelineStep } from "../components/explainable-audit-timeline";
+import { Form1AMedicalShield } from "../components/form-1a-medical-shield";
 import { LanguageToggle, useLanguage } from "../components/language-toggle";
 import { setDemoJourneyState, useDemoJourneyState } from "../lib/demo-journey-state";
 import { aarohiSyntheticLicence, formatIndiaDate, getRenewalReadiness } from "../lib/dl-readiness";
@@ -20,14 +21,9 @@ export default function DashboardPage() {
   const t = (english: string, hindiText: string) => (hindi ? hindiText : english);
   const renewal = getRenewalReadiness();
   const renewalActionNeeded = renewal.urgency !== "safe";
-  const profile = useSyncExternalStore(
-    (callback) => {
-      window.addEventListener("popstate", callback);
-      return () => window.removeEventListener("popstate", callback);
-    },
-    () => new URLSearchParams(window.location.search).get("profile") ?? "aarohi",
-    () => "aarohi",
-  );
+  // The dashboard is deliberately Aarohi's DL Guardian journey. Rohan and Neha
+  // begin in their dedicated document-readiness and rescue journeys instead.
+  const profile: string = "aarohi";
   const demoJourney = useDemoJourneyState();
   const contactConfirmed = demoJourney.aarohiContactReady;
   const [reminders, setReminders] = useState<Reminder[]>(["30 days", "7 days"]);
@@ -44,19 +40,19 @@ export default function DashboardPage() {
     profile === "rohan"
       ? {
           name: "Rohan Mehta",
-          eyebrow: t("Document readiness · synthetic demo", "दस्तावेज़ तैयारी · सिंथेटिक डेमो"),
+          eyebrow: t("Document readiness", "दस्तावेज़ तैयारी"),
           title: t(
             "Correct the proof before a small mismatch becomes a blocked application.",
             "छोटा अंतर आवेदन रोकने से पहले प्रमाण ठीक करें।",
           ),
           description: t(
-            "Rohan’s synthetic address proof needs review before he uses the official address-change service.",
+            "Rohan’s address proof needs review before he uses the official address-change service.",
             "रोहन के सिंथेटिक पते के प्रमाण को आधिकारिक पता-परिवर्तन सेवा से पहले समीक्षा चाहिए।",
           ),
           urgencyLabel: t("Document issue", "दस्तावेज़ समस्या"),
           urgency: t("Review now", "अभी समीक्षा करें"),
           urgencyDetail: t(
-            "A fictional locality wording difference needs an exact check against the proof.",
+            "A locality wording difference needs an exact check against the proof.",
             "काल्पनिक इलाके की शब्दावली में अंतर का प्रमाण से सटीक मिलान जरूरी है।",
           ),
           actionLabel: t("Review Rohan’s documents", "रोहन के दस्तावेज़ों की समीक्षा करें"),
@@ -76,13 +72,13 @@ export default function DashboardPage() {
       : profile === "neha"
         ? {
             name: "Neha Verma",
-            eyebrow: t("Application Rescue · synthetic demo", "आवेदन सहायता · सिंथेटिक डेमो"),
+            eyebrow: t("Application Rescue", "आवेदन सहायता"),
             title: t(
               "A payment status should never leave a citizen guessing what to do next.",
               "भुगतान स्थिति से नागरिक को अगला कदम अनुमान लगाने पर मजबूर नहीं होना चाहिए।",
             ),
             description: t(
-              "Neha’s fictional payment is shown as deducted but pending. SahiSetu prepares a safe recovery path—it does not process, retry, or refund payments.",
+              "Neha’s payment is shown as deducted but pending. SahiSetu prepares a safe recovery path—it does not process, retry, or refund payments.",
               "नेहा का काल्पनिक भुगतान कटा हुआ लेकिन लंबित है। SahiSetu सुरक्षित रिकवरी मार्ग तैयार करता है—यह भुगतान प्रोसेस, दोहराता या रिफंड नहीं करता।",
             ),
             urgencyLabel: t("Payment status", "भुगतान स्थिति"),
@@ -100,14 +96,14 @@ export default function DashboardPage() {
             sectionLabel: t("Recovery readiness", "रिकवरी तैयारी"),
             sectionTitle: t("Retain evidence before you act", "कार्रवाई से पहले प्रमाण सुरक्षित रखें"),
             sectionDetail: t(
-              "Avoid blind repeat payments. This synthetic demo helps a citizen understand what evidence to retain and when to use an official help route.",
+              "Avoid blind repeat payments. This demo helps a citizen understand what evidence to retain and when to use an official help route.",
               "बिना सोचे दोबारा भुगतान न करें। यह सिंथेटिक डेमो बताता है कि कौन सा प्रमाण रखें और आधिकारिक सहायता मार्ग कब उपयोग करें।",
             ),
             badge: t("Evidence needed", "प्रमाण आवश्यक"),
           }
         : {
             name: "Aarohi Sharma",
-            eyebrow: t("DL Guardian · synthetic demo", "DL गार्जियन · सिंथेटिक डेमो"),
+            eyebrow: t("DL Guardian", "DL गार्जियन"),
             title: t(
               "Stay ready before a licence deadline becomes urgent.",
               "लाइसेंस की समय-सीमा तत्काल बनने से पहले तैयार रहें।",
@@ -119,13 +115,13 @@ export default function DashboardPage() {
             urgencyLabel: t("Renewal urgency", "नवीनीकरण की तात्कालिकता"),
             urgency: t(`${renewal.daysRemaining} days`, `${renewal.daysRemaining} दिन`),
             urgencyDetail: t(
-              `Expiry detected from the synthetic licence: ${aarohiSyntheticLicence.visibleExpiryText}. Checked today: ${formatIndiaDate(renewal.referenceDate)}.`,
+              `Expiry detected from the licence: ${aarohiSyntheticLicence.visibleExpiryText}. Checked today: ${formatIndiaDate(renewal.referenceDate)}.`,
               `सिंथेटिक लाइसेंस से समाप्ति तिथि मिली: ${aarohiSyntheticLicence.visibleExpiryText}। आज जाँचा गया: ${formatIndiaDate(renewal.referenceDate)}।`,
             ),
             actionLabel: t("Review address proof", "पते के प्रमाण की समीक्षा करें"),
             actionHref: "/apply?demo=normal",
             rescue: t(
-              "Application Rescue guides synthetic `Under Scrutiny`, upload-pending, and payment-pending cases to an evidence checklist and safe next action.",
+              "Application Rescue guides `Under Scrutiny`, upload-pending, and payment-pending cases to an evidence checklist and safe next action.",
               "आवेदन सहायता सिंथेटिक `Under Scrutiny`, upload-pending और payment-pending मामलों को प्रमाण-सूची और सुरक्षित अगली कार्रवाई तक ले जाती है।",
             ),
             sectionLabel: t("Renewal readiness", "नवीनीकरण तैयारी"),
@@ -136,16 +132,14 @@ export default function DashboardPage() {
             ),
             badge: t("Action needed", "कार्रवाई आवश्यक"),
           };
-  const readyCount = (renewalActionNeeded ? 0 : 1) + (contactConfirmed ? 1 : 0);
+  const readyCount =
+    (renewalActionNeeded ? 0 : 1) + (contactConfirmed ? 1 : 0) + (demoJourney.aarohiMedicalReady ? 1 : 0);
   const auditSteps: AuditTimelineStep[] =
     profile === "rohan"
       ? [
           {
             label: t("Documents uploaded", "दस्तावेज़ अपलोड"),
-            detail: t(
-              "Synthetic licence and new-address proof retained.",
-              "सिंथेटिक लाइसेंस और नए पते का प्रमाण सुरक्षित है।",
-            ),
+            detail: t("Licence and new-address proof retained.", "सिंथेटिक लाइसेंस और नए पते का प्रमाण सुरक्षित है।"),
             state: "complete",
           },
           {
@@ -182,7 +176,7 @@ export default function DashboardPage() {
         ? [
             {
               label: t("Status record captured", "स्थिति रिकॉर्ड लिया गया"),
-              detail: t("Synthetic payment-pending record retained.", "सिंथेटिक भुगतान-लंबित रिकॉर्ड सुरक्षित है।"),
+              detail: t("Payment-pending record retained.", "भुगतान-लंबित रिकॉर्ड सुरक्षित है।"),
               state: "complete",
             },
             {
@@ -216,7 +210,7 @@ export default function DashboardPage() {
             {
               label: t("Licence captured", "लाइसेंस लिया गया"),
               detail: t(
-                "Synthetic licence is available for readiness review.",
+                "Licence is available for readiness review.",
                 "सिंथेटिक लाइसेंस तैयारी समीक्षा के लिए उपलब्ध है।",
               ),
               state: "complete",
@@ -258,7 +252,7 @@ export default function DashboardPage() {
   const activeChecklist =
     profile === "rohan"
       ? [
-          { label: "Current driving licence", detail: "Detected from Rohan’s synthetic demo profile.", state: "ready" },
+          { label: "Current driving licence", detail: "Detected from Rohan’s demo profile.", state: "ready" },
           {
             label: "New-address proof",
             detail: "Correction required: compare the locality wording with the visible proof before submitting.",
@@ -274,7 +268,7 @@ export default function DashboardPage() {
         ? [
             {
               label: "Payment receipt",
-              detail: "Retain the fictional receipt, transaction time, and amount as evidence.",
+              detail: "Retain the receipt, transaction time, and amount as evidence.",
               state: "ready",
             },
             {
@@ -284,7 +278,7 @@ export default function DashboardPage() {
             },
             {
               label: "Repeat-payment decision",
-              detail: "Do not pay again blindly while the original fictional transaction remains pending.",
+              detail: "Do not pay again blindly while the original transaction remains pending.",
               state: "action",
             },
           ]
@@ -297,7 +291,7 @@ export default function DashboardPage() {
                     `समाप्ति तिथि मिली: ${aarohiSyntheticLicence.visibleExpiryText} · ${renewal.daysRemaining} दिन शेष। नवीनीकरण तैयारी अभी शुरू करें।`,
                   )
                 : t(
-                    `Expiry detected: ${aarohiSyntheticLicence.visibleExpiryText}. Renewal window is safe in this synthetic scenario.`,
+                    `Expiry detected: ${aarohiSyntheticLicence.visibleExpiryText}. Renewal window is safe in this demo scenario.`,
                     `समाप्ति तिथि मिली: ${aarohiSyntheticLicence.visibleExpiryText}। इस सिंथेटिक स्थिति में नवीनीकरण विंडो सुरक्षित है।`,
                   ),
               state: renewalActionNeeded ? "action" : "ready",
@@ -317,6 +311,19 @@ export default function DashboardPage() {
                 "पुष्टि नहीं हुई। महत्वपूर्ण आधिकारिक अलर्ट इस नंबर तक नहीं पहुँच सकते।",
               ),
               state: "action",
+            },
+            {
+              label: t("Form 1A medical readiness", "Form 1A मेडिकल तैयारी"),
+              detail: demoJourney.aarohiMedicalReady
+                ? t(
+                    "Core visible fields are ready for human review. Verify whether Form 1A applies in the official service.",
+                    "मुख्य दिखाई देने वाले फ़ील्ड मानवीय समीक्षा के लिए तैयार हैं। आधिकारिक सेवा में सत्यापित करें कि Form 1A लागू है या नहीं।",
+                  )
+                : t(
+                    "Check the doctor registration number, seal/stamp, signature, and fitness declaration before relying on the form.",
+                    "फॉर्म पर निर्भर होने से पहले डॉक्टर पंजीकरण नंबर, मुहर/स्टाम्प, हस्ताक्षर और फिटनेस घोषणा जाँचें।",
+                  ),
+              state: demoJourney.aarohiMedicalReady ? "ready" : "review",
             },
           ];
 
@@ -378,7 +385,7 @@ export default function DashboardPage() {
                   </p>
                   <h2 className="mt-2 text-2xl font-semibold">
                     {profile === "aarohi"
-                      ? t(`${readyCount} of 3 readiness checks complete`, `3 में से ${readyCount} तैयारी जाँच पूरी`)
+                      ? t(`${readyCount} of 4 readiness checks complete`, `4 में से ${readyCount} तैयारी जाँच पूरी`)
                       : profileContent.sectionTitle}
                   </h2>
                   <p className="mt-2 max-w-xl text-sm leading-6 text-[#5c6d60]">{profileContent.sectionDetail}</p>
@@ -392,7 +399,7 @@ export default function DashboardPage() {
                   const resolved = item.label === "Contact number readiness" && contactConfirmed;
                   const state = resolved ? "ready" : item.state;
                   const detail = resolved
-                    ? "Confirmed for this synthetic demo. Update official details only through the authorised service."
+                    ? "Confirmed for this demo. Update official details only through the authorised service."
                     : item.detail;
                   return (
                     <article key={item.label} className={`rounded-2xl border p-4 ${tone[state as keyof typeof tone]}`}>
@@ -432,12 +439,20 @@ export default function DashboardPage() {
               </div>
             </section>
 
+            {profile === "aarohi" ? (
+              <Form1AMedicalShield
+                hindi={hindi}
+                complete={demoJourney.aarohiMedicalReady}
+                onComplete={(ready) => setDemoJourneyState({ aarohiMedicalReady: ready })}
+              />
+            ) : null}
+
             <ExplainableAuditTimeline language={hindi ? "hi" : "en"} steps={auditSteps} />
 
             {profile === "aarohi" && demoJourney.aarohiPacketReady && (
               <section className="rounded-3xl border border-[#b9dfc0] bg-[#f1fbf3] p-6 sm:p-8">
                 <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-                  {t("Synthetic handoff pack", "सिंथेटिक हैंडऑफ पैक")}
+                  {t("Handoff pack", "हैंडऑफ पैक")}
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold">
                   {t(
@@ -459,42 +474,6 @@ export default function DashboardPage() {
                 </Link>
               </section>
             )}
-
-            <section className="rounded-3xl border border-[#dce7dd] bg-white p-6 sm:p-8">
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-                {t("What happens next", "आगे क्या होगा")}
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold">
-                {t("A clear path, without a black-box decision.", "ब्लैक-बॉक्स निर्णय के बिना एक स्पष्ट मार्ग।")}
-              </h2>
-              <ol className="mt-6 space-y-4 border-l-2 border-[#d8eadb] pl-5 text-sm leading-6 text-[#506556]">
-                <li>
-                  <strong className="text-[#17281f]">{t("Check your documents.", "अपने दस्तावेज़ जाँचें।")}</strong>{" "}
-                  {t(
-                    "SahiSetu catches unreadable, incomplete, or inconsistent demo documents before you proceed.",
-                    "आगे बढ़ने से पहले SahiSetu अपठनीय, अधूरे या असंगत डेमो दस्तावेज़ पकड़ता है।",
-                  )}
-                </li>
-                <li>
-                  <strong className="text-[#17281f]">
-                    {t("Review the exact issue.", "सटीक समस्या की समीक्षा करें।")}
-                  </strong>{" "}
-                  {t(
-                    "You see the relevant field, document wording, and corrective action.",
-                    "आपको संबंधित फ़ील्ड, दस्तावेज़ की शब्दावली और सुधारात्मक कार्रवाई दिखती है।",
-                  )}
-                </li>
-                <li>
-                  <strong className="text-[#17281f]">
-                    {t("Continue through the official route.", "आधिकारिक मार्ग से आगे बढ़ें।")}
-                  </strong>{" "}
-                  {t(
-                    "SahiSetu never submits, pays, approves, or updates an official application.",
-                    "SahiSetu कभी भी आधिकारिक आवेदन जमा, भुगतान, मंजूर या अपडेट नहीं करता।",
-                  )}
-                </li>
-              </ol>
-            </section>
           </div>
 
           <aside className="space-y-6">
@@ -545,7 +524,7 @@ export default function DashboardPage() {
             ) : (
               <section className="rounded-3xl border border-[#d7e5d9] bg-[#f7fbf7] p-6">
                 <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-                  {t("Synthetic scenario", "सिंथेटिक स्थिति")}
+                  {t("Demo scenario", "डेमो स्थिति")}
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold">
                   {t("One clear next action.", "एक स्पष्ट अगली कार्रवाई।")}
@@ -564,37 +543,12 @@ export default function DashboardPage() {
                 </Link>
               </section>
             )}
-
-            <section className="rounded-3xl border border-[#efd9a2] bg-[#fffaf0] p-6">
-              <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#8a5a12]">
-                {t("Already submitted the application?", "क्या आवेदन पहले ही जमा कर दिया है?")}
-              </p>
-              <h2 className="mt-2 text-xl font-semibold">
-                {t("Application Rescue is ready.", "आवेदन सहायता तैयार है।")}
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-[#6f5a35]">{profileContent.rescue}</p>
-              <Link
-                href={
-                  profile === "rohan"
-                    ? "/rescue?case=under-scrutiny"
-                    : profile === "neha"
-                      ? "/rescue?case=payment-pending"
-                      : "/rescue?case=upload-pending"
-                }
-                className="mt-4 block rounded-xl border border-[#e4c77f] bg-white px-4 py-3 text-center text-sm font-semibold text-[#80591b] hover:bg-[#fff7e5]"
-              >
-                {t("Open Application Rescue →", "आवेदन सहायता खोलें →")}
-              </Link>
-              <span className="mt-4 inline-flex rounded-full bg-white px-3 py-1.5 text-xs font-bold text-[#8a5a12] ring-1 ring-[#efd9a2]">
-                {t("Prototype preview", "प्रोटोटाइप पूर्वावलोकन")}
-              </span>
-            </section>
           </aside>
         </section>
 
         <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
           {t(
-            "SahiSetu is an independent, synthetic-data-only prototype—not an official government service.",
+            "Independent demo · not an official government service.",
             "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है—आधिकारिक सरकारी सेवा नहीं।",
           )}
         </footer>
