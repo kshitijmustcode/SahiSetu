@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { FormEvent, useRef, useState } from "react";
-import { LanguageToggle, useLanguage } from "../components/language-toggle";
+import { SiteFooter, SiteNavigation } from "../components/site-chrome";
+import { useLanguage } from "../components/language-toggle";
 import type { HelpSource } from "../lib/guided-help-knowledge";
 
 type Answer = { answer: string; sources: HelpSource[]; mode: "source-grounded" };
@@ -199,23 +200,14 @@ export default function GuidedHelpPage() {
   return (
     <main className="min-h-screen bg-[#fffdf8] text-[#17281f]">
       <div className="mx-auto max-w-6xl px-5 py-5 sm:px-8">
-        <nav className="flex items-center justify-between" aria-label="Main navigation">
-          <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#166534] text-lg text-white shadow-sm">
-              स
-            </span>
-            <span className="text-xl">SahiSetu</span>
+        <SiteNavigation>
+          <Link
+            href="/demo"
+            className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
+          >
+            {hindi ? "डेमो चुनें" : "Choose demo"}
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <Link
-              href="/demo"
-              className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
-            >
-              {hindi ? "डेमो चुनें" : "Choose demo"}
-            </Link>
-          </div>
-        </nav>
+        </SiteNavigation>
 
         <section className="py-14 sm:py-20">
           <p className="inline-flex rounded-full bg-[#eaf5ed] px-3 py-1.5 text-sm font-semibold text-[#23663a]">
@@ -448,11 +440,11 @@ export default function GuidedHelpPage() {
             </div>
           </section>
         </section>
-        <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
+        <SiteFooter>
           {hindi
             ? "स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप — कोई आधिकारिक सरकारी सेवा नहीं।"
             : "Independent demo · not an official government service."}
-        </footer>
+        </SiteFooter>
       </div>
     </main>
   );

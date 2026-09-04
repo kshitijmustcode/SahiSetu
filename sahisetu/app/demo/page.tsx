@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { LanguageToggle, useLanguage } from "../components/language-toggle";
+import { SiteFooter, SiteNavigation } from "../components/site-chrome";
+import { useLanguage } from "../components/language-toggle";
 import { resetDemoJourneyState } from "../lib/demo-journey-state";
 import { getRenewalReadiness } from "../lib/dl-readiness";
 
@@ -29,7 +30,7 @@ const profiles = [
     issue: "“Lake View Road” or “Lakeview Road”?",
     issueHi: "“Lake View Road” या “Lakeview Road”?",
     detail:
-      "Rohan moved from Koramangala to Indiranagar. Compare the new address he entered with his synthetic proof before submitting.",
+      "Rohan moved from Koramangala to Indiranagar. Compare the new address he entered with the provided proof before submitting.",
     detailHi:
       "रोहन कोरमंगला से इंदिरानगर चले गए। सबमिशन से पहले आवेदन में लिखा नया पता उनके सिंथेटिक प्रमाण से मिलाएँ।",
     href: "/apply?demo=rohan",
@@ -44,7 +45,7 @@ const profiles = [
     labelHi: "मेरा भुगतान लंबित है",
     issue: "₹450 deducted, but renewal still pending",
     issueHi: "₹450 कटे, लेकिन नवीनीकरण अभी भी लंबित है",
-    detail: "Review Neha’s synthetic payment record and prepare the evidence needed before any next step.",
+    detail: "Review Neha’s payment record and prepare the evidence needed before any next step.",
     detailHi: "अगला कदम लेने से पहले नेहा के सिंथेटिक भुगतान रिकॉर्ड की समीक्षा करें और जरूरी प्रमाण तैयार करें।",
     href: "/rescue?case=payment-pending",
     icon: "₹",
@@ -59,26 +60,17 @@ export default function DemoProfilesPage() {
   return (
     <main className="min-h-screen bg-[#fffdf8] text-[#17281f]">
       <div className="mx-auto max-w-5xl px-5 py-5 sm:px-8">
-        <nav className="flex items-center justify-between" aria-label="Main navigation">
-          <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#166534] text-lg text-white shadow-sm">
-              स
-            </span>
-            <span className="text-xl">SahiSetu</span>
-          </Link>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <button
-              onClick={resetDemoJourneyState}
-              className="rounded-lg border border-[#e3c996] bg-white px-3 py-2 text-sm font-semibold text-[#80591b] hover:bg-[#fff8e8]"
-            >
-              {hindi ? "डेमो प्रगति रीसेट करें" : "Reset demo progress"}
-            </button>
-            <span className="hidden rounded-full border border-[#e8cd98] bg-[#fff8e8] px-3 py-1.5 text-xs font-medium text-[#80591b] sm:inline">
-              {hindi ? "सिंथेटिक डेमो प्रोफ़ाइल" : "Synthetic demo profiles"}
-            </span>
-          </div>
-        </nav>
+        <SiteNavigation>
+          <button
+            onClick={resetDemoJourneyState}
+            className="rounded-lg border border-[#e3c996] bg-white px-3 py-2 text-sm font-semibold text-[#80591b] hover:bg-[#fff8e8]"
+          >
+            {hindi ? "डेमो प्रगति रीसेट करें" : "Reset demo progress"}
+          </button>
+          <span className="hidden rounded-full border border-[#e8cd98] bg-[#fff8e8] px-3 py-1.5 text-xs font-medium text-[#80591b] sm:inline">
+            {hindi ? "डेमो प्रोफ़ाइल" : "Demo profiles"}
+          </span>
+        </SiteNavigation>
         <section className="py-16 sm:py-24">
           <p className="inline-flex rounded-full bg-[#fff1d7] px-3 py-1.5 text-sm font-semibold text-[#8a5410]">
             {hindi ? "एक स्थिति चुनें" : "Choose a scenario"}
@@ -113,11 +105,11 @@ export default function DemoProfilesPage() {
             ))}
           </div>
         </section>
-        <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
+        <SiteFooter>
           {hindi
             ? "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है—आधिकारिक सरकारी सेवा नहीं।"
             : "SahiSetu is an independent, synthetic-data-only prototype—not an official government service."}
-        </footer>
+        </SiteFooter>
       </div>
     </main>
   );

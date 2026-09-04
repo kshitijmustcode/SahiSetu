@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { ExplainableAuditTimeline, type AuditTimelineStep } from "../components/explainable-audit-timeline";
-import { LanguageToggle, useLanguage } from "../components/language-toggle";
+import { SiteFooter, SiteNavigation } from "../components/site-chrome";
+import { useLanguage } from "../components/language-toggle";
 import { setDemoJourneyState, useDemoJourneyState } from "../lib/demo-journey-state";
 
 type RescueCase = "payment-pending" | "under-scrutiny" | "upload-pending";
@@ -27,7 +28,7 @@ const cases: Record<
     shortTitle: "Payment pending",
     title: "Payment pending should lead to a plan—not another payment.",
     description:
-      "Neha’s demo payment is marked as deducted but pending. SahiSetu helps retain the right evidence and identify a safe next step; it cannot verify, retry, refund, or update any official transaction.",
+      "Neha’s payment is marked as deducted but pending. Keep the payment record together, then check the official status before considering another payment.",
     status: "Amount deducted · status pending",
     warning: "Do not pay again blindly.",
     evidence: [
@@ -45,7 +46,7 @@ const cases: Record<
     shortTitle: "Under Scrutiny",
     title: "An unclear status should lead to evidence—not guesswork.",
     description:
-      "This demo case represents an application marked `Under Scrutiny` without a clear citizen-facing explanation. SahiSetu organises what was submitted and helps the citizen review any known document difference before seeking the official next step.",
+      "This application is marked `Under Scrutiny` without a clear citizen-facing reason. Retain what was submitted, then review an actual document difference before seeking clarification.",
     status: "Application status · Under Scrutiny",
     warning: "Do not assume an approval or rejection.",
     evidence: [
@@ -64,7 +65,7 @@ const cases: Record<
     shortTitle: "Upload pending",
     title: "A repeated upload is not always the safe next step.",
     description:
-      "This demo case represents a citizen who uploaded documents but still sees `Document Upload Pending`. SahiSetu separates evidence retention from re-upload, so the citizen does not replace a valid record without first checking the visible status and official guidance.",
+      "This case shows `Document Upload Pending` after documents were uploaded. Retain the original upload record before replacing anything, then follow the official status guidance.",
     status: "Document upload · pending",
     warning: "Do not discard the original upload evidence.",
     evidence: [
@@ -96,7 +97,7 @@ const hindiCases: Record<
     shortTitle: "भुगतान लंबित",
     title: "भुगतान लंबित होने पर योजना चाहिए—एक और भुगतान नहीं।",
     description:
-      "नेहा का काल्पनिक नवीनीकरण भुगतान कटा हुआ लेकिन लंबित है। SahiSetu सही प्रमाण सुरक्षित रखने और सुरक्षित अगला कदम पहचानने में मदद करता है; यह किसी आधिकारिक लेन-देन को सत्यापित, दोहरा, रिफंड या अपडेट नहीं कर सकता।",
+      "नेहा का भुगतान कटा हुआ लेकिन लंबित दिख रहा है। भुगतान रिकॉर्ड साथ रखें, फिर दूसरा भुगतान सोचने से पहले आधिकारिक स्थिति जाँचें।",
     status: "राशि कटी · स्थिति लंबित",
     warning: "बिना जाँचे दोबारा भुगतान न करें।",
     evidence: [
@@ -114,7 +115,7 @@ const hindiCases: Record<
     shortTitle: "जाँच में",
     title: "अस्पष्ट स्थिति पर अनुमान नहीं, प्रमाण चाहिए।",
     description:
-      "यह सिंथेटिक मामला ऐसे आवेदन को दिखाता है जिस पर स्पष्ट नागरिक-उन्मुख कारण के बिना `Under Scrutiny` लिखा है। SahiSetu जमा किए गए रिकॉर्ड व्यवस्थित करता है और आधिकारिक अगला कदम लेने से पहले किसी ज्ञात दस्तावेज़ अंतर की समीक्षा कराता है।",
+      "इस आवेदन पर स्पष्ट नागरिक-उन्मुख कारण के बिना `Under Scrutiny` लिखा है। जमा किए गए रिकॉर्ड रखें, फिर स्पष्टीकरण लेने से पहले वास्तविक दस्तावेज़ अंतर की समीक्षा करें।",
     status: "आवेदन स्थिति · जाँच में",
     warning: "मंजूरी या अस्वीकृति मानकर न चलें।",
     evidence: [
@@ -133,7 +134,7 @@ const hindiCases: Record<
     shortTitle: "अपलोड लंबित",
     title: "हर बार दोबारा अपलोड करना सुरक्षित अगला कदम नहीं है।",
     description:
-      "यह सिंथेटिक मामला उस नागरिक को दिखाता है जिसने दस्तावेज़ अपलोड किए, लेकिन फिर भी `Document Upload Pending` देखता है। SahiSetu प्रमाण सुरक्षित रखने और दोबारा अपलोड करने को अलग करता है, ताकि नागरिक बिना जाँच किसी वैध रिकॉर्ड को न बदले।",
+      "दस्तावेज़ अपलोड करने के बाद भी इस मामले में `Document Upload Pending` दिखता है। कुछ बदलने से पहले मूल अपलोड रिकॉर्ड रखें, फिर आधिकारिक स्थिति निर्देश देखें।",
     status: "दस्तावेज़ अपलोड · लंबित",
     warning: "मूल अपलोड का प्रमाण न हटाएँ।",
     evidence: [
@@ -223,23 +224,14 @@ export default function RescuePage() {
   return (
     <main className="min-h-screen bg-[#fffdf8] text-[#17281f]">
       <div className="mx-auto max-w-6xl px-5 py-5 sm:px-8">
-        <nav className="flex items-center justify-between" aria-label="Main navigation">
-          <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#166534] text-lg text-white shadow-sm">
-              स
-            </span>
-            <span className="text-xl">SahiSetu</span>
+        <SiteNavigation>
+          <Link
+            href="/demo"
+            className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
+          >
+            {hindi ? "डेमो बदलें" : "Change demo"}
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <Link
-              href="/demo"
-              className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
-            >
-              {hindi ? "डेमो बदलें" : "Change demo"}
-            </Link>
-          </div>
-        </nav>
+        </SiteNavigation>
         <header className="border-b border-[#e1eade] py-10 sm:py-14">
           <p className="inline-flex rounded-full bg-[#fff1d7] px-3 py-1.5 text-sm font-semibold text-[#8a5410]">
             {hindi ? "आवेदन सहायता" : "Application Rescue"}
@@ -318,8 +310,8 @@ export default function RescuePage() {
               </h2>
               <p className="mt-3 text-sm leading-6 text-[#536b59]">
                 {hindi
-                  ? "यह सूची प्रोटोटाइप में समझने योग्य सहायता-सार बनती है। यह बैंक, हेल्प डेस्क, Parivahan या RTO से संपर्क नहीं करती।"
-                  : "This checklist becomes an explainable support summary in the prototype. It does not contact a bank, help desk, Parivahan, or an RTO."}
+                  ? "सहायता-सार तैयार करने के लिए इस सूची में हर विवरण की पुष्टि करें।"
+                  : "Confirm each item to prepare a clear support summary."}
               </p>
               <div className="mt-5 space-y-3">
                 {activeCase.evidence.map((item) => (
@@ -344,7 +336,7 @@ export default function RescuePage() {
                 }}
                 className="mt-6 w-full rounded-xl bg-[#193b63] px-5 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-45"
               >
-                {hindi ? "सिमुलेटेड सहायता-सार बनाएँ" : "Create simulated support summary"}
+                {hindi ? "सहायता-सार तैयार करें" : "Prepare support summary"}
               </button>
               {summaryCreated && (
                 <>
@@ -374,11 +366,11 @@ export default function RescuePage() {
             </section>
           </div>
         </section>
-        <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
+        <SiteFooter>
           {hindi
             ? "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है—आधिकारिक सरकारी सेवा नहीं।"
             : "Independent demo · not an official government service."}
-        </footer>
+        </SiteFooter>
       </div>
     </main>
   );

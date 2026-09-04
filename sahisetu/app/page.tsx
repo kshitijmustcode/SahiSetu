@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { LanguageToggle, useLanguage } from "./components/language-toggle";
+import { SiteFooter, SiteNavigation } from "./components/site-chrome";
+import { useLanguage } from "./components/language-toggle";
 import { getRenewalReadiness } from "./lib/dl-readiness";
 
 const services = [
@@ -56,37 +57,28 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#fffdf8] text-[#17281f]">
       <div className="mx-auto max-w-6xl px-5 py-5 sm:px-8">
-        <nav className="flex items-center justify-between" aria-label="Main navigation">
-          <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#166534] text-lg text-white shadow-sm">
-              स
-            </span>
-            <span className="text-xl">SahiSetu</span>
+        <SiteNavigation>
+          <Link
+            href="/help"
+            className="hidden rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec] sm:inline"
+          >
+            {hindi ? "सहायता केंद्र" : "Help centre"}
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <Link
-              href="/help"
-              className="hidden rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec] sm:inline"
-            >
-              {hindi ? "सहायता केंद्र" : "Help centre"}
-            </Link>
-            <Link
-              href="/demo"
-              className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
-            >
-              {hindi ? "डेमो चुनें" : "Choose demo"}
-            </Link>
-            <a
-              href="https://github.com/kshitijmustcode/SahiSetu"
-              target="_blank"
-              rel="noreferrer"
-              className="hidden rounded-lg border border-[#d7e1d7] bg-white px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#f4faf3] sm:inline"
-            >
-              GitHub ↗
-            </a>
-          </div>
-        </nav>
+          <Link
+            href="/demo"
+            className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
+          >
+            {hindi ? "डेमो चुनें" : "Choose demo"}
+          </Link>
+          <a
+            href="https://github.com/kshitijmustcode/SahiSetu"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden rounded-lg border border-[#d7e1d7] bg-white px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#f4faf3] sm:inline"
+          >
+            GitHub ↗
+          </a>
+        </SiteNavigation>
 
         <section className="grid items-center gap-12 py-16 sm:py-24 lg:grid-cols-[1.08fr_.92fr] lg:py-28">
           <div>
@@ -285,11 +277,11 @@ export default function Home() {
             </ul>
           </div>
         </section>
-        <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
+        <SiteFooter>
           {hindi
             ? "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है—आधिकारिक सरकारी सेवा नहीं।"
             : "Independent demo · not an official government service."}
-        </footer>
+        </SiteFooter>
       </div>
     </main>
   );

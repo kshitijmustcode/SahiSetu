@@ -3,7 +3,8 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { ExplainableAuditTimeline, type AuditTimelineStep } from "../components/explainable-audit-timeline";
-import { LanguageToggle, useLanguage } from "../components/language-toggle";
+import { SiteFooter, SiteNavigation } from "../components/site-chrome";
+import { useLanguage } from "../components/language-toggle";
 import { resetDemoJourneyState, useDemoJourneyState } from "../lib/demo-journey-state";
 import { aarohiSyntheticLicence, getRenewalReadiness } from "../lib/dl-readiness";
 import { grantTriageDemoAccess, revokeTriageDemoAccess, useTriageDemoAccess } from "../lib/triage-demo-access";
@@ -59,23 +60,14 @@ export default function TriagePage() {
     return (
       <main className="min-h-screen bg-[#fffdf8] text-[#17281f]">
         <div className="mx-auto max-w-5xl px-5 py-5 sm:px-8">
-          <nav className="flex items-center justify-between" aria-label="Main navigation">
-            <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#166534] text-lg text-white shadow-sm">
-                स
-              </span>
-              <span className="text-xl">SahiSetu</span>
+          <SiteNavigation>
+            <Link
+              href="/demo"
+              className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
+            >
+              {t("Citizen demos", "नागरिक डेमो")}
             </Link>
-            <div className="flex items-center gap-2">
-              <LanguageToggle />
-              <Link
-                href="/demo"
-                className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
-              >
-                {t("Citizen demos", "नागरिक डेमो")}
-              </Link>
-            </div>
-          </nav>
+          </SiteNavigation>
 
           <section className="py-14 sm:py-20">
             <p className="inline-flex rounded-full bg-[#f0f8fc] px-3 py-1.5 text-sm font-semibold text-[#235779]">
@@ -163,12 +155,12 @@ export default function TriagePage() {
               </form>
             </div>
           </section>
-          <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
+          <SiteFooter>
             {t(
               "Independent demo · not an official government service.",
               "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है—आधिकारिक सरकारी सेवा नहीं।",
             )}
-          </footer>
+          </SiteFooter>
         </div>
       </main>
     );
@@ -190,13 +182,13 @@ export default function TriagePage() {
           ? t("Readiness pack review", "तैयारी पैक समीक्षा")
           : t("Renewal needs attention", "नवीनीकरण पर ध्यान चाहिए"),
       summary: t(
-        `A synthetic licence visibly expires on ${aarohiSyntheticLicence.visibleExpiryText}; ${renewal.daysRemaining} days remain in the demo reference date.`,
-        `सिंथेटिक लाइसेंस पर ${aarohiSyntheticLicence.visibleExpiryText} की समाप्ति दिखाई देती है; डेमो संदर्भ तिथि में ${renewal.daysRemaining} दिन शेष हैं।`,
+        `The licence visibly expires on ${aarohiSyntheticLicence.visibleExpiryText}; ${renewal.daysRemaining} days remain in the reference date.`,
+        `लाइसेंस पर ${aarohiSyntheticLicence.visibleExpiryText} की समाप्ति दिखाई देती है; संदर्भ तिथि में ${renewal.daysRemaining} दिन शेष हैं।`,
       ),
       evidence: [
         t("Licence expiry field", "लाइसेंस की समाप्ति फ़ील्ड"),
         t("Readiness checklist", "तैयारी सूची"),
-        t("Simulated contact-readiness state", "सिमुलेटेड संपर्क-तैयारी स्थिति"),
+        t("Contact-readiness state", "संपर्क-तैयारी स्थिति"),
         ...(demoJourney.aarohiMedicalReady
           ? [t("Form 1A pre-check ready for human review", "Form 1A प्री-चेक मानवीय समीक्षा के लिए तैयार")]
           : []),
@@ -207,15 +199,15 @@ export default function TriagePage() {
       ),
       citizenNextAction: t(
         demoJourney.aarohiPacketReady
-          ? "The synthetic readiness packet is prepared. Continue through the relevant official renewal service when ready; SahiSetu has not submitted anything."
+          ? "The readiness packet is prepared. Continue through the relevant official renewal service when ready."
           : demoJourney.aarohiContactReady
-            ? "Contact readiness is confirmed. Review the synthetic renewal pack before using the relevant official service; SahiSetu has not submitted anything."
-            : "Review the synthetic document pack before using an official renewal service.",
+            ? "Contact readiness is confirmed. Review the renewal pack before using the relevant official service."
+            : "Review the document pack before using an official renewal service.",
         demoJourney.aarohiPacketReady
-          ? "सिंथेटिक तैयारी पैकेट तैयार है। तैयार होने पर संबंधित आधिकारिक नवीनीकरण सेवा से आगे बढ़ें; SahiSetu ने कुछ भी सबमिट नहीं किया है।"
+          ? "तैयारी पैकेट तैयार है। तैयार होने पर संबंधित आधिकारिक नवीनीकरण सेवा से आगे बढ़ें।"
           : demoJourney.aarohiContactReady
-            ? "संपर्क तैयारी की पुष्टि हो गई है। संबंधित आधिकारिक सेवा से पहले सिंथेटिक नवीनीकरण पैक की समीक्षा करें; SahiSetu ने कुछ भी सबमिट नहीं किया है।"
-            : "आधिकारिक नवीनीकरण सेवा से पहले सिंथेटिक दस्तावेज़ पैक की समीक्षा करें।",
+            ? "संपर्क तैयारी की पुष्टि हो गई है। संबंधित आधिकारिक सेवा से पहले नवीनीकरण पैक की समीक्षा करें।"
+            : "आधिकारिक नवीनीकरण सेवा से पहले दस्तावेज़ पैक की समीक्षा करें।",
       ),
       timeline: [
         {
@@ -275,13 +267,13 @@ export default function TriagePage() {
         ? t("Readiness packet prepared", "तैयारी पैकेट तैयार")
         : t("Citizen wording review", "नागरिक शब्दावली समीक्षा"),
       summary: t(
-        "The old Koramangala address on the synthetic licence is expected. The proof supplies the new Indiranagar address: Lakeview Road.",
-        "सिंथेटिक लाइसेंस पर पुराना कोरमंगला पता अपेक्षित है। प्रमाण नया इंदिरानगर पता देता है: Lakeview Road।",
+        "The old Koramangala address on the licence is expected. The proof supplies the new Indiranagar address: Lakeview Road.",
+        "लाइसेंस पर पुराना कोरमंगला पता अपेक्षित है। प्रमाण नया इंदिरानगर पता देता है: Lakeview Road।",
       ),
       evidence: [
-        t("Old-address synthetic driving licence", "पुराने पते का सिंथेटिक ड्राइविंग लाइसेंस"),
+        t("Old-address driving licence", "पुराने पते का ड्राइविंग लाइसेंस"),
         t("New-address proof: Lakeview Road, Indiranagar", "नए पते का प्रमाण: Lakeview Road, इंदिरानगर"),
-        t("Synthetic Under Scrutiny status reference", "सिंथेटिक Under Scrutiny स्थिति संदर्भ"),
+        t("Under Scrutiny status reference", "Under Scrutiny स्थिति संदर्भ"),
       ],
       focus: t(
         "Compare only the citizen’s final application text with the proof. The old licence address is not a mismatch to resolve.",
@@ -289,10 +281,10 @@ export default function TriagePage() {
       ),
       citizenNextAction: t(
         demoJourney.rohanPacketReady
-          ? "A synthetic readiness packet is prepared. Continue through the relevant official address-change service when ready; SahiSetu has not submitted anything."
+          ? "A readiness packet is prepared. Continue through the relevant official address-change service when ready."
           : "Review the exact proof wording; create a clarification note only if the citizen changes Lakeview to Lake View.",
         demoJourney.rohanPacketReady
-          ? "सिंथेटिक तैयारी पैकेट तैयार है। तैयार होने पर संबंधित आधिकारिक पता-परिवर्तन सेवा से आगे बढ़ें; SahiSetu ने कुछ भी सबमिट नहीं किया है।"
+          ? "तैयारी पैकेट तैयार है। तैयार होने पर संबंधित आधिकारिक पता-परिवर्तन सेवा से आगे बढ़ें।"
           : "प्रमाण की सटीक शब्दावली देखें; नागरिक द्वारा Lakeview को Lake View करने पर ही स्पष्टीकरण नोट बनाएँ।",
       ),
       timeline: [
@@ -312,7 +304,7 @@ export default function TriagePage() {
         {
           label: t("Readiness result", "तैयारी परिणाम"),
           detail: demoJourney.rohanPacketReady
-            ? t("Synthetic readiness packet prepared.", "सिंथेटिक तैयारी पैकेट तैयार।")
+            ? t("Readiness packet prepared.", "तैयारी पैकेट तैयार।")
             : t("Amber until the final text is compared.", "अंतिम टेक्स्ट की तुलना तक एम्बर।"),
           state: demoJourney.rohanPacketReady ? "complete" : "attention",
         },
@@ -345,7 +337,7 @@ export default function TriagePage() {
       evidence: [
         "DEMO-TXN-7742",
         "DEMO-APP-NV-9081",
-        t("Synthetic payment-pending record", "सिंथेटिक भुगतान-लंबित रिकॉर्ड"),
+        t("Payment-pending record", "भुगतान-लंबित रिकॉर्ड"),
         t("Transaction date and amount", "लेन-देन तिथि और राशि"),
       ],
       focus: t(
@@ -354,10 +346,10 @@ export default function TriagePage() {
       ),
       citizenNextAction: t(
         demoJourney.nehaSummaryReady
-          ? "The synthetic support summary is prepared. Use the relevant official payment-status or support route before considering another payment."
+          ? "The support summary is prepared. Use the relevant official payment-status or support route before considering another payment."
           : "Use the relevant official payment-status or support route before considering another payment.",
         demoJourney.nehaSummaryReady
-          ? "सिंथेटिक सहायता-सार तैयार है। दूसरे भुगतान पर विचार करने से पहले संबंधित आधिकारिक भुगतान-स्थिति या सहायता मार्ग उपयोग करें।"
+          ? "सहायता-सार तैयार है। दूसरे भुगतान पर विचार करने से पहले संबंधित आधिकारिक भुगतान-स्थिति या सहायता मार्ग उपयोग करें।"
           : "दूसरे भुगतान पर विचार करने से पहले संबंधित आधिकारिक भुगतान-स्थिति या सहायता मार्ग उपयोग करें।",
       ),
       timeline: [
@@ -398,35 +390,26 @@ export default function TriagePage() {
   return (
     <main className="min-h-screen bg-[#fffdf8] text-[#17281f]">
       <div className="mx-auto max-w-6xl px-5 py-5 sm:px-8">
-        <nav className="flex items-center justify-between" aria-label="Main navigation">
-          <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#166534] text-lg text-white shadow-sm">
-              स
-            </span>
-            <span className="text-xl">SahiSetu</span>
+        <SiteNavigation>
+          <button
+            onClick={resetDemoJourneyState}
+            className="rounded-lg border border-[#e3c996] bg-white px-3 py-2 text-sm font-semibold text-[#80591b] hover:bg-[#fff8e8]"
+          >
+            {t("Reset demo progress", "डेमो प्रगति रीसेट करें")}
+          </button>
+          <button
+            onClick={revokeTriageDemoAccess}
+            className="rounded-lg border border-[#b8d5e8] bg-[#f0f8fc] px-3 py-2 text-sm font-semibold text-[#235779] hover:bg-[#e3f2fa]"
+          >
+            {t("Exit staff view", "स्टाफ दृश्य से बाहर निकलें")}
+          </button>
+          <Link
+            href="/demo"
+            className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
+          >
+            {t("Citizen demos", "नागरिक डेमो")}
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <button
-              onClick={resetDemoJourneyState}
-              className="rounded-lg border border-[#e3c996] bg-white px-3 py-2 text-sm font-semibold text-[#80591b] hover:bg-[#fff8e8]"
-            >
-              {t("Reset demo progress", "डेमो प्रगति रीसेट करें")}
-            </button>
-            <button
-              onClick={revokeTriageDemoAccess}
-              className="rounded-lg border border-[#b8d5e8] bg-[#f0f8fc] px-3 py-2 text-sm font-semibold text-[#235779] hover:bg-[#e3f2fa]"
-            >
-              {t("Exit staff view", "स्टाफ दृश्य से बाहर निकलें")}
-            </button>
-            <Link
-              href="/demo"
-              className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
-            >
-              {t("Citizen demos", "नागरिक डेमो")}
-            </Link>
-          </div>
-        </nav>
+        </SiteNavigation>
 
         <header className="border-b border-[#e1eade] py-10 sm:py-14">
           <p className="inline-flex rounded-full bg-[#f0f8fc] px-3 py-1.5 text-sm font-semibold text-[#235779]">
@@ -511,12 +494,12 @@ export default function TriagePage() {
             ))}
           </div>
         </section>
-        <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
+        <SiteFooter>
           {t(
             "Independent demo. This view cannot approve, reject, update, or access an official application.",
             "SahiSetu एक स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप है। यह दृश्य किसी आधिकारिक आवेदन को मंजूर, अस्वीकार, अपडेट या एक्सेस नहीं कर सकता।",
           )}
-        </footer>
+        </SiteFooter>
       </div>
     </main>
   );

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
-import { LanguageToggle, useLanguage } from "../components/language-toggle";
+import { SiteNavigation } from "../components/site-chrome";
+import { useLanguage } from "../components/language-toggle";
 import { useDemoJourneyState } from "../lib/demo-journey-state";
 import { aarohiSyntheticLicence, getRenewalReadiness } from "../lib/dl-readiness";
 
@@ -63,7 +64,7 @@ export default function HandoffPage() {
       evidence: [
         t(
           `Licence expiry: ${aarohiSyntheticLicence.visibleExpiryText}`,
-          `सिंथेटिक लाइसेंस समाप्ति: ${aarohiSyntheticLicence.visibleExpiryText}`,
+          `लाइसेंस समाप्ति: ${aarohiSyntheticLicence.visibleExpiryText}`,
         ),
         t("Document-readiness check", "दस्तावेज़-तैयारी जाँच"),
         t("Citizen contact-readiness confirmation", "नागरिक संपर्क-तैयारी पुष्टि"),
@@ -132,7 +133,7 @@ export default function HandoffPage() {
         "यह पैकेट तैयारी जाँच दर्ज करता है। यह लाइसेंस पता नहीं बदलता, पात्रता तय नहीं करता या आवेदन जमा नहीं करता।",
       ),
       nextAction: t(
-        "Use the exact proof wording, or keep the mock clarification note only when a real minor difference remains, then continue through the official address-change service.",
+        "Use the exact proof wording, or keep a clarification note only when a real minor difference remains, then continue through the official address-change service.",
         "प्रमाण की सटीक शब्दावली उपयोग करें, या वास्तविक छोटा अंतर रहने पर ही मॉक स्पष्टीकरण नोट रखें, फिर आधिकारिक पता-परिवर्तन सेवा से आगे बढ़ें।",
       ),
       returnHref: "/apply?demo=rohan",
@@ -219,22 +220,14 @@ export default function HandoffPage() {
   return (
     <main className={`min-h-screen bg-[#fffdf8] text-[#17281f] ${printMode === "rto-cover" ? "rto-cover-print" : ""}`}>
       <div className="mx-auto max-w-4xl px-5 py-5 sm:px-8">
-        <nav className="flex items-center justify-between print:hidden" aria-label="Main navigation">
-          <Link href="/" className="flex items-center gap-3 font-semibold tracking-tight">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#166534] text-lg text-white shadow-sm">
-              स
-            </span>
-            <span className="text-xl">SahiSetu</span>
-          </Link>
-          <LanguageToggle />
-        </nav>
+        <SiteNavigation className="print:hidden" />
 
         <section className="py-10 sm:py-14">
           <div
             className={`handoff-hero rounded-3xl border p-7 sm:p-10 ${prepared ? "border-[#b9dfc0] bg-[#f1fbf3]" : "border-[#efd9a2] bg-[#fff8e8]"}`}
           >
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-              {t("Handoff pack · demo only", "हैंडऑफ पैक · केवल डेमो")}
+              {t("Handoff pack", "हैंडऑफ पैक")}
             </p>
             <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">
               {prepared
@@ -244,8 +237,8 @@ export default function HandoffPage() {
             <p className="mt-4 max-w-2xl text-lg leading-8 text-[#4b6551]">
               {prepared
                 ? t(
-                    "A reviewable summary of evidence, citizen confirmation, unresolved boundaries, and the safe next action.",
-                    "सिंथेटिक प्रमाण, नागरिक पुष्टि, अनसुलझी सीमाओं और सुरक्षित अगली कार्रवाई का समीक्षा योग्य सार।",
+                    "A clear record of the evidence checked and the next action to take.",
+                    "जाँचे गए प्रमाण और उठाए जाने वाले अगले कदम का स्पष्ट रिकॉर्ड।",
                   )
                 : t(
                     "Complete the relevant citizen journey first. SahiSetu does not create a handoff pack from an unfinished checklist.",
@@ -318,8 +311,8 @@ export default function HandoffPage() {
                       {addressReview.hasMinorDifference
                         ? addressReview.clarificationSigned
                           ? t(
-                              "Minor wording difference detected: the citizen changed the wording and signed the demo clarification note. This is a mock review record, not an official declaration.",
-                              "छोटा शब्दावली अंतर मिला: नागरिक ने शब्दावली बदली और सिंथेटिक स्पष्टीकरण नोट पर हस्ताक्षर किए। यह मॉक समीक्षा रिकॉर्ड है, आधिकारिक घोषणा नहीं।",
+                              "Minor wording difference detected: the citizen changed the wording and signed a clarification note. This is a local review record, not an official declaration.",
+                              "छोटा शब्दावली अंतर मिला: नागरिक ने शब्दावली बदली और स्पष्टीकरण नोट पर हस्ताक्षर किए। यह स्थानीय समीक्षा रिकॉर्ड है, आधिकारिक घोषणा नहीं।",
                             )
                           : t(
                               "Minor wording difference detected: the citizen changed the wording, but no demo clarification note was signed.",
@@ -352,8 +345,8 @@ export default function HandoffPage() {
                   </div>
                   <p className="mt-3 text-sm leading-6 text-[#496779]">
                     {t(
-                      "Use this physical-folder checklist only after checking the requirements shown by the relevant official service or RTO. It is not an appointment, eligibility decision, or official document list.",
-                      "संबंधित आधिकारिक सेवा या RTO द्वारा दिखाई गई आवश्यकताएँ जाँचने के बाद ही इस भौतिक फोल्डर सूची का उपयोग करें। यह अपॉइंटमेंट, पात्रता निर्णय या आधिकारिक दस्तावेज़ सूची नहीं है।",
+                      "Check the requirements shown by the relevant official service or RTO, then use this as your personal folder checklist.",
+                      "संबंधित आधिकारिक सेवा या RTO की दिखाई गई आवश्यकताएँ जाँचें, फिर इसे अपनी व्यक्तिगत फोल्डर सूची की तरह उपयोग करें।",
                     )}
                   </p>
                   <ul className="mt-4 space-y-2 text-sm leading-6">
@@ -376,8 +369,8 @@ export default function HandoffPage() {
                     </p>
                     <p className="sm:col-span-2">
                       {t(
-                        "Bring only documents the relevant official service or RTO asks for. SahiSetu cannot confirm a visit, document acceptance, payment status, or outcome.",
-                        "केवल वही दस्तावेज़ ले जाएँ जो संबंधित आधिकारिक सेवा या RTO मांगे। SahiSetu विज़िट, दस्तावेज़ स्वीकृति, भुगतान स्थिति या परिणाम की पुष्टि नहीं कर सकता।",
+                        "Take only documents the relevant official service or RTO asks for. This cover sheet does not confirm a visit or outcome.",
+                        "केवल वही दस्तावेज़ ले जाएँ जो संबंधित आधिकारिक सेवा या RTO मांगे। यह कवर शीट विज़िट या परिणाम की पुष्टि नहीं करती।",
                       )}
                     </p>
                   </div>
