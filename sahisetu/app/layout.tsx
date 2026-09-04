@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SahiSetu | Prepare your new address before applying",
-  description: "Upload a current licence and proof of new address to create a reviewable address for your Parivahan application.",
+  title: "SahiSetu | Stay ready before transport paperwork becomes urgent",
+  description:
+    "A synthetic prototype for driving-licence readiness, document checks, and explainable application recovery guidance.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
