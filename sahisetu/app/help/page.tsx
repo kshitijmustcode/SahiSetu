@@ -7,6 +7,101 @@ import type { HelpSource } from "../lib/guided-help-knowledge";
 
 type Answer = { answer: string; sources: HelpSource[]; mode: "source-grounded" };
 
+type DecodedStatus = {
+  meaning: string;
+  meaningHi: string;
+  payment: string;
+  paymentHi: string;
+  next: string;
+  nextHi: string;
+};
+
+const statusOptions = [
+  { label: "Application under scrutiny at RTO level", labelHi: "RTO स्तर पर आवेदन की जाँच जारी है" },
+  { label: "Document upload pending", labelHi: "दस्तावेज़ अपलोड लंबित है" },
+  { label: "Pending at printing layer", labelHi: "प्रिंटिंग स्तर पर लंबित है" },
+  { label: "Objection raised", labelHi: "आपत्ति दर्ज की गई है" },
+  { label: "Payment deducted, application pending", labelHi: "भुगतान कट गया, आवेदन लंबित है" },
+];
+
+function decodeStatus(value: string): DecodedStatus | null {
+  const status = value.toLowerCase();
+  if (status.includes("scrutiny")) {
+    return {
+      meaning:
+        "This wording commonly indicates that the application is awaiting or undergoing review. It is not an approval, rejection, or a reason to visit the RTO immediately.",
+      meaningHi:
+        "इसका सामान्य अर्थ है कि आवेदन समीक्षा की प्रतीक्षा में है या उसकी समीक्षा चल रही है। यह स्वीकृति, अस्वीकृति या तुरंत RTO जाने का निर्देश नहीं है।",
+      payment: "SahiSetu cannot verify a payment from this status. Keep your receipt and transaction reference.",
+      paymentHi: "SahiSetu इस स्थिति से भुगतान की पुष्टि नहीं कर सकता। अपनी रसीद और ट्रांज़ैक्शन संदर्भ सुरक्षित रखें।",
+      next: "Review the official application-status page and any visible document/request message. Keep your application reference; follow the relevant official service if it asks for an action.",
+      nextHi:
+        "आधिकारिक आवेदन-स्थिति पेज और कोई दिखाई देने वाला दस्तावेज़/अनुरोध संदेश देखें। अपना आवेदन संदर्भ रखें; यदि आधिकारिक सेवा कोई कार्रवाई कहे तो उसी का पालन करें।",
+    };
+  }
+  if (status.includes("upload") || (status.includes("document") && status.includes("pending"))) {
+    return {
+      meaning:
+        "The wording commonly indicates that the official flow still expects a document step or has not reflected an upload yet. It does not tell SahiSetu whether a file was accepted.",
+      meaningHi:
+        "इसका सामान्य अर्थ है कि आधिकारिक प्रक्रिया अभी दस्तावेज़ चरण की अपेक्षा कर रही है या अपलोड अभी दिखा नहीं है। इससे SahiSetu यह नहीं बता सकता कि फ़ाइल स्वीकार हुई या नहीं।",
+      payment:
+        "This status does not confirm anything about a payment. Keep the upload acknowledgement or screenshots with your receipt, if you have one.",
+      paymentHi:
+        "यह स्थिति भुगतान के बारे में कुछ पुष्टि नहीं करती। यदि उपलब्ध हो तो अपलोड रसीद या स्क्रीनशॉट को अपनी भुगतान रसीद के साथ रखें।",
+      next: "Use the relevant state application-status route to check whether the document is listed. Re-upload only if the official flow specifically asks you to.",
+      nextHi:
+        "संबंधित राज्य आवेदन-स्थिति मार्ग में देखें कि दस्तावेज़ सूचीबद्ध है या नहीं। केवल तभी दोबारा अपलोड करें जब आधिकारिक प्रक्रिया स्पष्ट रूप से कहे।",
+    };
+  }
+  if (status.includes("printing")) {
+    return {
+      meaning:
+        "This wording commonly points to a later processing or printing stage. SahiSetu cannot confirm issuance, dispatch, or an exact completion date from it.",
+      meaningHi:
+        "इसका सामान्य अर्थ बाद के प्रसंस्करण या प्रिंटिंग चरण से हो सकता है। SahiSetu इससे जारी होने, प्रेषण या सटीक पूर्णता तारीख की पुष्टि नहीं कर सकता।",
+      payment:
+        "This status is not a payment confirmation. Retain the original receipt and do not make a duplicate payment because of this wording alone.",
+      paymentHi:
+        "यह स्थिति भुगतान की पुष्टि नहीं है। मूल रसीद सुरक्षित रखें और केवल इस स्थिति के आधार पर दोबारा भुगतान न करें।",
+      next: "Check the official application-status route for a dispatch, collection, or action message. If the official service gives no action, keep the reference and check again through that service.",
+      nextHi:
+        "आधिकारिक आवेदन-स्थिति मार्ग में प्रेषण, संग्रह या कार्रवाई संदेश देखें। यदि आधिकारिक सेवा कोई कार्रवाई नहीं दिखाती, तो संदर्भ रखें और उसी सेवा में फिर जाँचें।",
+    };
+  }
+  if (status.includes("objection")) {
+    return {
+      meaning:
+        "An objection normally means the official service expects clarification or a correction. A code by itself is not enough for SahiSetu to infer the reason safely.",
+      meaningHi:
+        "आपत्ति का सामान्य अर्थ है कि आधिकारिक सेवा स्पष्टीकरण या सुधार चाहती है। केवल कोड से SahiSetu कारण का सुरक्षित अनुमान नहीं लगा सकता।",
+      payment:
+        "An objection does not by itself say whether a payment is successful, refundable, or due again. Keep your receipt and reference.",
+      paymentHi:
+        "केवल आपत्ति से यह नहीं पता चलता कि भुगतान सफल, वापसी योग्य या दोबारा देय है। अपनी रसीद और संदर्भ सुरक्षित रखें।",
+      next: "Open the official notice or application-status details and act only on the specific document or correction request shown there. Do not guess from the sub-code alone.",
+      nextHi:
+        "आधिकारिक नोटिस या आवेदन-स्थिति विवरण खोलें और केवल वहाँ दिखाए गए विशेष दस्तावेज़ या सुधार अनुरोध पर कार्य करें। केवल उप-कोड से अनुमान न लगाएँ।",
+    };
+  }
+  if (status.includes("payment") || status.includes("deducted")) {
+    return {
+      meaning:
+        "A deducted-payment message with a pending application can be a reconciliation issue, but SahiSetu cannot see the bank, gateway, or official application record.",
+      meaningHi:
+        "आवेदन लंबित होने पर भुगतान कटने का संदेश मिलान संबंधी समस्या हो सकता है, लेकिन SahiSetu बैंक, पेमेंट गेटवे या आधिकारिक आवेदन रिकॉर्ड नहीं देख सकता।",
+      payment:
+        "Do not treat this as proof that money is safe or lost. Retain the receipt, transaction reference, amount, and date.",
+      paymentHi:
+        "इसे पैसे सुरक्षित या खो जाने का प्रमाण न मानें। रसीद, ट्रांज़ैक्शन संदर्भ, राशि और तारीख सुरक्षित रखें।",
+      next: "Use the official transaction-status service before considering another payment. If it asks for support, share evidence only through the official route.",
+      nextHi:
+        "दोबारा भुगतान पर विचार करने से पहले आधिकारिक लेनदेन-स्थिति सेवा का उपयोग करें। यदि सहायता मांगी जाए, तो प्रमाण केवल आधिकारिक मार्ग से साझा करें।",
+    };
+  }
+  return null;
+}
+
 const issues = [
   {
     title: "My payment was deducted, but my application is pending",
@@ -65,6 +160,8 @@ export default function GuidedHelpPage() {
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [statusText, setStatusText] = useState("");
+  const [decodedStatus, setDecodedStatus] = useState<DecodedStatus | null>(null);
   const questionField = useRef<HTMLTextAreaElement>(null);
 
   function chooseQuestion(suggestedQuestion: string) {
@@ -234,6 +331,97 @@ export default function GuidedHelpPage() {
             ) : null}
           </section>
 
+          <section className="mt-8 rounded-3xl border border-[#b9d8ed] bg-[#f6fbff] p-6 shadow-sm sm:p-8">
+            <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#1e638f]">
+              {hindi ? "स्थिति डिकोडर" : "Status Decoder"}
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold">
+              {hindi
+                ? "अस्पष्ट स्थिति को शांत, सुरक्षित मार्गदर्शन में बदलें"
+                : "Turn an opaque status into calm, safe guidance"}
+            </h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#526b7b]">
+              {hindi
+                ? "स्थिति चुनें या शब्द लिखें। यह उपकरण केवल आपके ब्राउज़र में चलता है, कोई आईडी या व्यक्तिगत जानकारी न डालें।"
+                : "Choose a familiar status or type its wording. This tool runs only in your browser; do not enter an ID or personal information."}
+            </p>
+            <div className="mt-5">
+              <label htmlFor="status-decoder" className="sr-only">
+                {hindi ? "स्थिति टेक्स्ट" : "Status text"}
+              </label>
+              <input
+                id="status-decoder"
+                value={statusText}
+                onChange={(event) => {
+                  const nextStatus = event.target.value.slice(0, 180);
+                  setStatusText(nextStatus);
+                  setDecodedStatus(decodeStatus(nextStatus));
+                }}
+                list="known-statuses"
+                autoComplete="off"
+                placeholder={hindi ? "उदाहरण: Application under Scrutiny" : "Example: Application under Scrutiny"}
+                className="w-full rounded-xl border border-[#afd0e2] bg-white px-4 py-3 text-sm outline-none placeholder:text-[#7890a0] focus:border-[#2779a6] focus:ring-4 focus:ring-[#dceef7]"
+              />
+              <datalist id="known-statuses">
+                {statusOptions.map((option) => (
+                  <option key={option.label} value={option.label} label={hindi ? option.labelHi : option.label} />
+                ))}
+              </datalist>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2" aria-label={hindi ? "सामान्य स्थितियाँ" : "Common statuses"}>
+              {statusOptions.map((option) => (
+                <button
+                  key={option.label}
+                  type="button"
+                  onClick={() => {
+                    setStatusText(option.label);
+                    setDecodedStatus(decodeStatus(option.label));
+                  }}
+                  className="rounded-full border border-[#b9d8ed] bg-white px-3 py-1.5 text-xs font-semibold text-[#245b7c] hover:bg-[#e9f5fb]"
+                >
+                  {hindi ? option.labelHi : option.label}
+                </button>
+              ))}
+            </div>
+            {decodedStatus ? (
+              <section
+                aria-live="polite"
+                className="mt-6 grid gap-3 rounded-2xl border border-[#b9d8ed] bg-white p-5 md:grid-cols-3"
+              >
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#27709a]">
+                    {hindi ? "आमतौर पर मतलब" : "What it commonly means"}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[#29485b]">
+                    {hindi ? decodedStatus.meaningHi : decodedStatus.meaning}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#27709a]">
+                    {hindi ? "भुगतान सीमा" : "Payment boundary"}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[#29485b]">
+                    {hindi ? decodedStatus.paymentHi : decodedStatus.payment}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#27709a]">
+                    {hindi ? "सुरक्षित अगला कदम" : "Safe next step"}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[#29485b]">
+                    {hindi ? decodedStatus.nextHi : decodedStatus.next}
+                  </p>
+                </div>
+              </section>
+            ) : statusText.trim().length >= 3 ? (
+              <p className="mt-5 rounded-xl border border-dashed border-[#b9d8ed] bg-white/70 p-4 text-sm leading-6 text-[#526b7b]">
+                {hindi
+                  ? "इस शब्द के लिए कोई सुरक्षित, निश्चित व्याख्या नहीं है। आधिकारिक स्थिति विवरण या नोटिस देखें; केवल कोड से अनुमान न लगाएँ।"
+                  : "There is no safe, definite explanation for this wording. Check the official status details or notice; do not infer the reason from a code alone."}
+              </p>
+            ) : null}
+          </section>
+
           <section className="mt-12">
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#2f7947]">
               {hindi ? "सामान्य समस्याएँ" : "Common problems"}
@@ -263,7 +451,7 @@ export default function GuidedHelpPage() {
         <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
           {hindi
             ? "स्वतंत्र, केवल-सिंथेटिक-डेटा प्रोटोटाइप — कोई आधिकारिक सरकारी सेवा नहीं।"
-            : "Independent, synthetic-data-only prototype — not an official government service."}
+            : "Independent demo · not an official government service."}
         </footer>
       </div>
     </main>
