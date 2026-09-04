@@ -1,6 +1,6 @@
 # SahiSetu
 
-SahiSetu is a **synthetic-data-only hackathon prototype** that helps someone prepare an address-change application before paying or submitting it on Parivahan. It does not connect to Parivahan, an RTO, Aadhaar, or any government system.
+SahiSetu is a **demo-data-only hackathon prototype** that helps citizens become ready before a driving-licence renewal, address change, or application-status issue becomes a delay or repeat visit. It does not connect to Parivahan, an RTO, Aadhaar, a bank, or any government system.
 
 ## The problem
 
@@ -17,6 +17,7 @@ Small differences between an application and its supporting documents can lead t
 5. Extracts the new address only after the proof passes validation.
 6. Lets the applicant review/edit the extracted text and compares the final wording against the proof.
 7. Produces a timestamped pre-submission report; minor wording differences may receive a mock explanation note, while substantive differences must be corrected.
+8. Pre-checks a demo Form 1A certificate for four visible fields and produces a doctor-facing confirmation note when Form 1A is relevant to the journey.
 
 The Rohan Mehta demo makes the distinction explicit: his licence contains an expected **old** Koramangala address because he has moved; his new-address proof reads **Lakeview Road** in Indiranagar. The extracted field begins as `Lakeview Road`. A reviewer must deliberately edit it to `Lake View Road` to demonstrate the small application-entry difference and its clarification path.
 
@@ -82,28 +83,43 @@ The in-app demo uses fictional documents for **Aarohi Sharma**. Additional blurr
 Phase 2 expands the working address-change journey into a **proactive driving-licence readiness and recovery assistant**. SahiSetu remains an independent, synthetic-data-only prototype: it prepares and explains; it does not replace Parivahan, an RTO, or an official decision.
 
 1. **Address Change Readiness** — retain the working address-change journey as the proof of the document-readiness engine: validate uploads, extract the address, highlight mismatches, and produce a reviewable report before the citizen proceeds to the official service.
-2. **DL Guardian and Renewal Readiness** — read a fictional demo licence expiry date, surface urgency, validate a renewal document pack, and explain the next action before a citizen begins the official renewal process.
+2. **DL Guardian and Renewal Readiness** — read a fictional demo licence expiry date, surface urgency, validate a renewal document pack, and explain the next action before a citizen begins the official renewal process. Its Form 1A Medical Readiness Shield checks the visible practitioner registration number, seal/stamp, signature, and fitness declaration, then prepares a doctor-facing confirmation note when the relevant official service says Form 1A applies. The shield links to the [official Form 1A](https://parivahan.gov.in/sites/default/files/DownloadForm/cmvr/FORM-1A.pdf).
 3. **Communication Readiness and Simulated Reminders** — prompt a citizen to confirm that their official-service mobile number is current, explain why current contact details matter, and offer opt-in simulated WhatsApp, SMS, email, or calendar reminders at 60, 30, and 7 days. Real delivery requires consent, verified contact details, secure scheduling, and approved providers.
 4. **Application Rescue Centre** — guide synthetic cases such as `Under Scrutiny`, `Document Upload Pending`, and `Payment Deducted but Pending` to a clear next action, with a checklist of evidence to retain and an RTO/help-desk escalation summary. It never retries payments, issues refunds, or updates official applications.
 5. **Explainable Audit Trail** — record the extracted value, citizen-reviewed value, exact mismatch, readiness classification, reason, and recommended next action. Results are Green (ready for human review), Amber (clarification needed), or Red (re-upload/correction required)—never an approval prediction.
 6. **Prototype RTO Triage View** — show the same synthetic cases in a reviewer-oriented Green/Amber/Red queue, demonstrating shared explanations for citizens and reviewers without offering approve/reject controls.
 7. **Guided Help Centre** — provide bounded, source-grounded explanations for common paperwork questions. Suggested questions populate the Help Centre rather than opening a fictional citizen's case, preserving each demo journey as case-specific.
+8. **Status Decoder** — explain a small, curated set of opaque application-status patterns in plain Hindi or English, distinguish what SahiSetu cannot verify (including payment state), and give one safe next action without opening an application or inferring an official decision.
 
 ### Supporting prototype capabilities
 
 - **Illustrative policy packs** configure requirements by service and state. They are visibly labelled prototype guidance until verified against official policy.
 - **Production guardrails** would require explicit consent, encryption, short-lived document storage, deletion and retention controls, official state-service integration, and human escalation for uncertain cases.
 
+### Baseline web security
+
+The prototype applies a self-only Content Security Policy, anti-framing protection, strict referrer policy, content-type sniffing protection, restrictive browser permissions, cross-origin protections, and HSTS. These reduce browser-level risk for the synthetic demo; they do not turn the visible RTO gate into real authentication or replace the production safeguards above.
+
 The product direction is proactive: SahiSetu helps citizens identify expiry, document, communication, and application-status issues before they become costly delays or repeat RTO visits.
 
 ## Current demo journeys
 
 - **Aarohi Sharma:** renewal readiness based on a visible, fictional licence expiry date, with reversible contact-readiness confirmation and simulated reminders.
+- **Form 1A Medical Readiness Shield:** Aarohi's age-42 demo includes a bounded medical-certificate pre-check and a print-only doctor confirmation note. It is preparation for human review, never a medical-fitness, eligibility, or licence decision.
 - **Rohan Mehta:** moved-address document check, explainable extraction, citizen review, and a minor wording-difference clarification path.
 - **Neha Verma:** payment-pending Application Rescue checklist that advises retaining evidence rather than paying again blindly.
 - **Prototype RTO Triage View:** a read-only staff-facing screen that mirrors the three synthetic cases and their evidence summaries. It has no approve/reject, payment, official-status, or live-RTO controls.
-- **Synthetic Handoff Packs:** printable, timestamped summaries for all three completed journeys. They carry evidence, citizen confirmation, remaining boundary, and the safe next action; the address packs also show the proof wording, final citizen edit, and mock clarification-signature state.
+- **Demo Handoff Packs and RTO Day Packs:** printable, timestamped summaries for all three completed journeys. They carry evidence, citizen confirmation, remaining boundary, and the safe next action; each also generates a separate physical-folder cover sheet with case-specific items to verify before an RTO visit. The address packs also show the proof wording, final citizen edit, and mock clarification-signature state.
 - **Guided Help Centre:** common-problem questions plus bounded typed questions grounded only in a small, visible official-source pack. It rejects obvious personal identifiers and explains the safe next step without opening or simulating any citizen case or official lookup.
+- **Status Decoder:** a browser-local, no-storage explainer for familiar scrutiny, upload, printing, objection, and payment-pending wording. It never claims to know a payment outcome, official timeline, application result, or sub-code meaning.
+
+### Deliberate entry model
+
+- **Citizen demo selector (`/demo`):** only Aarohi, Rohan, and Neha's case-specific journeys.
+- **Guided Help Centre (`/help`):** neutral, source-grounded explanation without opening any fictional citizen record.
+- **RTO triage (`/triage`):** a separately gated, read-only judge/staff demonstration linked quietly from the homepage.
+
+This keeps each case coherent: a general question does not accidentally open Neha's payment record or Rohan's document workflow.
 
 Each journey uses the same **Explainable Audit Timeline**: source record → extracted fields → citizen confirmation → readiness result → safe next action. It shows a transparent preparation/recovery path, never an approval decision.
 
