@@ -40,7 +40,7 @@ The prototype supports the **Indian address-change flow** only. A foreign addres
 
 AI is a core part of the document-readiness engine, not a decorative chatbot. OpenAI Vision classifies the synthetic documents, checks whether the required fields are visibly readable, and extracts the new-address text only after the proof passes fail-closed validation. The citizen can then review or edit the text; SahiSetu records that final human-confirmed wording separately from the extracted wording.
 
-The next planned AI slice is an **evidence-grounded case explainer**: it will turn the structured extraction, visible evidence labels, and citizen-confirmed text into a brief explanation of what changed, why it matters, and the safe next action. It must cite the evidence it uses, declare uncertainty, and never invent policy, official status, eligibility, approval, or a decision.
+The **Guided Help Centre** is a bounded retrieval-assisted feature, not an unconstrained chatbot. It selects a small, server-held pack of official Parivahan guidance relevant to common licence, status, upload, and payment questions, then asks OpenAI to answer only from that pack. It shows the source links used, declines unsupported questions, blocks obvious personal identifiers, limits requests, uses `store: false`, and never claims an official status, eligibility outcome, approval, payment result, or government decision.
 
 ## Run locally
 
@@ -87,6 +87,7 @@ Phase 2 expands the working address-change journey into a **proactive driving-li
 4. **Application Rescue Centre** — guide synthetic cases such as `Under Scrutiny`, `Document Upload Pending`, and `Payment Deducted but Pending` to a clear next action, with a checklist of evidence to retain and an RTO/help-desk escalation summary. It never retries payments, issues refunds, or updates official applications.
 5. **Explainable Audit Trail** — record the extracted value, citizen-reviewed value, exact mismatch, readiness classification, reason, and recommended next action. Results are Green (ready for human review), Amber (clarification needed), or Red (re-upload/correction required)—never an approval prediction.
 6. **Prototype RTO Triage View** — show the same synthetic cases in a reviewer-oriented Green/Amber/Red queue, demonstrating shared explanations for citizens and reviewers without offering approve/reject controls.
+7. **Guided Help Centre** — provide bounded, source-grounded explanations for common paperwork questions. Suggested questions populate the Help Centre rather than opening a fictional citizen's case, preserving each demo journey as case-specific.
 
 ### Supporting prototype capabilities
 
@@ -102,6 +103,7 @@ The product direction is proactive: SahiSetu helps citizens identify expiry, doc
 - **Neha Verma:** payment-pending Application Rescue checklist that advises retaining evidence rather than paying again blindly.
 - **Prototype RTO Triage View:** a read-only staff-facing screen that mirrors the three synthetic cases and their evidence summaries. It has no approve/reject, payment, official-status, or live-RTO controls.
 - **Synthetic Handoff Packs:** printable, timestamped summaries for all three completed journeys. They carry evidence, citizen confirmation, remaining boundary, and the safe next action; the address packs also show the proof wording, final citizen edit, and mock clarification-signature state.
+- **Guided Help Centre:** common-problem questions plus bounded typed questions grounded only in a small, visible official-source pack. It rejects obvious personal identifiers and explains the safe next step without opening or simulating any citizen case or official lookup.
 
 Each journey uses the same **Explainable Audit Timeline**: source record → extracted fields → citizen confirmation → readiness result → safe next action. It shows a transparent preparation/recovery path, never an approval decision.
 

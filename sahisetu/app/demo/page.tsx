@@ -133,6 +133,27 @@ export default function DemoProfilesPage() {
               {hindi ? "RTO सदस्य साइन-इन →" : "RTO member sign in →"}
             </Link>
           </section>
+          <section className="mt-5 rounded-3xl border border-[#d6e5d5] bg-[#f2faf3] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#2b7544]">
+                {hindi ? "निर्देशित सहायता केंद्र" : "Guided Help Centre"}
+              </p>
+              <h2 className="mt-2 text-xl font-semibold text-[#244b30]">
+                {hindi ? "सामान्य समस्या से शुरू करें।" : "Start from a common problem."}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-[#4d7658]">
+                {hindi
+                  ? "चुने हुए आधिकारिक स्रोतों के आधार पर सीमित प्रश्न पूछें, या सही डेमो यात्रा खोलें।"
+                  : "Ask bounded questions grounded in curated official sources, or open the relevant demo journey."}
+              </p>
+            </div>
+            <Link
+              href="/help"
+              className="mt-5 block shrink-0 rounded-xl bg-[#166534] px-5 py-3 text-center font-semibold text-white hover:bg-[#10572b] sm:mt-0"
+            >
+              {hindi ? "सहायता केंद्र खोलें →" : "Open Help Centre →"}
+            </Link>
+          </section>
         </section>
         <footer className="border-t border-[#e1eade] py-7 text-sm text-[#66796a]">
           {hindi

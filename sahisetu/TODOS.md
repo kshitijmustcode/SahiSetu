@@ -33,7 +33,9 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 - [ ] Standardise Green / Amber / Red wording, meaning, and visual treatment across every page.
 - [ ] Add a concise **What changed / why it matters** panel to each result. It should distinguish extracted facts, citizen edits, unresolved risks, and safe next action.
 - [ ] Add an assisted-service preparation card for unresolved cases: evidence to carry, what to ask, and the relevant official support route. It must not claim an RTO appointment or decision.
-- [ ] **AI evidence explainer (recommended next AI feature).** Use only the structured extraction, visible evidence summary, and citizen-confirmed final text to produce a short, cited “what changed / why it matters” briefing. It must identify its evidence, say when information is insufficient, and never invent policy, official status, eligibility, or a decision.
+- [x] **Guided Help Centre.** `/help` lets a citizen choose one of five common questions or type their own, then gives a bounded answer retrieved from a small, server-held official Parivahan source pack. It shows source links, declines unsupported questions, blocks obvious personal identifiers, uses non-persistent Responses calls, and never opens a fictional citizen journey.
+- [ ] Test the Guided Help Centre with the configured API key: a payment-pending question, an upload-pending question, an unsupported question, a Hindi question, and an identifier-containing question.
+- [ ] Add a lightweight evaluation set for Guided Help Centre retrieval and refusals before the final demo. Keep answers bounded to the local source pack; do not add live web search to the citizen flow.
 - [x] **Prototype RTO triage view.** One read-only screen reuses the citizen-facing evidence trail for Aarohi, Rohan, and Neha; it deliberately has no approve, reject, payment, or official-status controls.
 - [x] **Reflect synthetic journey completion in triage.** Aarohi contact confirmation and readiness packet, Rohan’s readiness packet, and Neha’s support summary update the shared browser-only triage state and its safe next action.
 - [x] **Reset demo progress.** The demo selector and triage view can return all browser-local synthetic journey states to their defaults for a clean rehearsal.
@@ -69,7 +71,7 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 - [ ] Real login, Aadhaar, Parivahan, RTO, bank, SMS, WhatsApp, calendar, or ongoing email integration. A single opt-in, judge-addressed synthetic email is the only scoped exception above.
 - [ ] Real payment verification, repeat payment, refunds, submissions, approvals, or status updates.
 - [ ] Real identity documents or personal data.
-- [ ] Broad extra services such as RC transfer, NOC, ownership transfer, learner licence, or an unconstrained generic chatbot. A bounded, cited RAG assistant is a stretch only after the AI evidence explainer and core testing are complete.
+- [ ] Broad extra services such as RC transfer, NOC, ownership transfer, learner licence, or an unconstrained generic chatbot. The shipped Help Centre is deliberately bounded to its small cited source pack.
 
 ## Useful commands
 

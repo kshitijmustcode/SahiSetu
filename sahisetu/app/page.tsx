@@ -66,6 +66,12 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <LanguageToggle />
             <Link
+              href="/help"
+              className="hidden rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec] sm:inline"
+            >
+              {hindi ? "सहायता केंद्र" : "Help centre"}
+            </Link>
+            <Link
               href="/demo"
               className="rounded-lg border border-[#c7dcc9] bg-[#f4faf3] px-3 py-2 text-sm font-semibold text-[#285536] hover:bg-[#eaf6ec]"
             >
@@ -102,6 +108,12 @@ export default function Home() {
                 className="rounded-xl bg-[#193b63] px-6 py-3.5 text-center text-base font-semibold text-white shadow-lg shadow-[#193b63]/20 transition hover:bg-[#142f50]"
               >
                 {hindi ? "डेमो स्थिति चुनें →" : "Choose a demo scenario →"}
+              </Link>
+              <Link
+                href="/help"
+                className="rounded-xl border border-[#cfe0d1] bg-white px-6 py-3.5 text-center text-base font-semibold text-[#285536] transition hover:bg-[#f4faf3]"
+              >
+                {hindi ? "निर्देशित सहायता पाएँ →" : "Get guided help →"}
               </Link>
               <Link
                 href="/apply?demo=normal"

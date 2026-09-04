@@ -64,11 +64,10 @@ The target story is a move from a narrow P2/P3 address checker to P0 readiness a
 There are about **1.5 days** remaining. Do not add broad transport services. The goal is a polished, reviewable proof of readiness and recovery.
 
 1. **Handoff pack completed.** `/handoff?case=aarohi|rohan|neha` is a dedicated, printable synthetic pack. It gates unfinished browser-local demo journeys and includes timestamp, evidence, finding, remaining boundary, and safe official next action. Address packs include proof wording, final citizen text, and mock clarification-signature state. It never says SahiSetu submitted or approved anything.
-2. Recommended next AI slice: an **AI evidence explainer** that turns only structured, visible evidence and citizen confirmation into a short “what changed / why it matters” briefing. It must cite the supplied evidence labels, state uncertainty, and refuse to invent policy, eligibility, or official status. This is more useful and defensible than a broad chatbot.
+2. **Guided Help Centre is implemented.** `/help` has common-problem question cards plus typed questions backed by `app/lib/guided-help-knowledge.ts` and `/api/guided-help`. A suggested card fills the question box; it never opens Aarohi, Rohan, or Neha's case-specific demo journey. Retrieval is deterministic over a small server-held Parivahan source pack; the OpenAI answer must use only that context, `store: false`, and show its sources. It blocks obvious long numeric identifiers and email addresses, has a small in-memory rate limit, and never does live web search. Test it with the configured API key before filming.
 3. Standardise Green / Amber / Blue semantics and add the same **What changed / why it matters** panel across results.
-4. Complete quality proof: Vision safety cases, desktop/mobile, clean-incognito rehearsal, production deployment, and the two-minute video.
+4. Complete quality proof: Vision safety cases, Guided Help Centre negative cases, desktop/mobile, clean-incognito rehearsal, production deployment, and the two-minute video.
 5. Optional only after the above: a one-time, consented **synthetic email reminder** for Aarohi sent to a judge's own address. It needs a server-only provider key, validation, rate limiting, zero recipient retention, and unambiguous demo/not-official content.
-6. Stretch only after the above: a scenario-aware **bounded RAG assistant**. It must use a small curated, cited official-source knowledge pack; declare uncertainty; never make a decision, claim status, submit an application, or recommend repeat payment.
 
 ## Security and privacy boundary
 
@@ -76,6 +75,7 @@ There are about **1.5 days** remaining. Do not add broad transport services. The
 - Before deployment, add tested baseline security headers: Content-Security-Policy, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, restrictive `Permissions-Policy`, and `frame-ancestors` protection.
 - Keep provider/API keys server-only and out of source control, screenshots, browser code, and synthetic documents.
 - Browser-local demo state is only a rehearsal aid. Keep **Reset demo progress** available and do not treat it as a citizen/RTO record.
+- Guided Help Centre questions are not written to browser storage or a database. Its in-memory rate-limit bucket is ephemeral and must not be presented as a user record.
 - If real data is ever introduced after the hackathon, require actual server-side authentication, role-based access control, audit logs, encryption, retention/deletion controls, and human escalation.
 
 ## Current commit baseline
