@@ -2,7 +2,7 @@
 
 ## Product story
 
-SahiSetu is a synthetic-data-only, proactive support layer for transport services. It helps a citizen become ready before a licence or application problem becomes urgent, then explains a safe next action. It does not replace Parivahan, an RTO, a payment provider, or an official decision-maker.
+SahiSetu is a demo-data-only AI pre-scrutiny layer for Indian driving-licence address changes. Its flagship flow checks a licence and new-address proof, catches a mismatch before official handoff, and creates a reviewable report. Supporting renewal and rescue prototypes demonstrate the wider readiness-and-recovery direction. It does not replace Parivahan, an RTO, a payment provider, or an official decision-maker.
 
 ## Completed
 
@@ -10,6 +10,8 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 - [x] Synthetic demo-profile selector.
 - [x] **Aarohi:** fictional licence-expiry / renewal-readiness dashboard.
 - [x] **Rohan:** fictional moved-address journey. Vision reads the new address and PIN from his proof; the flagship demo changes the application-draft PIN from `560038` to `560036`, then blocks progression until the exact proof wording is restored. A minor `Lakeview` / `Lake View` case remains secondary.
+- [x] **Flagship story:** the landing page and Rohan journey lead with a consequential wrong-PIN correction, not a spacing difference.
+- [x] **Contextual impact model:** homepage, demo cards, and prepared handoff packs display baseline context and clearly labelled assumption-based potential impact. These figures are not measured results, official estimates, or guarantees.
 - [x] **Application Rescue:** fictional payment-pending, `Under Scrutiny`, and `Document Upload Pending` recovery journeys.
 - [x] Simulated reminder preferences for Aarohi.
 - [x] Reversible contact-readiness confirmation, so a demo user can undo an accidental click.
@@ -50,6 +52,7 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 
 ## Quality and demo readiness
 
+- [ ] Run a small, honest usability test with 5–10 people using the wrong-PIN task. Record time, whether they identify the exact correction, and whether they choose the official next step. Include failures; do not present projections as test results. See `USER_TESTING.md`.
 - [ ] Test the three core journeys with `OPENAI_API_KEY` configured: Aarohi (`/dashboard`), Rohan (`/apply?demo=rohan`), and Neha (`/rescue?case=payment-pending`).
 - [ ] Test safety fixtures: hidden licence address, blurred proof, glare, and cropped proof.
 - [ ] Test desktop and mobile layouts at **100% browser zoom** for the homepage, profile selector, dashboard, document check, Application Rescue, Form 1A Shield, and printable notes.
@@ -62,7 +65,8 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 1. [ ] Run the full quality pass: the Vision safety fixtures, three core journeys, Guided Help Centre positive/negative questions, desktop/mobile layouts, and a clean-incognito rehearsal.
 2. [ ] Standardise the final status language: Green = evidence ready for human review, Amber = clarification/evidence still needed, Red = re-upload or correction needed. Keep Blue for an informational next action only.
 3. [x] Add baseline deployment security headers and verify they do not break Vision, Help Centre, or external source links. Re-check them on the deployed HTTPS URL.
-4. [ ] Deploy, rehearse the two-minute walkthrough, then record the final video. Do not add broad services or generic AI after this point.
+4. [ ] Run the small usability test in `USER_TESTING.md`, then use only its actual results in the submission story.
+5. [ ] Deploy, rehearse the two-minute walkthrough, then record the final video. Lead with Rohan's wrong-PIN failure → exact correction → Sarathi handoff. Do not add broad services or generic AI after this point.
 
 ## Consent, privacy, and security
 

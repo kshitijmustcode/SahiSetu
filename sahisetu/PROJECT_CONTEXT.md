@@ -4,9 +4,17 @@ Use this file to resume implementation if the original conversation is unavailab
 
 ## Product position
 
-SahiSetu is a **synthetic-data-only Build What Moves India Phase 2 prototype**. It is an independent readiness and recovery layer: Parivahan helps citizens transact; SahiSetu helps them become ready before the transaction and recover when something goes wrong. It must never present itself as Parivahan, an RTO, an official decision-maker, or a real application/payment service.
+SahiSetu is a **demo-data-only Build What Moves India Phase 2 prototype** and an AI pre-scrutiny tool for Indian driving-licence address changes. Its flagship promise is: check the licence and new-address proof, catch an exact mismatch before official handoff, and produce a reviewable pre-submission report. It is built with Next.js, TypeScript, and OpenAI Vision. It must never present itself as Parivahan, an RTO, an official decision-maker, or a real application/payment service.
 
 The target story is a move from a narrow P2/P3 address checker to P0 readiness and recovery: address change, imminent DL renewal, communication readiness, and opaque application/payment states.
+
+The submission should lead with **Rohan's wrong-PIN recovery**, not the `Lakeview` / `Lake View` spacing example: proof PIN `560038` → citizen draft PIN `560036` → major mismatch blocked → **Use proof wording** restores the exact proof value → official Sarathi handoff. The spacing difference remains a secondary edge case.
+
+### Impact-model boundary
+
+The homepage, demo profiles, and prepared handoff packs show team-researched baseline context plus an **illustrative potential-impact model**. These are explicitly assumption-based, not measured outcomes, government estimates, individual promises, or evidence of production performance. The current UI includes completion/target language (for example, `100% contact-readiness completion`, `<2% formatting-rejection target`, and `0 duplicate-payment prompts`) only to describe the intervention hypothesis and its assumptions.
+
+The printable pack also shows a national-scale illustrative model per 100k citizens (`~300,000` potential citizen hours, `20%–25%` potential queue-bottleneck reduction, and up to `₹1.5 Cr` potential direct-cost protection). Never call these figures evaluated, achieved, saved, or measured. Actual evidence must come from the small usability study in `USER_TESTING.md`, including failures and limitations.
 
 ## Repository and commands
 
@@ -73,7 +81,7 @@ There are about **1.5 days** remaining. Do not add broad transport services. The
 2. **Form 1A Medical Readiness Shield is implemented.** Aarohi's renewal dashboard presents an age-42 demo certificate and checks four visible items: practitioner registration number, seal/stamp, signature, and medical-fitness declaration. A complete pre-check updates shared browser-only dashboard, handoff, and triage state; missing fields generate a printable doctor confirmation note. It must always say Form 1A may apply for age 40+/transport cases only as verified by the relevant official service, and it must never make a medical, eligibility, or licence decision.
 3. **Guided Help Centre is implemented.** `/help` has common-problem question cards plus typed questions backed by `app/lib/guided-help-knowledge.ts` and `/api/guided-help`. A suggested card fills the question box; it never opens Aarohi, Rohan, or Neha's case-specific demo journey. Retrieval is deterministic over a small server-held Parivahan source pack; the OpenAI answer must use only that context, `store: false`, and show its sources. It blocks obvious long numeric identifiers and email addresses, has a small in-memory rate limit, and never does live web search. Its Status Decoder runs entirely in the browser for five curated patterns, keeps typed text out of storage/network requests, and refuses to infer a payment result, official timeline, application result, or unknown sub-code. Test both with the configured API key before filming.
 4. The UI is intentionally tightened: `/demo` is citizen-only, the homepage has two primary citizen actions, `/dashboard` is Aarohi-only, shared site chrome owns the usual navigation/footer, and repeated generic explanations were removed. Keep this hierarchy; do not re-add cross-links into fictional cases.
-5. Complete quality proof: Vision safety cases, Guided Help Centre negative cases, Form 1A complete/missing-field variants, desktop/mobile, clean-incognito rehearsal, production deployment, and the two-minute video.
+5. Complete quality proof: run the 5–10 participant study in `USER_TESTING.md`; then test Vision safety cases, Guided Help Centre negative cases, Form 1A complete/missing-field variants, desktop/mobile, a clean-incognito rehearsal, production deployment, and the two-minute video. Do not replace actual findings with the potential-impact model.
 6. Before deployment, standardise Green/Amber/Red/Blue wording and verify the already-added baseline security headers on the HTTPS deployment. An optional one-time consented synthetic email reminder is lower priority than testing, deployment, and the video.
 
 ## Security and privacy boundary
@@ -102,4 +110,4 @@ Additional completed commit:
 
 8. `d690cda` — source-grounded Guided Help Centre
 
-The current worktree is intentionally uncommitted after `d690cda`. It includes Status Decoder; baseline deployment headers; RTO Day Packs; Form 1A Shield; shared site chrome; dashboard/result/rescue/handoff cleanup; and the final user-facing copy pass. The main changed files include `app/page.tsx`, `app/dashboard/page.tsx`, `app/rescue/page.tsx`, `app/handoff/page.tsx`, `app/help/page.tsx`, `app/triage/page.tsx`, `app/apply/page.tsx`, `app/components/site-chrome.tsx`, `app/components/form-1a-medical-shield.tsx`, `app/lib/demo-journey-state.ts`, and `next.config.ts`.
+Additional recent commits include `d7a84ef` (flagship readiness and user-testing guide) and `0703fbd` (benchmark context plus clearly labelled potential-impact model). Confirm `git status` before beginning new work rather than assuming the worktree is uncommitted.

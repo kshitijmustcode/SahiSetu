@@ -1,6 +1,6 @@
 # SahiSetu
 
-SahiSetu is a **demo-data-only hackathon prototype** that helps citizens become ready before a driving-licence renewal, address change, or application-status issue becomes a delay or repeat visit. It does not connect to Parivahan, an RTO, Aadhaar, a bank, or any government system.
+SahiSetu is an **AI pre-scrutiny tool for Indian driving-licence address changes**. It checks demo-document clarity, validates a licence and address proof, catches mismatches before a citizen continues to the official service, and prepares a reviewable pre-submission report. It is a demo-data-only hackathon prototype built with Next.js, TypeScript, and OpenAI Vision; it does not connect to Parivahan, an RTO, Aadhaar, a bank, or any government system.
 
 ## The problem
 
@@ -76,7 +76,13 @@ The in-app demo uses fictional documents for **Aarohi Sharma**. Additional blurr
 
 ## Hackathon pitch
 
-> SahiSetu turns document uploads into a reviewable, pre-submission address check—so citizens can catch avoidable scrutiny issues before they pay, submit, or visit an RTO.
+> Citizens often discover a wrong document detail too late in a driving-licence application. SahiSetu checks the evidence beforehand, shows the exact correction, and directs them to the relevant official next step.
+
+## Impact context and evaluation boundary
+
+The homepage, demo selector, and printable handoff packs show **team-researched baseline context** alongside an **illustrative potential-impact model**. The model is intentionally labelled as assumption-based: it is not a measured outcome, government estimate, or guarantee to an individual citizen. It should only be used to explain the hypothesis that catching mistakes before an official handoff could reduce repeat work; real user testing is still required.
+
+The strongest current proof is the Rohan workflow: a wrong PIN in the application draft is caught before payment, the visible proof provides the exact replacement, and the citizen can restore the proof wording before moving to Sarathi. A `Lakeview` / `Lake View` spacing case remains a secondary edge case, not the main story.
 
 ## Phase 2 scope
 
@@ -106,7 +112,7 @@ The product direction is proactive: SahiSetu helps citizens identify expiry, doc
 
 - **Aarohi Sharma:** renewal readiness based on a visible, fictional licence expiry date, with reversible contact-readiness confirmation and simulated reminders.
 - **Form 1A Medical Readiness Shield:** Aarohi's age-42 demo includes a bounded medical-certificate pre-check and a print-only doctor confirmation note. It is preparation for human review, never a medical-fitness, eligibility, or licence decision.
-- **Rohan Mehta:** moved-address document check, explainable extraction, citizen review, and a minor wording-difference clarification path.
+- **Rohan Mehta:** the flagship moved-address pre-scrutiny journey: a wrong PIN in the application draft is blocked, the exact proof wording is shown, and the citizen can correct it before the Sarathi handoff. A minor wording-difference path is secondary.
 - **Neha Verma:** payment-pending Application Rescue checklist that advises retaining evidence rather than paying again blindly.
 - **Prototype RTO Triage View:** a read-only staff-facing screen that mirrors the three synthetic cases and their evidence summaries. It has no approve/reject, payment, official-status, or live-RTO controls.
 - **Demo Handoff Packs and RTO Day Packs:** printable, timestamped summaries for all three completed journeys. They carry evidence, citizen confirmation, remaining boundary, and the safe next action; each also generates a separate physical-folder cover sheet with case-specific items to verify before an RTO visit. The address packs also show the proof wording, final citizen edit, and mock clarification-signature state.
