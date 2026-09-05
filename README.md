@@ -19,7 +19,7 @@ Small differences between an application and its supporting documents can lead t
 7. Produces a timestamped pre-submission report; minor wording differences may receive a mock explanation note, while substantive differences must be corrected.
 8. Pre-checks a demo Form 1A certificate for four visible fields and produces a doctor-facing confirmation note when Form 1A is relevant to the journey.
 
-The Rohan Mehta demo makes the distinction explicit: his licence contains an expected **old** Koramangala address because he has moved; his new-address proof reads **Lakeview Road** in Indiranagar. The extracted field begins as `Lakeview Road`. A reviewer must deliberately edit it to `Lake View Road` to demonstrate the small application-entry difference and its clarification path.
+The Rohan Mehta demo makes the distinction explicit: his licence contains an expected **old** Koramangala address because he has moved; his new-address proof reads **Lakeview Road** in Indiranagar with PIN `560038`. The flagship demo changes only the application draft to the wrong PIN `560036`, blocks progression, shows the exact proof value, and restores it with **Use proof wording**. A `Lakeview` / `Lake View` spacing difference remains as a secondary minor-difference example.
 
 The prototype supports the **Indian address-change flow** only. A foreign address, an unrecognised document, or conflicting visible identity details blocks the flow rather than making a decision.
 

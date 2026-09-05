@@ -776,8 +776,8 @@ function Results({
             <label htmlFor="address-draft" className="mt-3 block text-sm text-[#607163]">
               {isRohanAddressChangeDemo
                 ? hindi
-                  ? "हमने यह नए पते के प्रमाण से पढ़ा है। फॉर्म भरने की छोटी गलती दिखाने के लिए “Lakeview Road” को “Lake View Road” में बदलें, फिर तुलना करें।"
-                  : "We read this from the new-address proof. To simulate a small form-entry mistake, change “Lakeview Road” to “Lake View Road”, then compare it."
+                  ? "हमने यह नए पते के प्रमाण से पढ़ा है। पुष्टि करने से पहले किसी भी फॉर्म-एंट्री की गलती को प्रमाण से मिलाएँ।"
+                  : "We read this from the new-address proof. Before confirming, compare any form-entry change with the proof."
                 : hindi
                   ? "हमने इसे आपके प्रमाण से पढ़ा है। पढ़ने की कोई गलती सुधारें, फिर अंतिम टेक्स्ट की प्रमाण से तुलना करें।"
                   : "We read this from your proof. Correct any reading mistake, then compare the final text with the proof."}
@@ -795,14 +795,47 @@ function Results({
               {hindi ? "नए पते का प्रमाण:" : "New-address proof:"}{" "}
               {assessment.extraction.applicantName || (hindi ? "आवेदक" : "applicant")}.
             </p>
-            {isRohanAddressChangeDemo && (
-              <p className="mt-3 rounded-xl bg-[#fff8e8] px-4 py-3 text-sm leading-6 text-[#76551f]">
-                <strong>{hindi ? "डेमो अंतर:" : "Demo difference:"}</strong>{" "}
-                {hindi
-                  ? "रोहन कोरमंगला से इंदिरानगर स्थानांतरित हो गए हैं, इसलिए लाइसेंस पर पुराना पता सही है। यह जाँच केवल आवेदन में दर्ज नए पते और नए पते के प्रमाण की तुलना करती है। अभी यह फ़ील्ड प्रमाण के अनुसार “Lakeview Road” दिखाती है—छोटा अंतर देखने के लिए इसे स्वयं “Lake View Road” में बदलें।"
-                  : "Rohan has moved from Koramangala to Indiranagar, so the old address on his licence is expected. This check compares only the new address typed in the application with the new-address proof. The field currently matches the proof: “Lakeview Road”. Change it yourself to “Lake View Road” to see the minor-difference path."}
-              </p>
-            )}
+            {isRohanAddressChangeDemo ? (
+              <section className="mt-3 rounded-xl border border-[#efd9a2] bg-[#fff8e8] p-4 text-sm leading-6 text-[#76551f]">
+                <p>
+                  <strong>{hindi ? "मुख्य डेमो: गलत PIN पकड़ें" : "Flagship demo: catch a wrong PIN"}</strong>{" "}
+                  {hindi
+                    ? "रोहन के लाइसेंस पर पुराना कोरमंगला पता सही है। यह जाँच केवल आवेदन में दर्ज नए पते की नए-पते के प्रमाण से तुलना करती है। नीचे दिया बटन आवेदन ड्राफ्ट में PIN 560038 को 560036 में बदलता है—प्रमाण नहीं।"
+                    : "Rohan’s old Koramangala address on the licence is expected. This check compares only the new address typed in the application with the new-address proof. The button below changes the application draft PIN from 560038 to 560036—it never changes the proof."}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAddressDraft(assessment.extraction.address.replace("560038", "560036"));
+                      setAccepted(false);
+                      setSigned(false);
+                      setClarificationOpen(false);
+                    }}
+                    className="rounded-lg bg-[#9a5b13] px-4 py-2 text-sm font-semibold text-white hover:bg-[#7b470d]"
+                  >
+                    {hindi ? "गलत PIN उदाहरण आज़माएँ" : "Try wrong PIN example"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAddressDraft(assessment.extraction.address.replace("Lakeview Road", "Lake View Road"));
+                      setAccepted(false);
+                      setSigned(false);
+                      setClarificationOpen(false);
+                    }}
+                    className="rounded-lg border border-[#d9ba7a] bg-white px-4 py-2 text-sm font-semibold text-[#76551f] hover:bg-[#fffdf8]"
+                  >
+                    {hindi ? "छोटा शब्दावली अंतर आज़माएँ" : "Try minor wording example"}
+                  </button>
+                </div>
+                <p className="mt-3 text-xs leading-5">
+                  {hindi
+                    ? "दूसरा बटन केवल छोटा Lakeview/Lake View शब्दावली अंतर दिखाता है; यह मुख्य डेमो नहीं है।"
+                    : "The second button shows the smaller Lakeview/Lake View wording case; it is not the main demo."}
+                </p>
+              </section>
+            ) : null}
             {!accepted ? (
               <button
                 onClick={confirmAddress}

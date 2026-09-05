@@ -9,7 +9,7 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 - [x] Working address-change document-readiness journey with fail-closed checks.
 - [x] Synthetic demo-profile selector.
 - [x] **Aarohi:** fictional licence-expiry / renewal-readiness dashboard.
-- [x] **Rohan:** fictional moved-address journey. Vision reads `Lakeview Road` from his new-address proof; the citizen can manually change it to `Lake View Road` to demonstrate a minor, reviewable application-entry difference.
+- [x] **Rohan:** fictional moved-address journey. Vision reads the new address and PIN from his proof; the flagship demo changes the application-draft PIN from `560038` to `560036`, then blocks progression until the exact proof wording is restored. A minor `Lakeview` / `Lake View` case remains secondary.
 - [x] **Application Rescue:** fictional payment-pending, `Under Scrutiny`, and `Document Upload Pending` recovery journeys.
 - [x] Simulated reminder preferences for Aarohi.
 - [x] Reversible contact-readiness confirmation, so a demo user can undo an accidental click.
@@ -25,7 +25,7 @@ SahiSetu is a synthetic-data-only, proactive support layer for transport service
 
 ## P0 — Complete the core journeys
 
-- [x] **Verify Rohan end to end with OpenAI Vision.** His licence correctly shows the old Koramangala address and the proof shows the new Indiranagar address. The extracted default matches the proof (`Lakeview Road`); only a citizen's manual application edit to `Lake View Road` triggers the clarification-note step.
+- [x] **Verify Rohan end to end with OpenAI Vision.** His licence correctly shows the old Koramangala address and the proof shows the new Indiranagar address with PIN `560038`. The flagship application-draft edit to `560036` triggers a major mismatch and must be corrected; a manual `Lakeview Road` → `Lake View Road` edit remains the secondary clarification-note step.
 - [x] **Derive Aarohi's renewal status from the visible expiry field on her synthetic licence.** The dashboard calculates `safe`, `renew soon`, `urgent`, or `expired` against the current India date.
 - [x] **Make the renewal checklist responsive to that result.** The detected expiry date and renewal action update the synthetic checklist and readiness count.
 - [x] **Form 1A Medical Readiness Shield.** Aarohi's age-42 demo lets a citizen run a visible-field pre-check for practitioner registration number, seal/stamp, signature, and medical-fitness declaration. It creates a print-only doctor confirmation note and says Form 1A applicability must be verified in the relevant official service; it never makes a medical, eligibility, or licence decision.

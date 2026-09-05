@@ -11,7 +11,7 @@ Measure whether a person can spot a licence-document issue, choose the safe corr
 - Use an incognito/private browser window for each participant.
 - Start at `/apply?demo=rohan`.
 - Use the supplied Rohan documents; do not ask participants for real documents or personal details.
-- Ask them to change `Lakeview Road` to `Lake View Road`, confirm it, and resolve the difference.
+- Ask them to use the supplied wrong-PIN example, confirm it, and resolve the major difference with the exact proof wording.
 - Then ask them to identify the official next step shown by SahiSetu.
 
 ## Record one row per participant
@@ -26,7 +26,7 @@ Measure whether a person can spot a licence-document issue, choose the safe corr
 
 ## Optional comparison
 
-Before showing SahiSetu, ask the same participant: “A new-address proof says `Lakeview Road`; an application draft says `Lake View Road`. What would you do before using the official service?” Record whether they name the exact proof wording and a safe official next step. Label this as an informal within-participant comparison, not a statistically representative study.
+Before showing SahiSetu, ask the same participant: “A new-address proof has PIN `560038`; an application draft has PIN `560036`. What would you do before using the official service?” Record whether they identify the mismatch, choose the exact proof wording, and name a safe official next step. Label this as an informal within-participant comparison, not a statistically representative study.
 
 ## What to report in the submission
 

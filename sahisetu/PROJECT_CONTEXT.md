@@ -39,7 +39,8 @@ The target story is a move from a narrow P2/P3 address checker to P0 readiness a
    - Current licence: old Koramangala address (expected).
    - New-address proof: `44 Lakeview Road, Indiranagar, Bengaluru, Karnataka 560038`.
    - Vision extraction must prefill **exactly** `Lakeview Road`.
-   - The citizen may manually edit it to `Lake View Road`; only then should the comparison show a minor mismatch and clarification-note path. Do not claim Vision caused this difference.
+   - The flagship demo changes only the application-draft PIN from `560038` to `560036`; it must show a major mismatch, block progression, and direct the citizen to restore the proof wording. Do not claim Vision caused this difference.
+   - A manual `Lakeview Road` → `Lake View Road` edit remains a secondary minor-mismatch / clarification-note path.
    - The old licence must never be treated as a mismatch against the new-address proof; the proof is the source for the address-change application.
 
 3. **Neha Verma — Application Rescue**
