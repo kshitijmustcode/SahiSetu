@@ -17,6 +17,12 @@ const profiles = [
     issueHi: `मेरा लाइसेंस ${aarohiRenewal.daysRemaining} दिनों में समाप्त हो रहा है`,
     detail: "Renewal readiness, communication readiness, and simulated reminders.",
     detailHi: "नवीनीकरण तैयारी, संचार तैयारी और सिमुलेटेड रिमाइंडर।",
+    context:
+      "30%+ may miss RTO alerts when registered contact details are outdated. An invalid licence can carry a fine up to ₹5,000.",
+    contextHi:
+      "पुराने पंजीकृत संपर्क विवरण के कारण 30%+ लोग RTO अलर्ट चूक सकते हैं। अमान्य लाइसेंस पर ₹5,000 तक जुर्माना हो सकता है।",
+    potential: "Potential model: 100% contact-readiness completion for people who finish the confirmation step.",
+    potentialHi: "संभावित मॉडल: पुष्टि चरण पूरा करने वालों के लिए 100% संपर्क-तैयारी पूर्णता।",
     href: "/dashboard",
     icon: "⌛",
     tone: "border-[#f0c4b4] bg-[#fff4ee] text-[#7d3922]",
@@ -27,12 +33,17 @@ const profiles = [
     name: "Rohan Mehta",
     label: "My documents don’t match",
     labelHi: "मेरे दस्तावेज़ मेल नहीं खाते",
-    issue: "“Lake View Road” or “Lakeview Road”?",
-    issueHi: "“Lake View Road” या “Lakeview Road”?",
+    issue: "Application PIN 560036; proof PIN 560038",
+    issueHi: "आवेदन PIN 560036; प्रमाण PIN 560038",
     detail:
-      "Rohan moved from Koramangala to Indiranagar. Compare the new address he entered with the provided proof before submitting.",
-    detailHi:
-      "रोहन कोरमंगला से इंदिरानगर चले गए। सबमिशन से पहले आवेदन में लिखा नया पता उनके सिंथेटिक प्रमाण से मिलाएँ।",
+      "Rohan moved from Koramangala to Indiranagar. Catch a wrong application PIN before he uses the official service.",
+    detailHi: "रोहन कोरमंगला से इंदिरानगर चले गए। आधिकारिक सेवा उपयोग करने से पहले आवेदन में गलत PIN पकड़ें।",
+    context:
+      "Up to 25% of self-uploaded document applications can be held for manual scrutiny because of address-detail differences.",
+    contextHi:
+      "पते के विवरण में अंतर के कारण स्व-अपलोड दस्तावेज़ आवेदनों में से 25% तक मैन्युअल जाँच में रुक सकते हैं।",
+    potential: "Potential model: 90%+ reduction in formatting rejections through pre-scrutiny correction.",
+    potentialHi: "संभावित मॉडल: प्री-स्क्रूटनी सुधार से फॉर्मेटिंग अस्वीकृतियों में 90%+ कमी।",
     href: "/apply?demo=rohan",
     icon: "⌂",
     tone: "border-[#efd9a2] bg-[#fff9e9] text-[#79591d]",
@@ -47,6 +58,12 @@ const profiles = [
     issueHi: "₹450 कटे, लेकिन नवीनीकरण अभी भी लंबित है",
     detail: "Review Neha’s payment record and prepare the evidence needed before any next step.",
     detailHi: "अगला कदम लेने से पहले नेहा के सिंथेटिक भुगतान रिकॉर्ड की समीक्षा करें और जरूरी प्रमाण तैयार करें।",
+    context:
+      "3%–5% of online government payments can face gateway timeouts; over 40% of affected citizens may attempt a duplicate payment or unnecessary visit.",
+    contextHi:
+      "ऑनलाइन सरकारी भुगतानों में 3%–5% तक गेटवे टाइमआउट हो सकता है; प्रभावित लोगों में 40%+ दोबारा भुगतान या अनावश्यक विज़िट कर सकते हैं।",
+    potential: "Potential model: zero duplicate-payment prompts inside the evidence-first rescue flow.",
+    potentialHi: "संभावित मॉडल: प्रमाण-आधारित रिकवरी प्रवाह में शून्य डुप्लिकेट-भुगतान प्रोत्साहन।",
     href: "/rescue?case=payment-pending",
     icon: "₹",
     tone: "border-[#c8d9ef] bg-[#f1f6fc] text-[#234f7d]",
@@ -95,6 +112,19 @@ export default function DemoProfilesPage() {
                 <h2 className="mt-2 text-2xl font-semibold">{profile.name}</h2>
                 <p className="mt-4 text-lg font-semibold leading-6">{hindi ? profile.issueHi : profile.issue}</p>
                 <p className="mt-3 flex-1 text-sm leading-6 opacity-90">{hindi ? profile.detailHi : profile.detail}</p>
+                <p className="mt-4 rounded-xl border border-current/15 bg-white/55 p-3 text-xs font-medium leading-5 opacity-90">
+                  <strong>{hindi ? "यह क्यों महत्वपूर्ण है:" : "Why this matters:"}</strong>{" "}
+                  {hindi ? profile.contextHi : profile.context}
+                </p>
+                <p className="mt-3 rounded-xl bg-[#e5f5e7] p-3 text-xs font-semibold leading-5 text-[#246238]">
+                  <span className="block text-[10px] font-bold uppercase tracking-[0.12em] text-[#31804a]">
+                    {hindi ? "संभावित प्रभाव मॉडल" : "Potential impact model"}
+                  </span>
+                  <span className="mt-1 block">{hindi ? profile.potentialHi : profile.potential}</span>
+                  <span className="mt-1 block font-normal text-[#4f7055]">
+                    {hindi ? "अनुमान-आधारित, मापा गया परिणाम नहीं।" : "Assumption-based, not a measured result."}
+                  </span>
+                </p>
                 <Link
                   href={profile.href}
                   className="mt-7 rounded-xl bg-white px-4 py-3 text-center text-sm font-bold text-[#274735] shadow-sm ring-1 ring-black/5"

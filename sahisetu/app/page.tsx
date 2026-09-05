@@ -92,8 +92,89 @@ export default function Home() {
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[#526558]">
               {hindi
                 ? "SahiSetu नागरिकों को समाप्ति, दस्तावेज़ और आवेदन-स्थिति की समस्या जल्दी पकड़ने में मदद करता है—और आधिकारिक सेवा इस्तेमाल करने से पहले एक सुरक्षित अगली कार्रवाई समझाता है।"
-                : "SahiSetu helps citizens catch expiry, document, and application-status issues early—then explains one safe next action before they use the official service."}
+                : "SahiSetu helps citizens catch expiry, document, and application-status issues early and explains one safe next action before they use the official service."}
             </p>
+            <section className="mt-8 max-w-2xl rounded-2xl border border-[#d6e5d7] bg-[#f5faf5] p-4 sm:p-5">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#31804a]">
+                {hindi ? "राष्ट्रीय समस्या संदर्भ" : "National problem context"}
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-xl bg-white p-3">
+                  <p className="text-2xl font-semibold text-[#19713d]">20M+</p>
+                  <p className="mt-1 text-xs leading-5 text-[#526558]">
+                    {hindi ? "वार्षिक DL नवीनीकरण और अपडेट" : "Annual DL renewals and updates"}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-white p-3">
+                  <p className="text-2xl font-semibold text-[#9a5b13]">Up to 25%</p>
+                  <p className="mt-1 text-xs leading-5 text-[#526558]">
+                    {hindi ? "पता विवरण के कारण जाँच-रोक" : "Scrutiny holds from address details"}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-white p-3">
+                  <p className="text-2xl font-semibold text-[#a2462a]">₹5,000</p>
+                  <p className="mt-1 text-xs leading-5 text-[#526558]">
+                    {hindi ? "अमान्य लाइसेंस पर संभावित जुर्माना" : "Potential fine for an invalid licence"}
+                  </p>
+                </div>
+              </div>
+              <p className="mt-3 text-xs leading-5 text-[#647466]">
+                {hindi
+                  ? "टीम द्वारा शोधित राष्ट्रीय बेंचमार्क अनुमान; ये SahiSetu के नतीजे या किसी नागरिक के लिए भविष्यवाणी नहीं हैं।"
+                  : "Team-researched national benchmark estimates; they are not SahiSetu results or a prediction for any citizen."}
+              </p>
+              <section className="mt-4 rounded-xl bg-[#193b63] p-4 text-white sm:p-5">
+                <p className="text-center text-xs font-bold uppercase tracking-[0.14em] text-[#b9d8ed]">
+                  {hindi ? "संभावित प्रभाव मॉडल" : "Illustrative potential impact model"}
+                </p>
+                <p className="mt-1 text-center text-xs leading-5 text-[#d7e8f4]">
+                  {hindi
+                    ? "अनुमान-आधारित प्रक्षेपण, मापे गए परिणाम या गारंटी नहीं।"
+                    : "Assumption-based projections, not measured results or guarantees."}
+                </p>
+                <div className="mt-4 grid gap-4 text-center sm:grid-cols-3">
+                  <div className="border-t border-[#41627f] pt-4 sm:border-t-0 sm:border-r sm:pr-4 sm:pt-0">
+                    <p className="text-xs font-semibold text-[#f6c6b8]">
+                      {hindi ? "बिना SahiSetu: ₹5,000 जुर्माना जोखिम" : "Without SahiSetu: ₹5,000 fine risk"}
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-[#a8e7b5]">
+                      {hindi ? "100% संपर्क-तैयारी पूर्णता" : "100% contact-readiness completion"}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-[#c9d9e5]">
+                      {hindi
+                        ? "पुष्टि चरण पूरा करने वाले उपयोगकर्ताओं के लिए।"
+                        : "For users who complete the confirmation step."}
+                    </p>
+                  </div>
+                  <div className="border-t border-[#41627f] pt-4 sm:border-t-0 sm:border-r sm:px-4 sm:pt-0">
+                    <p className="text-xs font-semibold text-[#f6c6b8]">
+                      {hindi ? "बिना SahiSetu: 25% जाँच-रोक" : "Without SahiSetu: 25% scrutiny holds"}
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-[#a8e7b5]">
+                      {hindi ? "<2% फॉर्मेटिंग अस्वीकृति लक्ष्य" : "<2% formatting-rejection target"}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-[#c9d9e5]">
+                      {hindi
+                        ? "मानता है कि प्री-स्क्रूटनी त्रुटियों को पकड़ती है।"
+                        : "Assumes pre-scrutiny catches address-entry errors."}
+                    </p>
+                  </div>
+                  <div className="border-t border-[#41627f] pt-4 sm:border-t-0 sm:pl-4 sm:pt-0">
+                    <p className="text-xs font-semibold text-[#f6c6b8]">
+                      {hindi
+                        ? "बिना SahiSetu: 40% दोबारा-भुगतान प्रयास"
+                        : "Without SahiSetu: 40% repeat-payment attempts"}
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-[#a8e7b5]">
+                      {hindi ? "0 डुप्लिकेट-भुगतान प्रोत्साहन" : "0 duplicate-payment prompts"}
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-[#c9d9e5]">
+                      {hindi ? "SahiSetu भुगतान संसाधित नहीं करता।" : "SahiSetu does not process payments."}
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </section>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/demo"
