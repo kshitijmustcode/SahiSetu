@@ -10,12 +10,12 @@ export type HelpSource = {
 // not a live crawl, so a hostile webpage can never alter an answer at runtime.
 export const helpSources: HelpSource[] = [
   {
-    id: "parivahan-services",
-    title: "Parivahan Sewa — licence-related services",
-    url: "https://parivahan.gov.in/contactus",
+    id: "parivahan-address-change",
+    title: "Parivahan Sewa FAQ — change of address on driving licence",
+    url: "https://parivahan.gov.in/en/faq/services-on-driver-license?page=0",
     summary:
-      "Parivahan lists licence-related services including application status, appointment booking, duplicate licence and other driving-licence services. Availability can vary by state.",
-    keywords: ["licence", "license", "driving", "application", "status", "appointment", "service", "under scrutiny"],
+      "The official FAQ says a citizen can use Sarathi, select their state, choose Driving Licence then Services on Driving Licence, enter driving-licence number and date of birth, then select Change of Address. Current state requirements must be checked in Sarathi.",
+    keywords: ["address", "change", "moved", "move", "proof", "wording", "driving", "licence", "license"],
   },
   {
     id: "parivahan-status-faq",
@@ -39,7 +39,7 @@ export const helpSources: HelpSource[] = [
     url: "https://parivahan.gov.in/parivahan/en/content/download-forms",
     summary:
       "Parivahan's forms page lists Form 9 for renewal of driving licence and other official forms. The applicable service path and state requirements should be checked before use.",
-    keywords: ["form", "form 9", "renewal", "address", "change", "licence", "license"],
+    keywords: ["form", "form 9", "renewal", "renew", "licence", "license"],
   },
   {
     id: "sarathi-verify-pay-status",
@@ -64,6 +64,22 @@ export const helpSources: HelpSource[] = [
 
 export function retrieveHelpSources(question: string, limit = 3) {
   const terms: string[] = question.toLowerCase().match(/[a-z0-9]+/g) ?? [];
+  const hasAny = (...keywords: string[]) => keywords.some((keyword) => terms.includes(keyword));
+  const byId = (id: string) => helpSources.find((source) => source.id === id);
+  const exactSources = (ids: string[]) => ids.map(byId).filter((source): source is HelpSource => Boolean(source));
+
+  if (hasAny("payment", "deducted", "transaction", "receipt", "refund", "money")) {
+    return exactSources(["sarathi-verify-pay-status"]);
+  }
+  if (hasAny("address", "moved", "move", "proof", "wording")) {
+    return exactSources(["parivahan-address-change"]);
+  }
+  if (hasAny("renewal", "renew", "expiry", "expires", "expired", "medical", "form")) {
+    return exactSources(["parivahan-renewal", "parivahan-forms"]);
+  }
+  if (hasAny("upload", "uploaded", "scrutiny", "status")) {
+    return exactSources(["parivahan-status-faq"]);
+  }
   const scored: Array<{ source: HelpSource; score: number }> = helpSources
     .map((source) => ({
       source,

@@ -857,16 +857,6 @@ function Results({
             }}
             onCreateClarificationNote={() => setClarificationOpen(true)}
           />
-          <p className="rounded-xl bg-[#f3f9f2] px-4 py-3 text-sm leading-6 text-[#45684d]">
-            <strong>{hindi ? "कृपया पते की स्वयं जाँच करें।" : "Please review the address yourself."}</strong>{" "}
-            {hindi
-              ? "AI टेक्स्ट को गलत पढ़ सकता है। SahiSetu पैकेट खोलने से पहले अंतिम संस्करण को प्रमाण से मिलाता है।"
-              : "AI can misread text. SahiSetu checks the final version against the proof before it unlocks the packet."}
-          </p>
-          <section className="rounded-2xl border border-[#dce7dd] bg-white p-5">
-            <p className="font-semibold">{hindi ? "नाम जाँच" : "Name check"}</p>
-            <p className="mt-2 text-sm leading-6 text-[#5e7061]">{assessment.identity.summary}</p>
-          </section>
           <Passport
             timestamp={timestamp}
             reportId={reportId}
@@ -890,6 +880,7 @@ function Results({
               {hindi
                 ? "पते की तुलना सही है, लेकिन उपलब्ध नाम टेक्स्ट पूरी तरह स्पष्ट नहीं है। आगे बढ़ने से पहले प्रमाण में नाम की स्पष्टता मैन्युअल रूप से जाँचें।"
                 : "The address comparison is correct, but the available name text is not fully clear. Manually check the name on the proof before proceeding."}
+              <p className="mt-2">{assessment.identity.summary}</p>
             </section>
           )}
           {minorMismatches.length > 0 && !majorMismatch && clarificationOpen ? (
@@ -1064,186 +1055,199 @@ function AuditTrail({
   const safeNextState = !confirmed ? "pending" : addressMismatches.length ? "attention" : "current";
   return (
     <section className="rounded-3xl border border-[#cddfce] bg-[#fbfefb] p-6 sm:p-8">
-      <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-        {hindi ? "पता ऑडिट ट्रेल" : "Address audit trail"}
-      </p>
-      <h2 className="mt-2 text-2xl font-semibold">{hindi ? "यह परिणाम कैसे बना" : "How this result was reached"}</h2>
-      <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5b7060]">
-        {hindi
-          ? "AI ने प्रमाण से पता पढ़ा। आपके अंतिम टेक्स्ट की उसी दिखने वाले प्रमाण से तुलना की जाती है; आप पुष्टि करने से पहले इसे बदल सकते हैं।"
-          : "AI reads the address from the proof. Your final text is then compared with that same visible proof, you can edit it before confirming."}
-      </p>
-      <div className="mt-6">
-        <ExplainableAuditTimeline
-          language={hindi ? "hi" : "en"}
-          title={hindi ? "पता-जाँच का स्पष्ट रिकॉर्ड" : "A clear record of the address check"}
-          description={
-            hindi
-              ? "लाइसेंस पुराने पते की पहचान के लिए है। नए पते का प्रमाण आवेदन वाले पते का स्रोत है।"
-              : "The licence identifies the citizen’s current record. The new-address proof is the source for the address used in the application."
-          }
-          steps={[
-            {
-              label: hindi ? "दस्तावेज़ अपलोड" : "Documents uploaded",
-              detail: hindi ? "लाइसेंस और नए पते का प्रमाण जाँचा गया।" : "Licence and new-address proof checked.",
-              state: "complete",
-            },
-            {
-              label: hindi ? "फ़ील्ड निकाला गया" : "Field extracted",
-              detail: extractedAddress,
-              state: "complete",
-            },
-            {
-              label: hindi ? "नागरिक पुष्टि" : "Citizen confirmation",
-              detail: confirmed
-                ? hindi
-                  ? "अंतिम पता तुलना के लिए भेजा गया।"
-                  : "Final address submitted for comparison."
-                : hindi
-                  ? "ऊपर दिए ड्राफ्ट की समीक्षा बाकी है।"
-                  : "Review the draft above.",
-              state: confirmed ? "complete" : "current",
-            },
-            {
-              label: hindi ? "तैयारी परिणाम" : "Readiness result",
-              detail: !confirmed
-                ? hindi
-                  ? "तुलना लंबित है।"
-                  : "Comparison pending."
-                : addressMismatches.length
+      <details open={confirmed && addressMismatches.length > 0}>
+        <summary className="cursor-pointer list-none">
+          <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
+            {hindi ? "पता ऑडिट ट्रेल" : "Address audit trail"}
+          </p>
+          <div className="mt-2 flex items-center justify-between gap-4">
+            <h2 className="text-2xl font-semibold">
+              {hindi ? "यह परिणाम कैसे बना" : "See how this result was reached"}
+            </h2>
+            <span className="text-sm font-semibold text-[#287343]">{hindi ? "खोलें" : "Open"}</span>
+          </div>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-[#5b7060]">
+            {hindi
+              ? "प्रमाण से निकाला गया टेक्स्ट और आपके अंतिम टेक्स्ट की तुलना देखें।"
+              : "See the proof wording, your final text, and the comparison behind this result."}
+          </p>
+        </summary>
+        <div className="mt-6 border-t border-[#dbe8dc] pt-6">
+          <ExplainableAuditTimeline
+            language={hindi ? "hi" : "en"}
+            title={hindi ? "पता-जाँच का स्पष्ट रिकॉर्ड" : "A clear record of the address check"}
+            description={
+              hindi
+                ? "लाइसेंस पुराने पते की पहचान के लिए है। नए पते का प्रमाण आवेदन वाले पते का स्रोत है।"
+                : "The licence identifies the citizen’s current record. The new-address proof is the source for the address used in the application."
+            }
+            steps={[
+              {
+                label: hindi ? "दस्तावेज़ अपलोड" : "Documents uploaded",
+                detail: hindi ? "लाइसेंस और नए पते का प्रमाण जाँचा गया।" : "Licence and new-address proof checked.",
+                state: "complete",
+              },
+              {
+                label: hindi ? "फ़ील्ड निकाला गया" : "Field extracted",
+                detail: extractedAddress,
+                state: "complete",
+              },
+              {
+                label: hindi ? "नागरिक पुष्टि" : "Citizen confirmation",
+                detail: confirmed
                   ? hindi
-                    ? "छोटा या बड़ा अंतर मिला।"
-                    : "A wording or address difference was found."
+                    ? "अंतिम पता तुलना के लिए भेजा गया।"
+                    : "Final address submitted for comparison."
                   : hindi
-                    ? "पता प्रमाण से मेल खाता है।"
-                    : "The reviewed address matches the proof.",
-              state: readinessState,
-            },
-            {
-              label: hindi ? "सुरक्षित अगली कार्रवाई" : "Safe next action",
-              detail: !confirmed
-                ? hindi
-                  ? "पहले पते की पुष्टि करें।"
-                  : "Confirm the address first."
-                : addressMismatches.length
-                  ? hasMajorAddressMismatch
+                    ? "ऊपर दिए ड्राफ्ट की समीक्षा बाकी है।"
+                    : "Review the draft above.",
+                state: confirmed ? "complete" : "current",
+              },
+              {
+                label: hindi ? "तैयारी परिणाम" : "Readiness result",
+                detail: !confirmed
+                  ? hindi
+                    ? "तुलना लंबित है।"
+                    : "Comparison pending."
+                  : addressMismatches.length
                     ? hindi
-                      ? "पते को प्रमाण से मिलाने के लिए ठीक करें।"
-                      : "Correct the address to match the proof."
+                      ? "छोटा या बड़ा अंतर मिला।"
+                      : "A wording or address difference was found."
                     : hindi
-                      ? "प्रमाण की शब्दावली अपनाएँ, या केवल जरूरत होने पर स्पष्टीकरण नोट रखें।"
-                      : "Use the proof wording, or keep a clarification note only if needed."
-                  : hindi
-                    ? "सिंथेटिक तैयारी पैकेट देखें।"
-                    : "Review the readiness packet.",
-              state: safeNextState,
-            },
-          ]}
-        />
-      </div>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-[#dbe8dc] bg-white p-4">
-          <p className="text-xs font-bold uppercase tracking-wide text-[#718073]">
-            {hindi ? "प्रमाण से निकाला गया" : "Extracted from proof"}
-          </p>
-          <p className="mt-2 text-sm font-semibold leading-6 text-[#254632]">{extractedAddress}</p>
-        </div>
-        <div className="rounded-xl border border-[#dbe8dc] bg-white p-4">
-          <p className="text-xs font-bold uppercase tracking-wide text-[#718073]">
-            {confirmed
-              ? hindi
-                ? "आपका अंतिम समीक्षा किया पता"
-                : "Your final reviewed address"
-              : hindi
-                ? "आपका वर्तमान ड्राफ्ट"
-                : "Your current draft"}
-          </p>
-          <p className="mt-2 text-sm font-semibold leading-6 text-[#254632]">{finalAddress}</p>
-        </div>
-      </div>
-      {!confirmed ? (
-        <p className="mt-5 rounded-xl bg-[#fff8e8] p-4 text-sm leading-6 text-[#76551f]">
-          {hindi
-            ? "तुलना लंबित है। ऊपर दिए पते की पुष्टि करें ताकि SahiSetu सटीक अंतर और उसका वर्गीकरण दिखा सके।"
-            : "Comparison pending. Confirm the address above to see any exact difference and its classification."}
-        </p>
-      ) : addressMismatches.length ? (
-        <div className="mt-5 space-y-3">
-          {addressMismatches.map((item) => (
-            <article key={`audit-${item.field}`} className="rounded-xl border border-[#eaded0] bg-white p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="font-semibold">{item.field}</p>
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-bold ${item.severity === "major" ? "bg-[#fff0e6] text-[#8b4f1c]" : "bg-[#fff5d9] text-[#87550d]"}`}
-                >
-                  {hindi ? (item.severity === "major" ? "बड़ा अंतर" : "छोटा अंतर") : `${item.severity} difference`}
-                </span>
-              </div>
-              <div className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
-                <div className="rounded-lg bg-[#fff5f2] p-3">
-                  <p className="text-xs font-bold uppercase text-[#8f6257]">{hindi ? "अंतिम टेक्स्ट" : "Final text"}</p>
-                  <p className="mt-1 leading-6">{item.formValue}</p>
-                </div>
-                <div className="rounded-lg bg-[#eff8f0] p-3">
-                  <p className="text-xs font-bold uppercase text-[#57775d]">{hindi ? "प्रमाण में" : "Proof shows"}</p>
-                  <p className="mt-1 leading-6">{item.documentValue}</p>
-                </div>
-              </div>
-              <p className="mt-3 text-sm leading-6 text-[#4f6755]">
-                <strong>{hindi ? "क्यों:" : "Why:"}</strong> {item.explanation}{" "}
-                {item.severity === "major"
+                      ? "पता प्रमाण से मेल खाता है।"
+                      : "The reviewed address matches the proof.",
+                state: readinessState,
+              },
+              {
+                label: hindi ? "सुरक्षित अगली कार्रवाई" : "Safe next action",
+                detail: !confirmed
                   ? hindi
-                    ? " यह फॉर्म में उपयोग होने वाले वास्तविक पता विवरण को बदलता है, इसलिए इसे ठीक करना होगा।"
-                    : " It changes a substantive address detail, so it must be corrected."
-                  : hindi
-                    ? " यह उसी स्थान की सुरक्षित शब्दावली/फॉर्मेटिंग भिन्नता लगती है, इसलिए स्पष्टीकरण नोट पर्याप्त हो सकता है।"
-                    : " It appears to be a safe wording or formatting variation for the same place, so a clarification note may be enough."}
+                    ? "पहले पते की पुष्टि करें।"
+                    : "Confirm the address first."
+                  : addressMismatches.length
+                    ? hasMajorAddressMismatch
+                      ? hindi
+                        ? "पते को प्रमाण से मिलाने के लिए ठीक करें।"
+                        : "Correct the address to match the proof."
+                      : hindi
+                        ? "प्रमाण की शब्दावली अपनाएँ, या केवल जरूरत होने पर स्पष्टीकरण नोट रखें।"
+                        : "Use the proof wording, or keep a clarification note only if needed."
+                    : hindi
+                      ? "सिंथेटिक तैयारी पैकेट देखें।"
+                      : "Review the readiness packet.",
+                state: safeNextState,
+              },
+            ]}
+          />
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-xl border border-[#dbe8dc] bg-white p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-[#718073]">
+                {hindi ? "प्रमाण से निकाला गया" : "Extracted from proof"}
               </p>
-              {item.severity === "minor" ? (
-                <div className="mt-4 rounded-xl bg-[#f4faf3] p-4">
-                  <p className="text-sm leading-6 text-[#365c40]">
-                    <strong>{hindi ? "सुझाया गया सुधार:" : "Recommended correction:"}</strong>{" "}
-                    {hindi
-                      ? "प्रमाण की शब्दावली अपनाएँ। इससे अतिरिक्त नोट की जरूरत के बिना अंतर समाप्त हो जाता है।"
-                      : "Use the proof wording. This resolves the difference without creating extra paperwork."}
+              <p className="mt-2 text-sm font-semibold leading-6 text-[#254632]">{extractedAddress}</p>
+            </div>
+            <div className="rounded-xl border border-[#dbe8dc] bg-white p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-[#718073]">
+                {confirmed
+                  ? hindi
+                    ? "आपका अंतिम समीक्षा किया पता"
+                    : "Your final reviewed address"
+                  : hindi
+                    ? "आपका वर्तमान ड्राफ्ट"
+                    : "Your current draft"}
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-6 text-[#254632]">{finalAddress}</p>
+            </div>
+          </div>
+          {!confirmed ? (
+            <p className="mt-5 rounded-xl bg-[#fff8e8] p-4 text-sm leading-6 text-[#76551f]">
+              {hindi
+                ? "तुलना लंबित है। ऊपर दिए पते की पुष्टि करें ताकि SahiSetu सटीक अंतर और उसका वर्गीकरण दिखा सके।"
+                : "Comparison pending. Confirm the address above to see any exact difference and its classification."}
+            </p>
+          ) : addressMismatches.length ? (
+            <div className="mt-5 space-y-3">
+              {addressMismatches.map((item) => (
+                <article key={`audit-${item.field}`} className="rounded-xl border border-[#eaded0] bg-white p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <p className="font-semibold">{item.field}</p>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-bold ${item.severity === "major" ? "bg-[#fff0e6] text-[#8b4f1c]" : "bg-[#fff5d9] text-[#87550d]"}`}
+                    >
+                      {hindi ? (item.severity === "major" ? "बड़ा अंतर" : "छोटा अंतर") : `${item.severity} difference`}
+                    </span>
+                  </div>
+                  <div className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+                    <div className="rounded-lg bg-[#fff5f2] p-3">
+                      <p className="text-xs font-bold uppercase text-[#8f6257]">
+                        {hindi ? "अंतिम टेक्स्ट" : "Final text"}
+                      </p>
+                      <p className="mt-1 leading-6">{item.formValue}</p>
+                    </div>
+                    <div className="rounded-lg bg-[#eff8f0] p-3">
+                      <p className="text-xs font-bold uppercase text-[#57775d]">
+                        {hindi ? "प्रमाण में" : "Proof shows"}
+                      </p>
+                      <p className="mt-1 leading-6">{item.documentValue}</p>
+                    </div>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-[#4f6755]">
+                    <strong>{hindi ? "क्यों:" : "Why:"}</strong> {item.explanation}{" "}
+                    {item.severity === "major"
+                      ? hindi
+                        ? " यह फॉर्म में उपयोग होने वाले वास्तविक पता विवरण को बदलता है, इसलिए इसे ठीक करना होगा।"
+                        : " It changes a substantive address detail, so it must be corrected."
+                      : hindi
+                        ? " यह उसी स्थान की सुरक्षित शब्दावली/फॉर्मेटिंग भिन्नता लगती है, इसलिए स्पष्टीकरण नोट पर्याप्त हो सकता है।"
+                        : " It appears to be a safe wording or formatting variation for the same place, so a clarification note may be enough."}
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-3">
+                  {item.severity === "minor" ? (
+                    <div className="mt-4 rounded-xl bg-[#f4faf3] p-4">
+                      <p className="text-sm leading-6 text-[#365c40]">
+                        <strong>{hindi ? "सुझाया गया सुधार:" : "Recommended correction:"}</strong>{" "}
+                        {hindi
+                          ? "प्रमाण की शब्दावली अपनाएँ। इससे अतिरिक्त नोट की जरूरत के बिना अंतर समाप्त हो जाता है।"
+                          : "Use the proof wording. This resolves the difference without creating extra paperwork."}
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={onUseProofWording}
+                          className="rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10572b]"
+                        >
+                          {hindi ? "प्रमाण के शब्द अपनाएँ →" : "Use proof wording →"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={onCreateClarificationNote}
+                          className="rounded-lg border border-[#b9d5bd] bg-white px-4 py-2 text-sm font-semibold text-[#246538] hover:bg-[#e8f5ea]"
+                        >
+                          {hindi ? "फिर भी नोट रखें" : "Keep a clarification note instead"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
                     <button
                       type="button"
                       onClick={onUseProofWording}
-                      className="rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10572b]"
+                      className="mt-4 rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10572b]"
                     >
                       {hindi ? "प्रमाण के शब्द अपनाएँ →" : "Use proof wording →"}
                     </button>
-                    <button
-                      type="button"
-                      onClick={onCreateClarificationNote}
-                      className="rounded-lg border border-[#b9d5bd] bg-white px-4 py-2 text-sm font-semibold text-[#246538] hover:bg-[#e8f5ea]"
-                    >
-                      {hindi ? "फिर भी नोट रखें" : "Keep a clarification note instead"}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={onUseProofWording}
-                  className="mt-4 rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10572b]"
-                >
-                  {hindi ? "प्रमाण के शब्द अपनाएँ →" : "Use proof wording →"}
-                </button>
-              )}
-            </article>
-          ))}
+                  )}
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-5 rounded-xl bg-[#edf8ef] p-4 text-sm leading-6 text-[#236b39]">
+              <strong>{hindi ? "कोई पता अंतर नहीं मिला।" : "No address difference found."}</strong>{" "}
+              {hindi
+                ? "अंतिम समीक्षा किया पता प्रमाण से निकाले गए पते से मेल खाता है।"
+                : "The final reviewed address matches the address extracted from the proof."}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="mt-5 rounded-xl bg-[#edf8ef] p-4 text-sm leading-6 text-[#236b39]">
-          <strong>{hindi ? "कोई पता अंतर नहीं मिला।" : "No address difference found."}</strong>{" "}
-          {hindi
-            ? "अंतिम समीक्षा किया पता प्रमाण से निकाले गए पते से मेल खाता है।"
-            : "The final reviewed address matches the address extracted from the proof."}
-        </div>
-      )}
+      </details>
     </section>
   );
 }
