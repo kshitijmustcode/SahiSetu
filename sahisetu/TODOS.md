@@ -11,7 +11,7 @@ SahiSetu is a demo-data-only AI pre-scrutiny layer for Indian driving-licence ad
 - [x] **Aarohi:** fictional licence-expiry / renewal-readiness dashboard.
 - [x] **Rohan:** fictional moved-address journey. Vision reads the new address and PIN from his proof; the flagship demo changes the application-draft PIN from `560038` to `560036`, then blocks progression until the exact proof wording is restored. A minor `Lakeview` / `Lake View` case remains secondary.
 - [x] **Flagship story:** the landing page and Rohan journey lead with a consequential wrong-PIN correction, not a spacing difference.
-- [x] **Contextual impact model:** homepage, demo cards, and prepared handoff packs display baseline context and clearly labelled assumption-based potential impact. These figures are not measured results, official estimates, or guarantees.
+- [x] **Source-checked national context:** homepage links to MoRTH's 2023–24 Annual Report for the 20.26+ crore DL-record registry size (as of 31 March 2024) and to India Code for Section 181. It does not present unsupported percentages, savings, or outcome projections.
 - [x] **Application Rescue:** fictional payment-pending, `Under Scrutiny`, and `Document Upload Pending` recovery journeys.
 - [x] Simulated reminder preferences for Aarohi.
 - [x] Reversible contact-readiness confirmation, so a demo user can undo an accidental click.

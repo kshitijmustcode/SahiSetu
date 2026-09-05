@@ -96,80 +96,78 @@ export default function Home() {
             </p>
             <section className="mt-8 max-w-2xl rounded-2xl border border-[#d6e5d7] bg-[#f5faf5] p-4 sm:p-5">
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#31804a]">
-                {hindi ? "राष्ट्रीय समस्या संदर्भ" : "National problem context"}
+                {hindi ? "राष्ट्रीय पैमाना और संदर्भ" : "National scale & context"}
               </p>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 <div className="rounded-xl bg-white p-3">
-                  <p className="text-2xl font-semibold text-[#19713d]">20M+</p>
+                  <p className="text-2xl font-semibold text-[#19713d]">20.26+ {hindi ? "करोड़" : "crore"}</p>
                   <p className="mt-1 text-xs leading-5 text-[#526558]">
-                    {hindi ? "वार्षिक DL नवीनीकरण और अपडेट" : "Annual DL renewals and updates"}
+                    {hindi
+                      ? "राष्ट्रीय रजिस्ट्री में ड्राइविंग-लाइसेंस रिकॉर्ड"
+                      : "Driving-licence records in the national registry"}
                   </p>
                 </div>
                 <div className="rounded-xl bg-white p-3">
-                  <p className="text-2xl font-semibold text-[#9a5b13]">Up to 25%</p>
+                  <p className="text-2xl font-semibold text-[#9a5b13]">Sarathi</p>
                   <p className="mt-1 text-xs leading-5 text-[#526558]">
-                    {hindi ? "पता विवरण के कारण जाँच-रोक" : "Scrutiny holds from address details"}
+                    {hindi ? "DL पता-परिवर्तन सेवा सूचीबद्ध है" : "Lists change of address in DL as a service"}
                   </p>
                 </div>
                 <div className="rounded-xl bg-white p-3">
                   <p className="text-2xl font-semibold text-[#a2462a]">₹5,000</p>
                   <p className="mt-1 text-xs leading-5 text-[#526558]">
-                    {hindi ? "अमान्य लाइसेंस पर संभावित जुर्माना" : "Potential fine for an invalid licence"}
+                    {hindi
+                      ? "धारा 3/4 के विरुद्ध ड्राइविंग पर धारा 181 का जुर्माना"
+                      : "Section 181 fine for driving contrary to sections 3/4"}
                   </p>
                 </div>
               </div>
               <p className="mt-3 text-xs leading-5 text-[#647466]">
                 {hindi
-                  ? "टीम द्वारा शोधित राष्ट्रीय बेंचमार्क अनुमान; ये SahiSetu के नतीजे या किसी नागरिक के लिए भविष्यवाणी नहीं हैं।"
-                  : "Team-researched national benchmark estimates; they are not SahiSetu results or a prediction for any citizen."}
+                  ? "स्रोत: MoRTH वार्षिक रिपोर्ट 2023–24 (31 मार्च 2024 तक) और भारत कोड, मोटर वाहन अधिनियम, धारा 181। यह रजिस्ट्री आकार है, वार्षिक लेन-देन नहीं।"
+                  : "Sources: MoRTH Annual Report 2023–24 (as of 31 March 2024) and India Code, Motor Vehicles Act, section 181. This is registry size, not annual transactions."}
+              </p>
+              <p className="mt-2 text-xs font-semibold text-[#46675b]">
+                <a
+                  href="https://morth.gov.in/#/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline underline-offset-2 hover:text-[#166534]"
+                >
+                  {hindi ? "MoRTH वार्षिक रिपोर्ट खोलें ↗" : "Open MoRTH Annual Report ↗"}
+                </a>
+                <span aria-hidden="true"> · </span>
+                <a
+                  href="https://www.indiacode.nic.in/handle/123456789/1802"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline underline-offset-2 hover:text-[#166534]"
+                >
+                  {hindi ? "धारा 181 खोलें ↗" : "Open section 181 ↗"}
+                </a>
               </p>
               <section className="mt-4 rounded-xl bg-[#193b63] p-4 text-white sm:p-5">
                 <p className="text-center text-xs font-bold uppercase tracking-[0.14em] text-[#b9d8ed]">
-                  {hindi ? "संभावित प्रभाव मॉडल" : "Illustrative potential impact model"}
-                </p>
-                <p className="mt-1 text-center text-xs leading-5 text-[#d7e8f4]">
-                  {hindi
-                    ? "अनुमान-आधारित प्रक्षेपण, मापे गए परिणाम या गारंटी नहीं।"
-                    : "Assumption-based projections, not measured results or guarantees."}
+                  {hindi ? "SahiSetu क्या मदद करता है" : "What SahiSetu helps with"}
                 </p>
                 <div className="mt-4 grid gap-4 text-center sm:grid-cols-3">
                   <div className="border-t border-[#41627f] pt-4 sm:border-t-0 sm:border-r sm:pr-4 sm:pt-0">
-                    <p className="text-xs font-semibold text-[#f6c6b8]">
-                      {hindi ? "बिना SahiSetu: ₹5,000 जुर्माना जोखिम" : "Without SahiSetu: ₹5,000 fine risk"}
-                    </p>
-                    <p className="mt-2 text-lg font-semibold text-[#a8e7b5]">
-                      {hindi ? "100% संपर्क-तैयारी पूर्णता" : "100% contact-readiness completion"}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-[#c9d9e5]">
-                      {hindi
-                        ? "पुष्टि चरण पूरा करने वाले उपयोगकर्ताओं के लिए।"
-                        : "For users who complete the confirmation step."}
+                    <p className="text-sm font-semibold text-[#a8e7b5]">
+                      {hindi ? "समाप्ति और तैयारी की कमियाँ जल्दी देखें" : "Spot expiry and preparation gaps early"}
                     </p>
                   </div>
                   <div className="border-t border-[#41627f] pt-4 sm:border-t-0 sm:border-r sm:px-4 sm:pt-0">
-                    <p className="text-xs font-semibold text-[#f6c6b8]">
-                      {hindi ? "बिना SahiSetu: 25% जाँच-रोक" : "Without SahiSetu: 25% scrutiny holds"}
-                    </p>
-                    <p className="mt-2 text-lg font-semibold text-[#a8e7b5]">
-                      {hindi ? "<2% फॉर्मेटिंग अस्वीकृति लक्ष्य" : "<2% formatting-rejection target"}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-[#c9d9e5]">
+                    <p className="text-sm font-semibold text-[#a8e7b5]">
                       {hindi
-                        ? "मानता है कि प्री-स्क्रूटनी त्रुटियों को पकड़ती है।"
-                        : "Assumes pre-scrutiny catches address-entry errors."}
+                        ? "आगे बढ़ने से पहले पता-प्रविष्टि अंतर पकड़ें"
+                        : "Catch address-entry differences before proceeding"}
                     </p>
                   </div>
                   <div className="border-t border-[#41627f] pt-4 sm:border-t-0 sm:pl-4 sm:pt-0">
-                    <p className="text-xs font-semibold text-[#f6c6b8]">
+                    <p className="text-sm font-semibold text-[#a8e7b5]">
                       {hindi
-                        ? "बिना SahiSetu: 40% दोबारा-भुगतान प्रयास"
-                        : "Without SahiSetu: 40% repeat-payment attempts"}
-                    </p>
-                    <p className="mt-2 text-lg font-semibold text-[#a8e7b5]">
-                      {hindi ? "0 डुप्लिकेट-भुगतान प्रोत्साहन" : "0 duplicate-payment prompts"}
-                    </p>
-                    <p className="mt-1 text-xs leading-5 text-[#c9d9e5]">
-                      {hindi ? "SahiSetu भुगतान संसाधित नहीं करता।" : "SahiSetu does not process payments."}
+                        ? "दूसरे भुगतान पर विचार करने से पहले लंबित भुगतान जाँचें"
+                        : "Verify an unresolved payment before considering another payment"}
                     </p>
                   </div>
                 </div>

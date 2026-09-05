@@ -78,9 +78,13 @@ The in-app demo uses fictional documents for **Aarohi Sharma**. Additional blurr
 
 > Citizens often discover a wrong document detail too late in a driving-licence application. SahiSetu checks the evidence beforehand, shows the exact correction, and directs them to the relevant official next step.
 
-## Impact context and evaluation boundary
+## National context and evaluation boundary
 
-The homepage, demo selector, and printable handoff packs show **team-researched baseline context** alongside an **illustrative potential-impact model**. The model is intentionally labelled as assumption-based: it is not a measured outcome, government estimate, or guarantee to an individual citizen. It should only be used to explain the hypothesis that catching mistakes before an official handoff could reduce repeat work; real user testing is still required.
+The homepage cites MoRTH's **2023–24 Annual Report**: the National Registry held **20.26+ crore driving-licence records as of 31 March 2024**. This is registry size, not annual renewals, transactions, SahiSetu users, or a measure of address-change demand. The annual report also lists Change of Address in DL as a Sarathi service. [Visit the official MoRTH website](https://morth.gov.in/#/).
+
+The homepage also cites **Section 181 of the Motor Vehicles Act, 1988 — Driving vehicles in contravention of section 3 or section 4**, which states a ₹5,000 fine (or imprisonment up to three months, or both). The app does not claim that a contact confirmation prevents a fine, that every expired licence results in that offence, or that it determines legal compliance. [India Code: Central Act No. 59 of 1988](https://www.indiacode.nic.in/handle/123456789/1802).
+
+SahiSetu makes three concrete product claims only: it helps citizens spot expiry and preparation gaps early; catch address-entry differences before proceeding; and verify an unresolved payment before considering another payment. Real user testing is still required to make any time-saved, error-reduction, or outcome claim.
 
 The strongest current proof is the Rohan workflow: a wrong PIN in the application draft is caught before payment, the visible proof provides the exact replacement, and the citizen can restore the proof wording before moving to Sarathi. A `Lakeview` / `Lake View` spacing case remains a secondary edge case, not the main story.
 

@@ -209,22 +209,6 @@ export default function HandoffPage() {
   const active = content[caseKey];
   const addressReview =
     caseKey === "aarohi" ? journey.aarohiAddressReview : caseKey === "rohan" ? journey.rohanAddressReview : null;
-  const benchmarkContext =
-    caseKey === "aarohi"
-      ? t(
-          "30%+ may miss RTO alerts when registered contact details are outdated. An invalid licence can carry a fine up to ₹5,000.",
-          "पुराने पंजीकृत संपर्क विवरण के कारण 30%+ लोग RTO अलर्ट चूक सकते हैं। अमान्य लाइसेंस पर ₹5,000 तक जुर्माना हो सकता है।",
-        )
-      : caseKey === "rohan"
-        ? t(
-            "Up to 25% of self-uploaded document applications can be held for manual scrutiny because of address-detail differences.",
-            "पते के विवरण में अंतर के कारण स्व-अपलोड दस्तावेज़ आवेदनों में से 25% तक मैन्युअल जाँच में रुक सकते हैं।",
-          )
-        : t(
-            "3%–5% of online government payments can face gateway timeouts; over 40% of affected citizens may attempt a duplicate payment or unnecessary visit.",
-            "ऑनलाइन सरकारी भुगतानों में 3%–5% तक गेटवे टाइमआउट हो सकता है; प्रभावित लोगों में 40%+ दोबारा भुगतान या अनावश्यक विज़िट कर सकते हैं।",
-          );
-
   function printRtoDayCover() {
     setPrintMode("rto-cover");
     window.requestAnimationFrame(() => {
@@ -262,46 +246,6 @@ export default function HandoffPage() {
                   )}
             </p>
           </div>
-          {prepared ? (
-            <section className="mt-6 rounded-3xl border border-[#b9d8ed] bg-[#f4faff] p-6 text-[#234c65] sm:p-8">
-              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#1e638f]">
-                {t("Illustrative systemic ROI projection", "संभावित प्रणालीगत ROI प्रक्षेपण")}
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold">
-                {t("Potential scale per 100,000 citizens", "प्रति 100,000 नागरिक संभावित पैमाना")}
-              </h2>
-              <div className="mt-5 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-xl bg-white p-4">
-                  <p className="text-xl font-semibold text-[#1e638f]">~300,000</p>
-                  <p className="mt-1 text-xs leading-5">
-                    {t("Potential citizen hours saved annually", "प्रति वर्ष संभावित नागरिक घंटे बचत")}
-                  </p>
-                </div>
-                <div className="rounded-xl bg-white p-4">
-                  <p className="text-xl font-semibold text-[#1e638f]">20%–25%</p>
-                  <p className="mt-1 text-xs leading-5">
-                    {t(
-                      "Potential reduction in pre-scrutiny queue bottlenecks",
-                      "प्री-स्क्रूटनी कतार बाधाओं में संभावित कमी",
-                    )}
-                  </p>
-                </div>
-                <div className="rounded-xl bg-white p-4">
-                  <p className="text-xl font-semibold text-[#1e638f]">Up to ₹1.5 Cr</p>
-                  <p className="mt-1 text-xs leading-5">
-                    {t("Potential direct-cost protection", "संभावित प्रत्यक्ष लागत सुरक्षा")}
-                  </p>
-                </div>
-              </div>
-              <p className="mt-4 text-xs leading-5 text-[#496779]">
-                {t(
-                  "Assumption-based national-scale model, not a measured outcome, government estimate, or promise to this citizen. It requires real-world evaluation before use as an impact claim.",
-                  "यह अनुमान-आधारित राष्ट्रीय-पैमाना मॉडल है; मापा गया परिणाम, सरकारी अनुमान या इस नागरिक से वादा नहीं। प्रभाव दावे के लिए वास्तविक मूल्यांकन जरूरी है।",
-                )}
-              </p>
-            </section>
-          ) : null}
-
           <section className="handoff-summary mt-6 rounded-3xl border border-[#dce7dd] bg-white p-6 sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#e5eee6] pb-6">
               <div>
@@ -448,20 +392,6 @@ export default function HandoffPage() {
                 </p>
               </section>
             )}
-            {prepared ? (
-              <section className="mt-6 border-t border-[#e5eee6] pt-5 text-xs leading-5 text-[#647466]">
-                <p className="font-bold uppercase tracking-[0.12em] text-[#4b7054]">
-                  {t("National benchmark context", "राष्ट्रीय बेंचमार्क संदर्भ")}
-                </p>
-                <p className="mt-2">{benchmarkContext}</p>
-                <p className="mt-2 text-[#718073]">
-                  {t(
-                    "Team-researched national benchmark estimate; not an individual outcome or a SahiSetu result.",
-                    "टीम द्वारा शोधित राष्ट्रीय बेंचमार्क अनुमान; यह व्यक्तिगत परिणाम या SahiSetu का नतीजा नहीं है।",
-                  )}
-                </p>
-              </section>
-            ) : null}
             <p className="handoff-footer mt-6 text-xs leading-5 text-[#647466]">
               {t(
                 "Demo only. SahiSetu has not submitted, paid, approved, updated, or accessed an official application.",
