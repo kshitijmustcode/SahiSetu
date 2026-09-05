@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { SiteNavigation } from "../components/site-chrome";
 import { useLanguage } from "../components/language-toggle";
+import { SarathiAddressChangeHandoff } from "../components/sarathi-address-change-handoff";
 import { useDemoJourneyState } from "../lib/demo-journey-state";
 import { aarohiSyntheticLicence, getRenewalReadiness } from "../lib/dl-readiness";
 
@@ -328,6 +329,11 @@ export default function HandoffPage() {
                 <section className="mt-4 rounded-2xl bg-[#f0f8fc] p-5 text-sm leading-6 text-[#235779]">
                   <h3 className="font-semibold">{t("Safe next action", "सुरक्षित अगली कार्रवाई")}</h3>
                   <p className="mt-2">{active.nextAction}</p>
+                  {caseKey === "rohan" ? (
+                    <div className="mt-4">
+                      <SarathiAddressChangeHandoff hindi={hindi} />
+                    </div>
+                  ) : null}
                 </section>
                 <section className="rto-day-pack mt-6 rounded-2xl border border-[#b9d8ed] bg-[#f4faff] p-5 text-[#234c65]">
                   <div className="flex flex-wrap items-start justify-between gap-3">

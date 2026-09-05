@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { ExplainableAuditTimeline } from "../components/explainable-audit-timeline";
 import { LanguageToggle, useLanguage, type Language } from "../components/language-toggle";
+import { SarathiAddressChangeHandoff } from "../components/sarathi-address-change-handoff";
 import { setDemoJourneyState } from "../lib/demo-journey-state";
 
 type UploadedFile = { name: string; size: string; dataUrl: string; warning?: string } | null;
@@ -641,7 +642,9 @@ function Results({
   );
   const addressWasEdited = addressDraft.trim() !== assessment.extraction.address.trim();
   const ready = !qualityBlocked && !majorMismatch && accepted && (minorMismatches.length === 0 || signed);
-  const score = qualityBlocked ? 0 : majorMismatch ? 25 : accepted ? (minorMismatches.length ? 78 : 95) : 65;
+  const documentsReadable = !qualityBlocked && !documentTypeBlocked && !documentsSwapped;
+  const identityMatched = assessment.identity.status === "match";
+  const addressConfirmed = accepted && !addressMajorMismatch && (minorMismatches.length === 0 || signed);
   function confirmAddress() {
     if (!addressDraft.trim()) {
       setConfirmationError("Enter the address you want to use before continuing.");
@@ -660,7 +663,6 @@ function Results({
         assessment={assessment}
         licence={licence}
         proof={proof}
-        score={score}
         finalAddress={addressDraft}
         minorNoteSigned={signed}
         handoffCase={isAarohiRenewalDemo ? "aarohi" : isRohanAddressChangeDemo ? "rohan" : undefined}
@@ -744,7 +746,12 @@ function Results({
             <p className="mt-3 max-w-xl leading-7 text-[#536457]">{assessment.summary}</p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm">
               <span className="rounded-full bg-white px-3 py-1.5 font-semibold text-[#2e6540]">
-                {Math.round(assessment.confidence * 100)}% {hindi ? "दस्तावेज़ स्पष्टता" : "document clarity"}
+                ✓ {hindi ? "दस्तावेज़ पढ़ने योग्य" : "Documents readable"}
+              </span>
+              <span
+                className={`rounded-full bg-white px-3 py-1.5 font-semibold ${identityMatched ? "text-[#2e6540]" : "text-[#80591b]"}`}
+              >
+                {identityMatched ? "✓" : "!"} {hindi ? "नाम जाँच" : "Identity check"}
               </span>
               <span className="rounded-full bg-white px-3 py-1.5 font-semibold text-[#526958]">
                 {source === "openai"
@@ -758,8 +765,8 @@ function Results({
             </div>
             <p className="mt-3 text-xs text-[#66776a]">
               {hindi
-                ? "दस्तावेज़ स्पष्टता बताती है कि दस्तावेज़ कितना साफ़ पढ़ा गया। यह स्वीकृति का अनुमान नहीं है।"
-                : "Document clarity shows how clearly we could read the documents. It is not an approval prediction."}
+                ? "ये दृश्य दस्तावेज़-जाँच परिणाम हैं, स्वीकृति का अनुमान नहीं।"
+                : "These are visible document-check outcomes, not an approval prediction."}
             </p>
           </section>
           <section className="rounded-3xl border border-[#d7e5d9] bg-white p-6 sm:p-8">
@@ -823,8 +830,8 @@ function Results({
                       : "! The name details need manual review. See the name check below."
                     : minorMismatches.length > 0
                       ? hindi
-                        ? "! शब्दावली में छोटा अंतर मिला। नीचे स्पष्टीकरण नोट तैयार करें।"
-                        : "! A minor wording difference was found. Prepare the clarification note below."
+                        ? "! शब्दावली में छोटा अंतर मिला। नीचे प्रमाण की शब्दावली अपनाएँ या जरूरत हो तो नोट रखें।"
+                        : "! A minor wording difference was found. Use the proof wording below, or keep a note only if needed."
                       : addressWasEdited
                         ? hindi
                           ? "✓ आपका बदला हुआ पता प्रमाण से मेल खाता है।"
@@ -846,7 +853,9 @@ function Results({
               setAddressDraft(assessment.extraction.address);
               setAccepted(false);
               setSigned(false);
+              setClarificationOpen(false);
             }}
+            onCreateClarificationNote={() => setClarificationOpen(true)}
           />
           <p className="rounded-xl bg-[#f3f9f2] px-4 py-3 text-sm leading-6 text-[#45684d]">
             <strong>{hindi ? "कृपया पते की स्वयं जाँच करें।" : "Please review the address yourself."}</strong>{" "}
@@ -859,12 +868,13 @@ function Results({
             <p className="mt-2 text-sm leading-6 text-[#5e7061]">{assessment.identity.summary}</p>
           </section>
           <Passport
-            score={score}
             timestamp={timestamp}
             reportId={reportId}
             licence={licence}
-            proof={proof}
             language={language}
+            documentsReadable={documentsReadable}
+            identityMatched={identityMatched}
+            addressConfirmed={addressConfirmed}
           />
           {addressMajorMismatch && (
             <section className="rounded-2xl bg-[#fff0e6] p-5 text-sm leading-6 text-[#864d18]">
@@ -882,36 +892,14 @@ function Results({
                 : "The address comparison is correct, but the available name text is not fully clear. Manually check the name on the proof before proceeding."}
             </section>
           )}
-          {minorMismatches.length > 0 &&
-            !majorMismatch &&
-            (clarificationOpen ? (
-              <Clarification
-                mismatches={minorMismatches}
-                applicantName={assessment.extraction.applicantName}
-                signed={signed}
-                onSigned={() => setSigned(true)}
-              />
-            ) : (
-              <section className="rounded-3xl border border-[#c8dfcb] bg-white p-6">
-                <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#31804a]">
-                  {hindi ? "छोटा अंतर" : "Minor difference"}
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold">
-                  {hindi ? "स्पष्टीकरण नोट तैयार करें।" : "Generate a clarification note."}
-                </h2>
-                <p className="mt-3 max-w-xl text-sm leading-6 text-[#516753]">
-                  {hindi
-                    ? "यह केवल छोटे शब्दों या स्वरूप के अंतर को समझाने के लिए एक नोट बनाता है। यह किसी बड़े अंतर को नहीं बदल सकता।"
-                    : "This note is only for harmless wording or formatting differences. It cannot override a major mismatch."}
-                </p>
-                <button
-                  onClick={() => setClarificationOpen(true)}
-                  className="mt-5 rounded-xl bg-[#166534] px-5 py-3 font-semibold text-white"
-                >
-                  {hindi ? "स्पष्टीकरण नोट बनाएँ →" : "Generate clarification note →"}
-                </button>
-              </section>
-            ))}
+          {minorMismatches.length > 0 && !majorMismatch && clarificationOpen ? (
+            <Clarification
+              mismatches={minorMismatches}
+              applicantName={assessment.extraction.applicantName}
+              signed={signed}
+              onSigned={() => setSigned(true)}
+            />
+          ) : null}
           <div>
             <button
               disabled={!ready}
@@ -951,8 +939,8 @@ function Results({
                         : "Manually review the name on the proof before preparing the packet."
                       : minorMismatches.length && !signed
                         ? hindi
-                          ? "पैकेट बनाने से पहले छोटा स्पष्टीकरण नोट साइन करें।"
-                          : "Sign the short explanation note before preparing the packet."
+                          ? "प्रमाण की शब्दावली अपनाएँ, या केवल जरूरत होने पर स्पष्टीकरण नोट साइन करें।"
+                          : "Use the proof wording, or sign a clarification note only if you need to retain the difference."
                         : hindi
                           ? "पैकेट बनाने से पहले बाकी दस्तावेज़ जाँच पूरी करें।"
                           : "Complete the remaining document checks before preparing the packet."}
@@ -980,33 +968,35 @@ function Results({
 }
 
 function Passport({
-  score,
   timestamp,
   reportId,
   licence,
-  proof,
   language,
+  documentsReadable,
+  identityMatched,
+  addressConfirmed,
 }: {
-  score: number;
   timestamp: string;
   reportId: string;
   licence: UploadedFile;
-  proof: UploadedFile;
   language: Language;
+  documentsReadable: boolean;
+  identityMatched: boolean;
+  addressConfirmed: boolean;
 }) {
   const hindi = language === "hi";
   const label =
-    score >= 90
+    addressConfirmed && identityMatched && documentsReadable
       ? hindi
-        ? "सबमिट करने के लिए तैयार"
-        : "Ready to submit"
-      : score >= 60
+        ? "अगले आधिकारिक कदम के लिए तैयार"
+        : "Ready for the official next step"
+      : addressConfirmed
         ? hindi
-          ? "भुगतान से पहले पुष्टि करें"
-          : "Confirm before payment"
+          ? "पहचान जाँच पूरी करें"
+          : "Complete the identity check"
         : hindi
-          ? "भुगतान से पहले सुधारें"
-          : "Fix before payment";
+          ? "पते की समीक्षा पूरी करें"
+          : "Complete the address review";
   return (
     <section className="rounded-3xl border border-[#d7e5d9] bg-white p-6">
       <div className="flex items-start justify-between gap-4">
@@ -1019,22 +1009,18 @@ function Passport({
             {hindi ? "आपकी व्यक्तिगत जाँच रिपोर्ट" : "Your personal check report"} · {timestamp} · {reportId}
           </p>
         </div>
-        <div className="rounded-2xl bg-[#e9f7ea] px-5 py-4 text-center text-[#1e6b37]">
-          <p className="text-3xl font-bold">{score}</p>
-          <p className="text-xs font-bold uppercase tracking-wide">{hindi ? "तैयारी स्कोर" : "Ready score"}</p>
-        </div>
       </div>
       <div className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
         <Checklist
-          done={Boolean(licence)}
-          text={`${licence?.name ?? (hindi ? "मौजूदा लाइसेंस" : "Current licence")} ${hindi ? "संलग्न है" : "attached"}`}
+          done={documentsReadable && Boolean(licence)}
+          text={hindi ? "दस्तावेज़ पढ़ने योग्य हैं" : "Documents are readable"}
         />
+        <Checklist done={identityMatched} text={hindi ? "नाम/पहचान मेल खाती है" : "Identity details match"} />
+        <Checklist done={addressConfirmed} text={hindi ? "पता पुष्टि किया गया" : "Address confirmed"} />
         <Checklist
-          done={Boolean(proof)}
-          text={`${proof?.name ?? (hindi ? "नए पते का प्रमाण" : "New-address proof")} ${hindi ? "संलग्न है" : "attached"}`}
+          done={false}
+          text={hindi ? "राज्य की आधिकारिक आवश्यकताएँ जाँचें" : "Official requirements still to verify"}
         />
-        <Checklist done text={hindi ? "छवि पढ़ने के लिए पर्याप्त स्पष्ट है" : "Image is clear enough to read"} />
-        <Checklist done text={hindi ? "नया पता आपकी जाँच के लिए तैयार है" : "New address is ready for your review"} />
       </div>
       <p className="mt-4 text-xs leading-5 text-[#6b7c6d]">
         {hindi
@@ -1060,6 +1046,7 @@ function AuditTrail({
   confirmed,
   hindi,
   onUseProofWording,
+  onCreateClarificationNote,
 }: {
   extractedAddress: string;
   finalAddress: string;
@@ -1067,6 +1054,7 @@ function AuditTrail({
   confirmed: boolean;
   hindi: boolean;
   onUseProofWording: () => void;
+  onCreateClarificationNote: () => void;
 }) {
   const addressMismatches = mismatches.filter((item) =>
     /address|street|locality|city|state|pin|postal/i.test(item.field),
@@ -1206,13 +1194,40 @@ function AuditTrail({
                     ? " यह उसी स्थान की सुरक्षित शब्दावली/फॉर्मेटिंग भिन्नता लगती है, इसलिए स्पष्टीकरण नोट पर्याप्त हो सकता है।"
                     : " It appears to be a safe wording or formatting variation for the same place, so a clarification note may be enough."}
               </p>
-              <button
-                type="button"
-                onClick={onUseProofWording}
-                className="mt-4 rounded-lg border border-[#b9d5bd] bg-[#f4faf3] px-4 py-2 text-sm font-semibold text-[#246538] hover:bg-[#e8f5ea]"
-              >
-                {hindi ? "प्रमाण के शब्द अपनाएँ" : "Use proof wording"}
-              </button>
+              {item.severity === "minor" ? (
+                <div className="mt-4 rounded-xl bg-[#f4faf3] p-4">
+                  <p className="text-sm leading-6 text-[#365c40]">
+                    <strong>{hindi ? "सुझाया गया सुधार:" : "Recommended correction:"}</strong>{" "}
+                    {hindi
+                      ? "प्रमाण की शब्दावली अपनाएँ। इससे अतिरिक्त नोट की जरूरत के बिना अंतर समाप्त हो जाता है।"
+                      : "Use the proof wording. This resolves the difference without creating extra paperwork."}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-3">
+                    <button
+                      type="button"
+                      onClick={onUseProofWording}
+                      className="rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10572b]"
+                    >
+                      {hindi ? "प्रमाण के शब्द अपनाएँ →" : "Use proof wording →"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={onCreateClarificationNote}
+                      className="rounded-lg border border-[#b9d5bd] bg-white px-4 py-2 text-sm font-semibold text-[#246538] hover:bg-[#e8f5ea]"
+                    >
+                      {hindi ? "फिर भी नोट रखें" : "Keep a clarification note instead"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onUseProofWording}
+                  className="mt-4 rounded-lg bg-[#166534] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10572b]"
+                >
+                  {hindi ? "प्रमाण के शब्द अपनाएँ →" : "Use proof wording →"}
+                </button>
+              )}
             </article>
           ))}
         </div>
@@ -1382,7 +1397,6 @@ function Packet({
   assessment,
   licence,
   proof,
-  score,
   finalAddress,
   minorNoteSigned,
   handoffCase,
@@ -1395,7 +1409,6 @@ function Packet({
   assessment: Assessment;
   licence: UploadedFile;
   proof: UploadedFile;
-  score: number;
   finalAddress: string;
   minorNoteSigned: boolean;
   handoffCase?: "aarohi" | "rohan";
@@ -1427,10 +1440,6 @@ function Packet({
             <p className="mt-1 text-sm text-[#647466]">
               {reportId} · {timestamp}
             </p>
-          </div>
-          <div className="rounded-xl bg-[#e9f7ea] px-4 py-3 text-center text-[#1e6b37]">
-            <p className="text-2xl font-bold">{score}</p>
-            <p className="text-xs font-bold uppercase">{hindi ? "तैयारी स्कोर" : "Readiness score"}</p>
           </div>
         </div>
         <p className="mt-5 rounded-xl bg-[#fff8e8] p-4 text-sm leading-6 text-[#76551f]">
@@ -1517,6 +1526,9 @@ function Packet({
           )}
         </div>
         <div className="mt-6 border-t border-[#e5eee6] pt-6 print:hidden">
+          <div className="mb-6">
+            <SarathiAddressChangeHandoff hindi={hindi} />
+          </div>
           {handoffCase ? (
             <Link
               href={`/handoff?case=${handoffCase}`}

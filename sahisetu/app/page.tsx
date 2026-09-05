@@ -86,8 +86,8 @@ export default function Home() {
               {hindi ? "परिवहन सेवाओं के लिए सक्रिय सहायता परत" : "A proactive support layer for transport services"}
             </p>
             <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[1.03] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-              {hindi ? "लाइसेंस या आवेदन की समस्या " : "Stay ready before a licence or application problem becomes "}
-              <span className="text-[#19713d]">{hindi ? "तत्काल बनने से पहले तैयार रहें।" : "urgent."}</span>
+              {hindi ? "आवेदन से पहले लाइसेंस-दस्तावेज़ों की गलतियाँ " : "Catch licence-document mistakes "}
+              <span className="text-[#19713d]">{hindi ? "पकड़ें।" : "before you apply."}</span>
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[#526558]">
               {hindi
