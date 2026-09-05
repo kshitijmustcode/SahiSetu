@@ -4,6 +4,12 @@ export const karnatakaDlAddressChangeRoute = {
   checkedOn: "5 September 2026",
 };
 
+export const sarathiPaymentStatusRoute = {
+  serviceUrl: "https://sarathi.parivahan.gov.in/",
+  instructionsUrl: "https://sarathi.parivahan.gov.in/paymentscov/HELP.htm",
+  checkedOn: "5 September 2026",
+};
+
 export const indianStatesAndUts = [
   "Andaman and Nicobar Islands",
   "Andhra Pradesh",

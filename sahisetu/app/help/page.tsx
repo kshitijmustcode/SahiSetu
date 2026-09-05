@@ -294,7 +294,9 @@ export default function GuidedHelpPage() {
                 <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#287343]">
                   {hindi ? "मार्गदर्शन" : "Guidance"}
                 </p>
-                <p className="mt-3 whitespace-pre-wrap leading-7 text-[#284636]">{answer.answer}</p>
+                <p className="mt-3 whitespace-pre-wrap leading-7 text-[#284636]">
+                  {answer.answer.replaceAll("**", "").replaceAll("__", "")}
+                </p>
                 <div className="mt-5 border-t border-[#cde2d1] pt-4">
                   <p className="text-sm font-bold text-[#315e3f]">
                     {hindi ? "इस्तेमाल किए गए आधिकारिक स्रोत" : "Official sources used"}

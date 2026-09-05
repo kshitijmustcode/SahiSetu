@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useSyncExternalStore } from "react";
 import { SiteNavigation } from "../components/site-chrome";
 import { useLanguage } from "../components/language-toggle";
-import { SarathiAddressChangeHandoff } from "../components/sarathi-address-change-handoff";
+import { SarathiAddressChangeHandoff, SarathiPaymentStatusHandoff } from "../components/sarathi-address-change-handoff";
 import { useDemoJourneyState } from "../lib/demo-journey-state";
 import { aarohiSyntheticLicence, getRenewalReadiness } from "../lib/dl-readiness";
 
@@ -175,8 +175,8 @@ export default function HandoffPage() {
         "लंबित स्थिति असफलता, मंजूरी, रिफंड या फिर से भुगतान की जरूरत का प्रमाण नहीं है।",
       ),
       nextAction: t(
-        "Use the relevant official payment-status or support route with this evidence before considering another payment.",
-        "दूसरे भुगतान पर विचार करने से पहले इस प्रमाण के साथ संबंधित आधिकारिक भुगतान-स्थिति या सहायता मार्ग उपयोग करें।",
+        "Use Sarathi’s Verify Pay Status with this evidence before considering another payment.",
+        "दूसरे भुगतान पर विचार करने से पहले इस प्रमाण के साथ Sarathi का Verify Pay Status उपयोग करें।",
       ),
       returnHref: "/rescue?case=payment-pending",
       returnLabel: t("Back to Neha’s Application Rescue", "नेहा की आवेदन सहायता पर वापस"),
@@ -334,6 +334,7 @@ export default function HandoffPage() {
                       <SarathiAddressChangeHandoff hindi={hindi} />
                     </div>
                   ) : null}
+                  {caseKey === "neha" ? <SarathiPaymentStatusHandoff hindi={hindi} /> : null}
                 </section>
                 <section className="rto-day-pack mt-6 rounded-2xl border border-[#b9d8ed] bg-[#f4faff] p-5 text-[#234c65]">
                   <div className="flex flex-wrap items-start justify-between gap-3">

@@ -42,12 +42,23 @@ export const helpSources: HelpSource[] = [
     keywords: ["form", "form 9", "renewal", "address", "change", "licence", "license"],
   },
   {
-    id: "parivahan-transaction-status",
-    title: "Parivahan eTransPgi — transaction status",
-    url: "https://www.parivahan.gov.in/eTransPgi/transactionStatus",
+    id: "sarathi-verify-pay-status",
+    title: "Sarathi — Verify Pay Status instructions",
+    url: "https://sarathi.parivahan.gov.in/paymentscov/HELP.htm",
     summary:
-      "The official transaction-status service provides fields for a transaction, payment, bank reference, or application identifier. A citizen should use the official service and retain their own receipt/reference rather than attempting a duplicate payment.",
-    keywords: ["payment", "deducted", "money", "transaction", "bank", "receipt", "pending", "refund", "payment id"],
+      "For LL/DL payments, Sarathi’s official instructions say Verify Pay Status checks payment status using an application number, date of birth, and CAPTCHA. Citizens should retain their receipt/reference and use the official service before considering another payment.",
+    keywords: [
+      "payment",
+      "deducted",
+      "money",
+      "transaction",
+      "receipt",
+      "pending",
+      "refund",
+      "driving",
+      "licence",
+      "license",
+    ],
   },
 ];
 

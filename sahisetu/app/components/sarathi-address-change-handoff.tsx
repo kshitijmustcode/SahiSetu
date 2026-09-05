@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { indianStatesAndUts, karnatakaDlAddressChangeRoute } from "../lib/official-routes";
+import { indianStatesAndUts, karnatakaDlAddressChangeRoute, sarathiPaymentStatusRoute } from "../lib/official-routes";
 
 export function SarathiAddressChangeHandoff({ hindi }: { hindi: boolean }) {
   const [stateOrUt, setStateOrUt] = useState("Karnataka");
@@ -64,6 +64,47 @@ export function SarathiAddressChangeHandoff({ hindi }: { hindi: boolean }) {
         {hindi
           ? "यह बटन आधिकारिक सेवा खोलता है। SahiSetu आपकी जानकारी स्थानांतरित या सबमिट नहीं करता।"
           : "This opens the official service. SahiSetu does not transfer or submit your information."}
+      </p>
+    </section>
+  );
+}
+
+export function SarathiPaymentStatusHandoff({ hindi }: { hindi: boolean }) {
+  return (
+    <section className="mt-4 rounded-2xl border border-[#b9d8ed] bg-[#f4faff] p-5 text-[#234c65]">
+      <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#1e638f]">
+        {hindi ? "आधिकारिक भुगतान-स्थिति अगला कदम" : "Official payment-status next step"}
+      </p>
+      <h3 className="mt-2 text-xl font-semibold">
+        {hindi ? "Sarathi में Verify Pay Status उपयोग करें" : "Use Verify Pay Status in Sarathi"}
+      </h3>
+      <p className="mt-2 text-sm leading-6">
+        {hindi
+          ? "आधिकारिक सेवा में अपना राज्य चुनें और Verify Pay Status चुनें। वहाँ आवेदन नंबर, जन्म तिथि और CAPTCHA केवल आधिकारिक Sarathi पेज पर दर्ज करें।"
+          : "In the official service, select your state and choose Verify Pay Status. Enter an application number, date of birth, and CAPTCHA only on the official Sarathi page."}
+      </p>
+      <div className="mt-4 flex flex-wrap gap-3">
+        <a
+          href={sarathiPaymentStatusRoute.serviceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="rounded-xl bg-[#1e638f] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#164f72]"
+        >
+          {hindi ? "Sarathi खोलें ↗" : "Open Sarathi ↗"}
+        </a>
+        <a
+          href={sarathiPaymentStatusRoute.instructionsUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="rounded-xl border border-[#8bb9d2] bg-white px-4 py-2.5 text-sm font-semibold text-[#1e638f] hover:bg-[#e6f4fb]"
+        >
+          {hindi ? "Verify Pay Status निर्देश ↗" : "Verify Pay Status instructions ↗"}
+        </a>
+      </div>
+      <p className="mt-3 text-xs leading-5 text-[#496779]">
+        {hindi
+          ? `आधिकारिक निर्देश ${sarathiPaymentStatusRoute.checkedOn} को जाँचे गए। दूसरा भुगतान केवल तभी करें जब आधिकारिक सेवा स्पष्ट निर्देश दे।`
+          : `Official instructions checked on ${sarathiPaymentStatusRoute.checkedOn}. Make another payment only if the official service explicitly directs it.`}
       </p>
     </section>
   );

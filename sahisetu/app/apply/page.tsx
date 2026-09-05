@@ -1059,6 +1059,7 @@ function AuditTrail({
   const addressMismatches = mismatches.filter((item) =>
     /address|street|locality|city|state|pin|postal/i.test(item.field),
   );
+  const hasMajorAddressMismatch = addressMismatches.some((item) => item.severity === "major");
   const readinessState = !confirmed ? "current" : addressMismatches.length ? "attention" : "complete";
   const safeNextState = !confirmed ? "pending" : addressMismatches.length ? "attention" : "current";
   return (
@@ -1125,9 +1126,13 @@ function AuditTrail({
                   ? "पहले पते की पुष्टि करें।"
                   : "Confirm the address first."
                 : addressMismatches.length
-                  ? hindi
-                    ? "स्पष्टीकरण नोट तैयार करें या पता ठीक करें।"
-                    : "Prepare a clarification note or correct the address."
+                  ? hasMajorAddressMismatch
+                    ? hindi
+                      ? "पते को प्रमाण से मिलाने के लिए ठीक करें।"
+                      : "Correct the address to match the proof."
+                    : hindi
+                      ? "प्रमाण की शब्दावली अपनाएँ, या केवल जरूरत होने पर स्पष्टीकरण नोट रखें।"
+                      : "Use the proof wording, or keep a clarification note only if needed."
                   : hindi
                     ? "सिंथेटिक तैयारी पैकेट देखें।"
                     : "Review the readiness packet.",

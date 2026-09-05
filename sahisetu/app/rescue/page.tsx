@@ -7,6 +7,7 @@ import { ExplainableAuditTimeline, type AuditTimelineStep } from "../components/
 import { SiteFooter, SiteNavigation } from "../components/site-chrome";
 import { useLanguage } from "../components/language-toggle";
 import { setDemoJourneyState, useDemoJourneyState } from "../lib/demo-journey-state";
+import { SarathiPaymentStatusHandoff } from "../components/sarathi-address-change-handoff";
 
 type RescueCase = "payment-pending" | "under-scrutiny" | "upload-pending";
 
@@ -38,9 +39,9 @@ const cases: Record<
       "Demo status record showing payment pending",
     ],
     nextAction:
-      "Keep the existing transaction details together, then use the relevant official status-verification or support route before considering any further payment.",
+      "Keep the existing transaction details together, then use Sarathi’s Verify Pay Status before considering any further payment.",
     supportSummary:
-      "Case: payment deducted but pending · Applicant: Neha Verma · Evidence: DEMO-APP-NV-9081 and DEMO-TXN-7742 · Next action: verify the transaction through the relevant official route before considering any further payment.",
+      "Case: payment deducted but pending · Applicant: Neha Verma · Evidence: DEMO-APP-NV-9081 and DEMO-TXN-7742 · Next action: use Sarathi’s Verify Pay Status before considering any further payment.",
   },
   "under-scrutiny": {
     shortTitle: "Under Scrutiny",
@@ -107,9 +108,9 @@ const hindiCases: Record<
       "भुगतान लंबित दिखाता सिंथेटिक स्थिति रिकॉर्ड",
     ],
     nextAction:
-      "मौजूदा लेन-देन विवरण साथ रखें, फिर किसी और भुगतान पर विचार करने से पहले संबंधित आधिकारिक स्थिति-जाँच या सहायता मार्ग उपयोग करें।",
+      "मौजूदा लेन-देन विवरण साथ रखें, फिर किसी और भुगतान पर विचार करने से पहले Sarathi का Verify Pay Status उपयोग करें।",
     supportSummary:
-      "मामला: भुगतान कटा लेकिन लंबित · आवेदक: नेहा वर्मा (सिंथेटिक) · प्रमाण: DEMO-APP-NV-9081 और DEMO-TXN-7742 · अगला कदम: किसी और भुगतान से पहले संबंधित आधिकारिक मार्ग से लेन-देन सत्यापित करें।",
+      "मामला: भुगतान कटा लेकिन लंबित · आवेदक: नेहा वर्मा (सिंथेटिक) · प्रमाण: DEMO-APP-NV-9081 और DEMO-TXN-7742 · अगला कदम: किसी और भुगतान से पहले Sarathi का Verify Pay Status उपयोग करें।",
   },
   "under-scrutiny": {
     shortTitle: "जाँच में",
@@ -169,7 +170,8 @@ export default function RescuePage() {
   const summaryCreated = selectedCase === "payment-pending" && demoJourney.nehaSummaryReady;
 
   const activeCase = hindi ? hindiCases[selectedCase] : cases[selectedCase];
-  const allRetained = retained.length === activeCase.evidence.length;
+  const retainedEvidence = selectedCase === "payment-pending" ? demoJourney.nehaEvidenceRetained : retained;
+  const allRetained = retainedEvidence.length === activeCase.evidence.length;
   const auditSteps: AuditTimelineStep[] = [
     {
       label: hindi ? "स्थिति रिकॉर्ड" : "Status record",
@@ -217,7 +219,13 @@ export default function RescuePage() {
   }
 
   function toggleEvidence(item: string) {
-    if (selectedCase === "payment-pending") setDemoJourneyState({ nehaSummaryReady: false });
+    if (selectedCase === "payment-pending") {
+      const nextEvidence = retainedEvidence.includes(item)
+        ? retainedEvidence.filter((value) => value !== item)
+        : [...retainedEvidence, item];
+      setDemoJourneyState({ nehaEvidenceRetained: nextEvidence, nehaSummaryReady: false });
+      return;
+    }
     setRetained((current) => (current.includes(item) ? current.filter((value) => value !== item) : [...current, item]));
   }
 
@@ -299,6 +307,7 @@ export default function RescuePage() {
                 </span>
               </div>
               <p className="mt-4 text-sm leading-6 text-[#6c5832]">{activeCase.nextAction}</p>
+              {selectedCase === "payment-pending" ? <SarathiPaymentStatusHandoff hindi={hindi} /> : null}
             </section>
             <ExplainableAuditTimeline language={hindi ? "hi" : "en"} steps={auditSteps} />
             <section className="rounded-3xl border border-[#dce7dd] bg-white p-6 sm:p-8">
@@ -321,7 +330,7 @@ export default function RescuePage() {
                   >
                     <input
                       type="checkbox"
-                      checked={retained.includes(item)}
+                      checked={retainedEvidence.includes(item)}
                       onChange={() => toggleEvidence(item)}
                       className="h-4 w-4 accent-[#166534]"
                     />
@@ -330,13 +339,19 @@ export default function RescuePage() {
                 ))}
               </div>
               <button
-                disabled={!allRetained}
+                disabled={!allRetained || summaryCreated}
                 onClick={() => {
                   if (selectedCase === "payment-pending") setDemoJourneyState({ nehaSummaryReady: true });
                 }}
                 className="mt-6 w-full rounded-xl bg-[#193b63] px-5 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-45"
               >
-                {hindi ? "सहायता-सार तैयार करें" : "Prepare support summary"}
+                {summaryCreated
+                  ? hindi
+                    ? "सहायता-सार तैयार है"
+                    : "Support summary prepared"
+                  : hindi
+                    ? "सहायता-सार तैयार करें"
+                    : "Prepare support summary"}
               </button>
               {summaryCreated && (
                 <>

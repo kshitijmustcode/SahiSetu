@@ -17,6 +17,7 @@ export type DemoJourneyState = {
   rohanPacketReady: boolean;
   rohanAddressReview: SyntheticAddressReview | null;
   nehaSummaryReady: boolean;
+  nehaEvidenceRetained: string[];
 };
 
 const storageKey = "sahisetu-demo-journey-state";
@@ -29,6 +30,7 @@ const defaultState: DemoJourneyState = {
   rohanPacketReady: false,
   rohanAddressReview: null,
   nehaSummaryReady: false,
+  nehaEvidenceRetained: [],
 };
 let cachedValue: string | null = null;
 let cachedState = defaultState;

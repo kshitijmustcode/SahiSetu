@@ -346,11 +346,11 @@ export default function TriagePage() {
       ),
       citizenNextAction: t(
         demoJourney.nehaSummaryReady
-          ? "The support summary is prepared. Use the relevant official payment-status or support route before considering another payment."
-          : "Use the relevant official payment-status or support route before considering another payment.",
+          ? "The support summary is prepared. Use Sarathi’s Verify Pay Status before considering another payment."
+          : "Use Sarathi’s Verify Pay Status before considering another payment.",
         demoJourney.nehaSummaryReady
-          ? "सहायता-सार तैयार है। दूसरे भुगतान पर विचार करने से पहले संबंधित आधिकारिक भुगतान-स्थिति या सहायता मार्ग उपयोग करें।"
-          : "दूसरे भुगतान पर विचार करने से पहले संबंधित आधिकारिक भुगतान-स्थिति या सहायता मार्ग उपयोग करें।",
+          ? "सहायता-सार तैयार है। दूसरे भुगतान पर विचार करने से पहले Sarathi का Verify Pay Status उपयोग करें।"
+          : "दूसरे भुगतान पर विचार करने से पहले Sarathi का Verify Pay Status उपयोग करें।",
       ),
       timeline: [
         {
